@@ -47,3 +47,14 @@ jobs:
 
     - name: Run Tests
       run: brownie test
+
+    - name: Publish Unit Test Results (using test-reporter)
+      # https://github.com/marketplace/actions/test-reporter#supported-formats
+      uses: dorny/test-reporter@v1
+      if: success() || failure()     # run this step even if previous step failed
+      with:
+        # name: Unit Test Results (using test-reporter)  # Name of the check run which will be created
+        name: Unit Test Results              # Name of the check run which will be created
+        path: reports/*.xml                  # Path to test results
+        reporter: java-junit                 # Format of test results
+        # fail-on-error: false               # Set action to pass even if test report contains a failed test
