@@ -1,5 +1,7 @@
 # 2021 Consensys Blockchain Developer Bootcamp Final Project: A PFP NFT Pimp Shop
 
+[![Build](https://github.com/web3wannabe/blockchain-developer-bootcamp-final-project/actions/workflows/main.yaml/badge.svg)](https://github.com/web3wannabe/blockchain-developer-bootcamp-final-project/actions/workflows/main.yaml)
+
 ## Motivation
 
 It seems extremely likely that NFTs (non-fungible tokens) will become ubiquitous in many aspects of our digital (and
@@ -37,4 +39,4 @@ The user:
 5. Prerequisite: Accessory NFT has been minted and are therefore available in the user account's inventory. The user
    can create an image that is a composition of an accessory NFT and one of the other NFTs in their ownership. This
    composition is displayed dynamically on the page.
-6. Can mint the resulting composition as a new NFT which can be used on other platforms, for example, as a PFP NFT. 
+6. Can mint the resulting composition as a new NFT which can be used on other platforms, for example, as a PFP NFT.
