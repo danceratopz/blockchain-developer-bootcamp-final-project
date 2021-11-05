@@ -1,6 +1,6 @@
-on: ["push", "pull_request"]
+name: Build
 
-name: main workflow
+on: ["push", "pull_request"]
 
 env:
   # ETHERSCAN_TOKEN:
@@ -38,8 +38,12 @@ jobs:
       with:
         python-version: 3.8
 
-    - name: Install Requirements
+    - name: Install Python Requirements
       run: pip install -r requirements.txt
+
+    - name: Install Solidity Dependencies
+      run: |
+        brownie pm install OpenZeppelin/openzeppelin-contracts@4.3.2
 
     - name: Run Tests
       run: brownie test
