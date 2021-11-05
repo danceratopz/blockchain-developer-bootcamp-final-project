@@ -16,6 +16,8 @@ jobs:
   tests:
     runs-on: ubuntu-latest
 
+    name: Compile and Test Solidity Contracts
+
     steps:
     - uses: actions/checkout@v2
 
@@ -40,10 +42,6 @@ jobs:
 
     - name: Install Python Requirements
       run: pip install -r requirements.txt
-
-    - name: Install Solidity Dependencies
-      run: |
-        brownie pm install OpenZeppelin/openzeppelin-contracts@4.3.2
 
     - name: Run Tests
       run: brownie test
