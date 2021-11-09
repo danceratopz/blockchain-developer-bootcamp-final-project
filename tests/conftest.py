@@ -13,3 +13,8 @@ def deployer_address():
 @pytest.fixture(scope="session")
 def user_address():
     return accounts[1]
+
+
+@pytest.fixture(scope="session")
+def buyer_address():
+    return accounts[2]

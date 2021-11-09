@@ -46,23 +46,34 @@ class TestFractionalizeNFT:
         return 100
 
     @pytest.fixture(scope="class")
+    def buyout_price(self):
+        return "5 ether"
+
+    @pytest.fixture(scope="class")
     def frac_contract(self, deployer_address):
         return deployer_address.deploy(FractionalizeNFT)
 
     @pytest.fixture(scope="class", autouse=True)
     def create_fractionalized_nft(
-        self, frac_contract, nft_contract, nft_id, user_address, erc20_name, erc20_symbol, erc20_supply
+        self, frac_contract, nft_contract, nft_id, user_address, erc20_name, erc20_symbol, erc20_supply, buyout_price
     ):
         nft_contract.approve(frac_contract.address, nft_id, {"from": user_address})
         tx = frac_contract.fractionalizeNft(
-            nft_contract, nft_id, erc20_name, erc20_symbol, erc20_supply, {"from": user_address}
+            nft_contract, nft_id, erc20_name, erc20_symbol, erc20_supply, buyout_price, {"from": user_address}
         )
         return tx
 
+    @pytest.fixture(scope="class", autouse=True)
+    def frac_nft_id(self, create_fractionalized_nft):
+        return create_fractionalized_nft.return_value
+
     @pytest.fixture
-    def erc20_contract(self, create_fractionalized_nft):
-        erc20_address = create_fractionalized_nft.return_value
-        return Contract.from_abi("foo", erc20_address, ERC20Factory.abi)
+    def erc20_contract(self, frac_nft_id, frac_contract):
+        tx = frac_contract.getERC20Address(frac_nft_id)
+        erc20_address = tx.return_value
+        tx = frac_contract.getERC20Symbol(frac_nft_id)
+        erc20_symbol = tx.return_value
+        return Contract.from_abi(erc20_symbol, erc20_address, ERC20Factory.abi)
 
     # TODO: Implement reasonable test of receive function
     def test_receive(self, user_address, frac_contract):
@@ -87,3 +98,11 @@ class TestFractionalizeNFT:
 
     def test_nft_owner(self, nft_contract, nft_id, frac_contract):
         assert nft_contract.ownerOf(nft_id) == frac_contract.address
+
+    def test_buyout_valid_price(self, frac_contract, nft_contract, buyer_address, frac_nft_id, nft_id, buyout_price):
+        contract_initial_balance = frac_contract.balance()
+        frac_contract.buyout(frac_nft_id, {"from": buyer_address, "value": buyout_price})
+        assert nft_contract.ownerOf(nft_id) == buyer_address
+        contract_expected_balance = contract_initial_balance + buyout_price
+        # NOTE: integer comparison
+        assert frac_contract.balance() == contract_expected_balance
