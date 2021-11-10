@@ -1,6 +1,7 @@
 """
 Python unit tests for FractionalizeNFT
 """
+import brownie.exceptions
 import pytest
 
 
@@ -98,6 +99,7 @@ class TestFractionalizeNFT:
     def test_nft_owner(self, nft_contract, nft_id, frac_contract):
         assert nft_contract.ownerOf(nft_id) == frac_contract.address
 
+    @pytest.mark.usefixtures("fn_isolation")
     def test_buyout_valid_price(self, frac_contract, nft_contract, buyer_address, frac_nft_id, nft_id, buyout_price):
         contract_initial_balance = frac_contract.balance()
         frac_contract.buyout(frac_nft_id, {"from": buyer_address, "value": buyout_price})
@@ -105,3 +107,13 @@ class TestFractionalizeNFT:
         contract_expected_balance = contract_initial_balance + buyout_price
         # NOTE: integer comparison
         assert frac_contract.balance() == contract_expected_balance
+
+    @pytest.mark.usefixtures("fn_isolation")
+    def test_buyout_invalid_price(self, frac_contract, nft_contract, buyer_address, frac_nft_id, nft_id, buyout_price):
+        contract_initial_balance = frac_contract.balance()
+        buyer_initial_balance = buyer_address.balance()
+        with brownie.reverts("Sender sent less than the buyout price."):
+            frac_contract.buyout(frac_nft_id, {"from": buyer_address, "value": "3 ether"})
+        assert nft_contract.ownerOf(nft_id) == frac_contract.address
+        assert frac_contract.balance() == contract_initial_balance
+        assert buyer_address.balance() == buyer_initial_balance

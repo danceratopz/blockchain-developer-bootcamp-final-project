@@ -17,3 +17,8 @@ def user_address(accounts):
 @pytest.fixture(scope="session")
 def buyer_address(accounts):
     return accounts[2]
+
+
+@pytest.fixture(scope="class", autouse=True)
+def shared_setup(module_isolation):
+    pass
