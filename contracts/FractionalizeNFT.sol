@@ -82,7 +82,7 @@ contract FractionalizeNFT is IERC721Receiver {
 
     function buyout(uint256 id) public payable {
         // A buyer can buy the NFT as specified by the buyout price by sending ETH to the contract.
-        require(msg.value >= fracNFTs[id].buyoutPrice, "Sender sent less than the reserve price.");
+        require(msg.value >= fracNFTs[id].buyoutPrice, "Sender sent less than the buyout price.");
         // TODO: Update fracNFTs[id].state
         fracNFTs[id].nft.safeTransferFrom(address(this), msg.sender, fracNFTs[id].tokenId);
     }
