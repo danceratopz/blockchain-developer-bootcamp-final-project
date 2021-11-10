@@ -2,11 +2,10 @@
 Python unit tests for FractionalizeNFT
 """
 import pytest
-from brownie import Contract, ERC20Factory, FractionalizeNFT, TestNFT, accounts
 
 
 @pytest.fixture(scope="class")
-def nft_contract(deployer_address):
+def nft_contract(TestNFT, deployer_address):
     nft_contract = deployer_address.deploy(TestNFT)
     return nft_contract
 
@@ -26,7 +25,7 @@ class TestTestNFT:
     def test_mint_nft(self, nft_contract, nft_id, user_address):
         assert user_address == nft_contract.ownerOf(nft_id)
 
-    def test_transfer_nft(self, nft_id, nft_contract, user_address):
+    def test_transfer_nft(self, nft_id, nft_contract, user_address, accounts):
         receiver_address = accounts[2]
         nft_contract.safeTransferFrom(user_address, receiver_address, nft_id, {"from": user_address})
         assert receiver_address == nft_contract.ownerOf(nft_id)
@@ -39,7 +38,7 @@ class TestFractionalizeNFT:
 
     @pytest.fixture(scope="class")
     def erc20_symbol(self):
-        return "Woof"
+        return "WOOF"
 
     @pytest.fixture(scope="class")
     def erc20_supply(self):
@@ -50,7 +49,7 @@ class TestFractionalizeNFT:
         return "5 ether"
 
     @pytest.fixture(scope="class")
-    def frac_contract(self, deployer_address):
+    def frac_contract(self, deployer_address, FractionalizeNFT):
         return deployer_address.deploy(FractionalizeNFT)
 
     @pytest.fixture(scope="class", autouse=True)
@@ -68,7 +67,7 @@ class TestFractionalizeNFT:
         return create_fractionalized_nft.return_value
 
     @pytest.fixture
-    def erc20_contract(self, frac_nft_id, frac_contract):
+    def erc20_contract(self, frac_nft_id, frac_contract, ERC20Factory, Contract):
         tx = frac_contract.getERC20Address(frac_nft_id)
         erc20_address = tx.return_value
         tx = frac_contract.getERC20Symbol(frac_nft_id)

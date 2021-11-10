@@ -2,19 +2,18 @@
 Unit test configuration and helpers (fixtures).
 """
 import pytest
-from brownie import accounts
 
 
 @pytest.fixture(scope="session")
-def deployer_address():
+def deployer_address(accounts):
     return accounts[0]
 
 
 @pytest.fixture(scope="session")
-def user_address():
+def user_address(accounts):
     return accounts[1]
 
 
 @pytest.fixture(scope="session")
-def buyer_address():
+def buyer_address(accounts):
     return accounts[2]
