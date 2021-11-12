@@ -17,18 +17,19 @@ contract FractionalizeNFT is IERC721Receiver {
     mapping (uint => FractionalizedNFT) private fracNFTs;
     uint256 public fracNFTCount = 0;
 
+    //    mapping (address => uint256) userFracNFTs;
+
     struct FractionalizedNFT {
-	string symbol;
-        uint256 tokenId;
-        address tokenAddress;
-        string tokenSymbol;
+        uint256 nftTokenId;
+        address erc20Address;
+        string erc20Symbol;
         ERC721 nft;
 	address payable originalOwner;
         uint256 buyoutPrice;
+        State state;
     }
 
-    // TODO: Introduce state.
-    // enum State {  }
+    enum State { Fractionalized, Redeemed, BoughtOut }
 
     constructor() {
         owner = msg.sender;
@@ -36,6 +37,10 @@ contract FractionalizeNFT is IERC721Receiver {
 
     event Received(address, uint);
     event NftReceived(address);
+    event Fractionalized(address, uint);
+    event Redeemed(address, uint);
+    event BoughtOut(address, uint);
+    event Claimed(address, uint);
 
     // https://blog.soliditylang.org/2020/03/26/fallback-receive-split/
     receive() external payable {
@@ -46,48 +51,56 @@ contract FractionalizeNFT is IERC721Receiver {
         revert();
     }
 
-    function getERC20Address(uint256 id) public returns (address) {
-        return fracNFTs[id].tokenAddress;
+    function getERC20Address(uint256 fracNFTId) public returns (address) {
+        return fracNFTs[fracNFTId].erc20Address;
     }
 
-    function getERC20Symbol(uint256 id) public returns (string memory) {
-        return fracNFTs[id].tokenSymbol;
+    function getERC20Symbol(uint256 fracNFTId) public returns (string memory) {
+        return fracNFTs[fracNFTId].erc20Symbol;
     }
 
     function fractionalizeNft(ERC721 nft,
-                              uint256 tokenId,
-                              string memory name,
-                              string memory symbol,
-                              uint256 supply,
+                              uint256 nftTokenId,
+                              string memory erc20Name,
+                              string memory erc20Symbol,
+                              uint256 erc20Supply,
                               uint256 buyoutPrice) public returns (uint256) {
-        nft.safeTransferFrom(msg.sender, address(this), tokenId);
-        ERC20 newToken = (new ERC20Factory)(name, symbol, supply, msg.sender);
-        address tokenAddress = address(newToken);
-        fracNFTs[fracNFTCount] = FractionalizedNFT({symbol: symbol,
-                    nft: nft,
-                    tokenId: tokenId,
-                    tokenAddress: tokenAddress,
-                    tokenSymbol: symbol,
-                    originalOwner: payable(msg.sender),
-                    buyoutPrice: buyoutPrice});
-        // TODO: Add fracNFTs[id].state
+        nft.safeTransferFrom(msg.sender, address(this), nftTokenId);
+        ERC20 newToken = (new ERC20Factory)(erc20Name, erc20Symbol, erc20Supply, msg.sender);
+        address erc20Address = address(newToken);
+        fracNFTs[fracNFTCount] = FractionalizedNFT({
+            nft: nft,
+            nftTokenId: nftTokenId,
+            erc20Address: erc20Address,
+            erc20Symbol: erc20Symbol,
+            originalOwner: payable(msg.sender),
+            buyoutPrice: buyoutPrice,
+            state: State.Fractionalized});
         uint256 fracNFTId = fracNFTCount;
         fracNFTCount += 1;
+        emit Fractionalized(msg.sender, fracNFTId);
         return fracNFTId;
     }
 
-    function redeem() public {
-        // A holder of the entire corresponding ERC20 supply can send the tokens in order to redeem the NFT.
+    function redeem(uint256 fracNFTId) public payable {
+        // A holder of the entire ERC20 supply can send the tokens in order to redeem the NFT.
+        emit Redeemed(msg.sender, fracNFTId);
     }
 
-    function buyout(uint256 id) public payable {
+    function buyout(uint256 fracNFTId) public payable {
         // A buyer can buy the NFT as specified by the buyout price by sending ETH to the contract.
-        require(msg.value >= fracNFTs[id].buyoutPrice, "Sender sent less than the buyout price.");
-        // TODO: Update fracNFTs[id].state
-        fracNFTs[id].nft.safeTransferFrom(address(this), msg.sender, fracNFTs[id].tokenId);
+        require(msg.value >= fracNFTs[fracNFTId].buyoutPrice, "Sender sent less than the buyout price.");
+        fracNFTs[fracNFTId].state = State.BoughtOut;
+        fracNFTs[fracNFTId].nft.safeTransferFrom(address(this), msg.sender, fracNFTs[fracNFTId].nftTokenId);
+        emit BoughtOut(msg.sender, fracNFTId);
     }
 
-    function onERC721Received(address operator, address from, uint256 tokenId, bytes memory data) public returns (bytes4) {
+    function claim(uint256 fracNFTId) public {
+        // A holder of the ERC20 token can claim his ETH following a buyout.
+        emit Claimed(msg.sender, fracNFTId);
+    }
+
+    function onERC721Received(address operator, address from, uint256 nftTokenId, bytes memory data) public returns (bytes4) {
         emit NftReceived(msg.sender);
         return bytes4(keccak256("onERC721Received(address,address,uint256,bytes)"));
     }
