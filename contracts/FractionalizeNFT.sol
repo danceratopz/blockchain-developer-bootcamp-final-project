@@ -102,6 +102,7 @@ contract FractionalizeNFT is IERC721Receiver {
         require(fracNFTs[fracNFTId].state == State.BoughtOut, "Fractionalized NFT has not been bought out.");
         uint256 claimerBalance = fracNFTs[fracNFTId].erc20Token.balanceOf(msg.sender);
         require(claimerBalance > 0, "Claimer does not hold any tokens.");
+        fracNFTs[fracNFTId].erc20Token.transferFrom(msg.sender, address(this), claimerBalance);
         uint256 erc20Supply = fracNFTs[fracNFTId].erc20Token.totalSupply();
         uint256 claimAmountWei = fracNFTs[fracNFTId].buyoutPrice*claimerBalance/erc20Supply;
         payable(msg.sender).transfer(claimAmountWei);

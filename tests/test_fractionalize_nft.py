@@ -1,8 +1,10 @@
 """
 Python unit tests for FractionalizeNFT
 """
+import math
 import brownie.exceptions
 import pytest
+from brownie import Wei
 
 
 @pytest.fixture(scope="class")
@@ -101,7 +103,15 @@ class TestFractionalizeNFT:
 
     @pytest.mark.usefixtures("fn_isolation")
     def test_buyout_valid_price(
-        self, frac_contract, nft_contract, buyer_address, frac_nft_id, nft_id, buyout_price, user_address
+        self,
+        frac_contract,
+        nft_contract,
+        erc20_contract,
+        buyer_address,
+        frac_nft_id,
+        nft_id,
+        buyout_price,
+        user_address,
     ):
         frac_contract_initial_balance = frac_contract.balance()
         tx = frac_contract.buyout(frac_nft_id, {"from": buyer_address, "value": buyout_price})
@@ -111,9 +121,55 @@ class TestFractionalizeNFT:
         # NOTE: integer comparison
         assert frac_contract.balance() == contract_expected_balance
         user_initial_balance = user_address.balance()
+        erc20_contract.approve(frac_contract.address, erc20_contract.balanceOf(user_address), {"from": user_address})
         tx = frac_contract.claim(frac_nft_id, {"from": user_address})
         assert "Claimed" in tx.events
         user_expected_balance = user_initial_balance + buyout_price
+        assert user_address.balance() == user_expected_balance
+
+    @pytest.mark.usefixtures("fn_isolation")
+    def test_buyout_multiple_claimers(
+        self,
+        frac_contract,
+        nft_contract,
+        buyer_address,
+        frac_nft_id,
+        nft_id,
+        buyout_price,
+        user_address,
+        accounts,
+        erc20_contract,
+    ):
+        # TODO: Split test more appropriately into setup and test code.
+        frac_contract_initial_balance = frac_contract.balance()
+        tx = frac_contract.buyout(frac_nft_id, {"from": buyer_address, "value": buyout_price})
+        assert "BoughtOut" in tx.events
+        assert nft_contract.ownerOf(nft_id) == buyer_address
+        contract_expected_balance = frac_contract_initial_balance + buyout_price
+        assert frac_contract.balance() == contract_expected_balance
+        new_token_holders = [accounts[i] for i in range(5, 10)]
+        for i, token_holder in enumerate(new_token_holders):
+            x = math.floor(erc20_contract.totalSupply() / ((i + 1) * len(new_token_holders)))
+            erc20_contract.transfer(token_holder, x, {"from": user_address})
+            initial_balance = token_holder.balance()
+            print(token_holder.address, initial_balance, erc20_contract.balanceOf(token_holder))
+            expected_balance = (
+                initial_balance
+                + Wei(buyout_price) * erc20_contract.balanceOf(token_holder) / erc20_contract.totalSupply()
+            )
+            erc20_contract.approve(
+                frac_contract.address, erc20_contract.balanceOf(token_holder), {"from": token_holder}
+            )
+            frac_contract.claim(frac_nft_id, {"from": token_holder})
+            assert expected_balance == token_holder.balance()
+        user_initial_balance = user_address.balance()
+        user_expected_balance = (
+            user_initial_balance
+            + Wei(buyout_price) * erc20_contract.balanceOf(user_address) / erc20_contract.totalSupply()
+        )
+        erc20_contract.approve(frac_contract.address, erc20_contract.balanceOf(user_address), {"from": user_address})
+        tx = frac_contract.claim(frac_nft_id, {"from": user_address})
+        assert "Claimed" in tx.events
         assert user_address.balance() == user_expected_balance
 
     @pytest.mark.usefixtures("fn_isolation")
