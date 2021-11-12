@@ -21,6 +21,7 @@ contract FractionalizeNFT is IERC721Receiver {
 
     struct FractionalizedNFT {
         uint256 nftTokenId;
+        ERC20 erc20Token;
         address erc20Address;
         string erc20Symbol;
         ERC721 nft;
@@ -66,11 +67,12 @@ contract FractionalizeNFT is IERC721Receiver {
                               uint256 erc20Supply,
                               uint256 buyoutPrice) public returns (uint256) {
         nft.safeTransferFrom(msg.sender, address(this), nftTokenId);
-        ERC20 newToken = (new ERC20Factory)(erc20Name, erc20Symbol, erc20Supply, msg.sender);
-        address erc20Address = address(newToken);
+        ERC20 erc20Token = (new ERC20Factory)(erc20Name, erc20Symbol, erc20Supply, msg.sender);
+        address erc20Address = address(erc20Token);
         fracNFTs[fracNFTCount] = FractionalizedNFT({
             nft: nft,
             nftTokenId: nftTokenId,
+            erc20Token: erc20Token,
             erc20Address: erc20Address,
             erc20Symbol: erc20Symbol,
             originalOwner: payable(msg.sender),
@@ -97,6 +99,12 @@ contract FractionalizeNFT is IERC721Receiver {
 
     function claim(uint256 fracNFTId) public {
         // A holder of the ERC20 token can claim his ETH following a buyout.
+        require(fracNFTs[fracNFTId].state == State.BoughtOut, "Fractionalized NFT has not been bought out.");
+        uint256 claimerBalance = fracNFTs[fracNFTId].erc20Token.balanceOf(msg.sender);
+        require(claimerBalance > 0, "Claimer does not hold any tokens.");
+        uint256 erc20Supply = fracNFTs[fracNFTId].erc20Token.totalSupply();
+        uint256 claimAmountWei = fracNFTs[fracNFTId].buyoutPrice*claimerBalance/erc20Supply;
+        payable(msg.sender).transfer(claimAmountWei);
         emit Claimed(msg.sender, fracNFTId);
     }
 

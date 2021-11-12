@@ -100,13 +100,21 @@ class TestFractionalizeNFT:
         assert nft_contract.ownerOf(nft_id) == frac_contract.address
 
     @pytest.mark.usefixtures("fn_isolation")
-    def test_buyout_valid_price(self, frac_contract, nft_contract, buyer_address, frac_nft_id, nft_id, buyout_price):
-        contract_initial_balance = frac_contract.balance()
-        frac_contract.buyout(frac_nft_id, {"from": buyer_address, "value": buyout_price})
+    def test_buyout_valid_price(
+        self, frac_contract, nft_contract, buyer_address, frac_nft_id, nft_id, buyout_price, user_address
+    ):
+        frac_contract_initial_balance = frac_contract.balance()
+        tx = frac_contract.buyout(frac_nft_id, {"from": buyer_address, "value": buyout_price})
+        assert "BoughtOut" in tx.events
         assert nft_contract.ownerOf(nft_id) == buyer_address
-        contract_expected_balance = contract_initial_balance + buyout_price
+        contract_expected_balance = frac_contract_initial_balance + buyout_price
         # NOTE: integer comparison
         assert frac_contract.balance() == contract_expected_balance
+        user_initial_balance = user_address.balance()
+        tx = frac_contract.claim(frac_nft_id, {"from": user_address})
+        assert "Claimed" in tx.events
+        user_expected_balance = user_initial_balance + buyout_price
+        assert user_address.balance() == user_expected_balance
 
     @pytest.mark.usefixtures("fn_isolation")
     def test_buyout_invalid_price(self, frac_contract, nft_contract, buyer_address, frac_nft_id, nft_id, buyout_price):
