@@ -86,6 +86,11 @@ contract FractionalizeNFT is IERC721Receiver {
 
     function redeem(uint256 fracNFTId) public payable {
         // A holder of the entire ERC20 supply can send the tokens in order to redeem the NFT.
+        uint256 redeemerBalance = fracNFTs[fracNFTId].erc20Token.balanceOf(msg.sender);
+        uint256 erc20Supply = fracNFTs[fracNFTId].erc20Token.totalSupply();
+        // require(redeemerBalance == erc20Supply, "Redeemeer does not hold the entire supply.");
+        fracNFTs[fracNFTId].erc20Token.transferFrom(msg.sender, address(this), redeemerBalance);
+        fracNFTs[fracNFTId].nft.safeTransferFrom(address(this), msg.sender, fracNFTs[fracNFTId].nftTokenId);
         emit Redeemed(msg.sender, fracNFTId);
     }
 

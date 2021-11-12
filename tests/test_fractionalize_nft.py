@@ -102,6 +102,15 @@ class TestFractionalizeNFT:
         assert nft_contract.ownerOf(nft_id) == frac_contract.address
 
     @pytest.mark.usefixtures("fn_isolation")
+    def test_redeem(self, frac_contract, erc20_contract, nft_contract, nft_id, frac_nft_id, user_address):
+        print(erc20_contract.balanceOf(user_address), erc20_contract.totalSupply())
+        erc20_contract.approve(frac_contract.address, erc20_contract.balanceOf(user_address), {"from": user_address})
+        tx = frac_contract.redeem(frac_nft_id, {"from": user_address})
+        assert "Redeemed" in tx.events
+        assert erc20_contract.balanceOf(user_address) == 0
+        assert nft_contract.ownerOf(nft_id) == user_address.address
+
+    @pytest.mark.usefixtures("fn_isolation")
     def test_buyout_valid_price(
         self,
         frac_contract,
