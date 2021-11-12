@@ -1,42 +1,32 @@
-# 2021 Consensys Blockchain Developer Bootcamp Final Project: A PFP NFT Pimp Shop
+# 2021 ConsenSys Blockchain Developer Bootcamp Final Project: An NFT Fractionalizer
 
 [![Build](https://github.com/web3wannabe/blockchain-developer-bootcamp-final-project/actions/workflows/main.yaml/badge.svg)](https://github.com/web3wannabe/blockchain-developer-bootcamp-final-project/actions/workflows/main.yaml)
 
-## Motivation
+## Motivation and Aim
 
 It seems extremely likely that NFTs (non-fungible tokens) will become ubiquitous in many aspects of our digital (and
-physical) world in the mid to long-term future. One of the current hot topics in the NFT space are PFP (profile picture)
-NFTs; NFTs with the specific goal of being used as avatars on social media platforms or in online metaverses. Indeed,
-Twitter recently announced that they will allow users to link an Ethereum account to their Twitter and provide NFT
-profile picture verification ([link](https://t.co/Z8c6tH3BBy)). Currently, many people often periodically modify their
-JPG avatars to suit their mood, reflect a current topic in the news or support a movement they sympathise with. Once PFP
-NFTs are commonly supported by social media platforms this avatar modification and enhancement could occur on-chain
-using simple interactive tools to generate new NFTs.
+physical) world in the mid to long-term future. As NFTs become more widely adopted, multiple parties may wish to share
+ownership of a single NFT. Splitting the ownership of NFTs is possible on smart programming platforms by locking the NFT
+in a contract in return for a specified quantity of tokens that represent partial ownership of the locked NFT. These
+tokens may then be distributed to multiple accounts. This process is known as "fractionalization" of an NFT. The aim of
+this project is to implement a simple EVM-based dapp (decentralized application) that allows a user to fractionalize
+their ERC721 NFTs into ERC20 tokens. The most popular example of such an dapp is
+[fractional.art](https://fractional.art/).
 
-## An Accessory Store for ERC-721 NFTs
+## Workflow: Contract Actions and Participants
 
-This aim of this project is to provide an interactive platform where users can "personalise" the avatar ERC-721-based
-NFTs they hold in their account. This personalisation has two levels:
-1. First, the user can mint a new "accessory" NFT on the platform (perhaps also with the ability to customise the colour
-   or other attributes of the accessory). Then, once the user owns an accessory, the frontend should provide a way to
-   select one of the accessories in the account's inventory and combine it with another NFT that the account has
-   ownership of and display this composition as an image in the frontend (an accessory viewer). This allows a fun and
-   interactive way for users to view their NFTs. However, the resulting image may only be viewed on the Accessory Store
-   platform.
-2. Secondly, the user should have the option to mint a new ERC-721 NFT from an (accessory NFT + NFT) composition that
-   they created in the accessory viewer. This new NFT can be used outside of this platform, for example, as a PFP NFT on
-   supported platforms or metaverses. The NFT generation could require locking up the original NFT in the accessory
-   shop's smart contract in order to verify authenticity of the resulting composed NFT.
+Actions:
+1. __Fractionalize__: An **NFT owner** can __fractionalize__ their NFT by transferring the NFT to the contract. In
+  return the NFT owner receives the entire supply of a newly created ERC20 token that they specified at
+  fractionalization. The **NFT Owner** also sets an initial buyout price for the NFT at fractionalization.
+2. __Buyout__: A **buyer** can __buyout__ (__purchase__) the locked NFT by transferring (at least) the specified amount
+   of ETH to the contract. The NFT gets transferred to the **buyer's** account.
+3. __Claim__: Following a buyout, an **ERC20 token holder** can __claim__ their share of the **buyout** price received
+   from the **buyer** as determined by the proportion of the ERC20 token supply that they hold.
+4. __Update buyout price__: An **ERC20 token holder** can __update the buyout price__ weighted by the proportion of the
+ERC20 token supply that they hold.
+5. __Redeem__ The **holder of all ERC20 tokens** can __redeem__ the NFT by sending all of the the ERC20 tokens to the
+  contract; the NFT is transferred to the redeeming account. Redemption allows the holder of all the tokens to
+  "unfractionalize" the NFT. The most practical use case is that the original owner decided they no longer wanted to
+  fractionalize the NFT.
 
-
-## User Workflow
-
-The user:
-1. Connects their account using their wallet to the Pimp Shop frontend.
-2. Can select ERC-721 NFTs in their account and view them.
-3. Can view available templates for "accessory NFTs" (and optionally modify properties).
-4. Can mint "accessory NFTs".
-5. Prerequisite: Accessory NFT has been minted and are therefore available in the user account's inventory. The user
-   can create an image that is a composition of an accessory NFT and one of the other NFTs in their ownership. This
-   composition is displayed dynamically on the page.
-6. Can mint the resulting composition as a new NFT which can be used on other platforms, for example, as a PFP NFT.
