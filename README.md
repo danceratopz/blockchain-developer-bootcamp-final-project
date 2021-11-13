@@ -6,12 +6,13 @@
 
 It seems extremely likely that NFTs (non-fungible tokens) will become ubiquitous in many aspects of our digital (and
 physical) world in the mid to long-term future. As NFTs become more widely adopted, multiple parties may wish to share
-ownership of a single NFT. Splitting the ownership of NFTs is possible on smart programming platforms by locking the NFT
-in a contract in return for a specified quantity of tokens that each represent the partial ownership of the locked
+ownership of a single NFT. Dividing the ownership of NFTs is possible on smart programming platforms by locking the NFT
+in a contract in return for a specified quantity of tokens that each represent partial ownership of the locked
 NFT. These tokens may then be distributed to multiple accounts. This process is known as "fractionalization" of an
 NFT. The aim of this project is to implement a simple EVM-based dapp (decentralized application) that allows a user to
-fractionalize their ERC721 NFTs into ERC20 tokens. The most popular example of a dapp that implements this functionality
-is [fractional.art](https://fractional.art/).
+fractionalize their [ERC721](https://ethereum.org/en/developers/docs/standards/tokens/erc-721) NFTs into
+[ERC20](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/) tokens. The most popular example of a dapp
+that implements this functionality is [fractional.art](https://fractional.art/).
 
 ## Workflow: Contract Actions and Participants
 
