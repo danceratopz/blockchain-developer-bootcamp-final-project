@@ -2,6 +2,7 @@
 Python unit tests for FractionalizeNFT
 """
 import math
+
 import brownie.exceptions
 import pytest
 from brownie import Wei
@@ -71,10 +72,8 @@ class TestFractionalizeNFT:
 
     @pytest.fixture
     def erc20_contract(self, frac_nft_id, frac_contract, ERC20Factory, Contract):
-        tx = frac_contract.getERC20Address(frac_nft_id)
-        erc20_address = tx.return_value
-        tx = frac_contract.getERC20Symbol(frac_nft_id)
-        erc20_symbol = tx.return_value
+        erc20_address = frac_contract.getERC20Address(frac_nft_id)
+        erc20_symbol = frac_contract.getERC20Symbol(frac_nft_id)
         return Contract.from_abi(erc20_symbol, erc20_address, ERC20Factory.abi)
 
     # TODO: Implement reasonable test of receive function
