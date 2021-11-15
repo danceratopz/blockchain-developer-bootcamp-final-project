@@ -21,9 +21,9 @@ contract FractionalizeNFT is IERC721Receiver {
 
     struct FractionalizedNFT {
         uint256 nftTokenId;
+        address erc721Address;
         address erc20Address;
         string erc20Symbol;
-        ERC721 nft;
 	address payable originalOwner;
         uint256 buyoutPrice;
         State state;
@@ -68,8 +68,8 @@ contract FractionalizeNFT is IERC721Receiver {
         nft.safeTransferFrom(msg.sender, address(this), nftTokenId);
         ERC20 erc20 = (new ERC20Factory)(erc20Name, erc20Symbol, erc20Supply, msg.sender);
         fracNFTs[fracNFTCount] = FractionalizedNFT({
-            nft: nft,
             nftTokenId: nftTokenId,
+            erc721Address: address(nft),
             erc20Address: address(erc20),
             erc20Symbol: erc20Symbol,
             originalOwner: payable(msg.sender),
@@ -88,7 +88,8 @@ contract FractionalizeNFT is IERC721Receiver {
         uint256 erc20Supply = erc20.totalSupply();
         require(redeemerBalance == erc20Supply, "Redeemeer does not hold the entire supply.");
         erc20.transferFrom(msg.sender, address(this), redeemerBalance);
-        fracNFTs[fracNFTId].nft.safeTransferFrom(address(this), msg.sender, fracNFTs[fracNFTId].nftTokenId);
+        ERC721 erc721 = ERC721(fracNFTs[fracNFTId].erc721Address);
+        erc721.safeTransferFrom(address(this), msg.sender, fracNFTs[fracNFTId].nftTokenId);
         emit Redeemed(msg.sender, fracNFTId);
     }
 
@@ -96,7 +97,8 @@ contract FractionalizeNFT is IERC721Receiver {
         // A buyer can buy the NFT as specified by the buyout price by sending ETH to the contract.
         require(msg.value >= fracNFTs[fracNFTId].buyoutPrice, "Sender sent less than the buyout price.");
         fracNFTs[fracNFTId].state = State.BoughtOut;
-        fracNFTs[fracNFTId].nft.safeTransferFrom(address(this), msg.sender, fracNFTs[fracNFTId].nftTokenId);
+        ERC721 erc721 = ERC721(fracNFTs[fracNFTId].erc721Address);
+        erc721.safeTransferFrom(address(this), msg.sender, fracNFTs[fracNFTId].nftTokenId);
         emit BoughtOut(msg.sender, fracNFTId);
     }
 
