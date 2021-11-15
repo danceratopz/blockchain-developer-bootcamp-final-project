@@ -10,12 +10,10 @@ class App extends Component {
         web3: null,
         accounts: null,
         chainid: null,
-        vyperStorage: null,
-        vyperValue: 0,
-        vyperInput: 0,
-        solidityStorage: null,
-        solidityValue: 0,
-        solidityInput: 0,
+        fractionalizeNFT: null,
+        fracNFTId: null,
+        fracNFTCount: null,
+        owner: null,
     }
 
     componentDidMount = async () => {
@@ -54,7 +52,7 @@ class App extends Component {
             return
         }
         console.log(this.state.chainid)
-        
+
         var _chainID = 0;
         if (this.state.chainid === 42){
             _chainID = 42;
@@ -63,21 +61,18 @@ class App extends Component {
             _chainID = "dev"
         }
         console.log(_chainID)
-        const vyperStorage = await this.loadContract(_chainID,"VyperStorage")
-        const solidityStorage = await this.loadContract(_chainID,"SolidityStorage")
-
-        if (!vyperStorage || !solidityStorage) {
+        const fractionalizeNFT = await this.loadContract(_chainID, "FractionalizeNFT")
+        if (!fractionalizeNFT) {
             return
         }
 
-        const vyperValue = await vyperStorage.methods.get().call()
-        const solidityValue = await solidityStorage.methods.get().call()
-
+        const fracNFTCount = await fractionalizeNFT.methods.getFracNFTCount().call()
+        console.log(fracNFTCount)
+        const owner = await fractionalizeNFT.methods.owner().call()
         this.setState({
-            vyperStorage,
-            vyperValue,
-            solidityStorage,
-            solidityValue,
+            fractionalizeNFT: fractionalizeNFT,
+            fracNFTCount: fracNFTCount,
+            owner: owner,
         })
     }
 
@@ -106,43 +101,35 @@ class App extends Component {
         return new web3.eth.Contract(contractArtifact.abi, address)
     }
 
-    changeVyper = async (e) => {
-        const {accounts, vyperStorage, vyperInput} = this.state
-        e.preventDefault()
-        const value = parseInt(vyperInput)
-        if (isNaN(value)) {
-            alert("invalid value")
-            return
-        }
-        await vyperStorage.methods.set(value).send({from: accounts[0]})
-            .on('receipt', async () => {
-                this.setState({
-                    vyperValue: await vyperStorage.methods.get().call()
-                })
-            })
-    }
-
     changeSolidity = async (e) => {
-        const {accounts, solidityStorage, solidityInput} = this.state
+        const {web3, accounts, fractionalizeNFT, fracNFTId, fracNFTCount} = this.state
         e.preventDefault()
-        const value = parseInt(solidityInput)
-        if (isNaN(value)) {
+        const fracNFTId_input = parseInt(fracNFTId)
+        if (isNaN(fracNFTId_input)) {
             alert("invalid value")
             return
         }
-        await solidityStorage.methods.set(value).send({from: accounts[0]})
+        await fractionalizeNFT.methods.getFracNFTCount().call()
             .on('receipt', async () => {
                 this.setState({
-                    solidityValue: await solidityStorage.methods.get().call()
+                    fracNFT: fractionalizeNFT.methods.getFracNFT(fracNFTId_input).call()
                 })
             })
+        // await fractionalizeNFT.methods.buyout(fracNFTId_input).send({from: accounts[0], value: web3.utils.toWei("10", "ether")})
+        //     .on('receipt', async () => {
+        //         this.setState({
+        //             fracNFTId: 1  //await fractionalizeNFT.methods.getERC20Address(value).call()
+        //         })
+        //     })
     }
 
     render() {
         const {
             web3, accounts, chainid,
-            vyperStorage, vyperValue, vyperInput,
-            solidityStorage, solidityValue, solidityInput
+            fractionalizeNFT,
+            fracNFTId,
+            fracNFTCount,
+            owner,
         } = this.state
 
         if (!web3) {
@@ -154,18 +141,15 @@ class App extends Component {
             return <div>Wrong Network! Switch to your local RPC "Localhost: 8545" in your Web3 provider (e.g. Metamask)</div>
         }
 
-        if (!vyperStorage || !solidityStorage) {
+        //if (!vyperStorage || !solidityStorage) {
+        if (!fractionalizeNFT) {
             return <div>Could not find a deployed contract. Check console for details.</div>
         }
 
         const isAccountsUnlocked = accounts ? accounts.length > 0 : false
 
         return (<div className="App">
-            <h1>Your Brownie Mix is installed and ready.</h1>
-            <p>
-                If your contracts compiled and deployed successfully, you can see the current
-                storage values below.
-            </p>
+                <h1>Fractionalize NFT ({owner}, {accounts[0]})</h1>
             {
                 !isAccountsUnlocked ?
                     <p><strong>Connect with Metamask and refresh the page to
@@ -173,43 +157,25 @@ class App extends Component {
                     </p>
                     : null
             }
-            <h2>Vyper Storage Contract</h2>
 
-            <div>The stored value is: {vyperValue}</div>
-            <br/>
-            <form onSubmit={(e) => this.changeVyper(e)}>
-                <div>
-                    <label>Change the value to: </label>
-                    <br/>
-                    <input
-                        name="vyperInput"
-                        type="text"
-                        value={vyperInput}
-                        onChange={(e) => this.setState({vyperInput: e.target.value})}
-                    />
-                    <br/>
-                    <button type="submit" disabled={!isAccountsUnlocked}>Submit</button>
-                </div>
-            </form>
-
-            <h2>Solidity Storage Contract</h2>
-            <div>The stored value is: {solidityValue}</div>
-            <br/>
+            <h2>Claim Share following a Buyout </h2>
+            <div>Number of NFTs that have been fractionalized: {fracNFTCount}</div>
+                <br/>
             <form onSubmit={(e) => this.changeSolidity(e)}>
                 <div>
-                    <label>Change the value to: </label>
+                    <label>Select Fractionalized NFT Id: </label>
                     <br/>
                     <input
-                        name="solidityInput"
+                        name="fracNFTId"
                         type="text"
-                        value={solidityInput}
-                        onChange={(e) => this.setState({solidityInput: e.target.value})}
+                        value={fracNFTId}
+                        onChange={(e) => this.setState({fracNFTId: e.target.value})}
                     />
-                    <br/>
                     <button type="submit" disabled={!isAccountsUnlocked}>Submit</button>
 
                 </div>
-            </form>
+                </form>
+                // <div>Fractionalized NFT state: {}  </div>
         </div>)
     }
 }
