@@ -59,6 +59,10 @@ contract FractionalizeNFT is IERC721Receiver {
         return fracNFTs[fracNFTId].erc20Symbol;
     }
 
+    function getState(uint256 fracNFTId) public view returns (State) {
+        return fracNFTs[fracNFTId].state;
+    }
+
     function fractionalizeNft(address nftContractAddress,
                               uint256 nftTokenId,
                               string memory erc20Name,
