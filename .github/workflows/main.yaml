@@ -47,7 +47,12 @@ jobs:
       run: pip install -r requirements.txt
 
     - name: Run Tests
-      run: brownie test --gas --coverage
+      # Note we don't require any environment variables to run the tests with ganache, create
+      # empty .env to avoid brownie errors.
+      run: |
+        touch .env
+        brownie networks add Development development_empty_dotenv cmd=ganache-cli host="http://127.0.0.1" port=8545
+        brownie test --gas --coverage --network=development_empty_dotenv
 
     - name: Publish Unit Test Results (using test-reporter)
       # https://github.com/marketplace/actions/test-reporter#supported-formats
