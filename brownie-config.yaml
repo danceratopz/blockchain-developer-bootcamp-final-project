@@ -13,6 +13,11 @@ networks:
       default_balance: 100
     update_interval: 60
     verify: False
+  development_no_dotenv:
+    cmd_settings:
+      default_balance: 100
+    update_interval: 60
+    verify: False
 
 # enable output of development artifacts to load with react
 dev_deployment_artifacts: true
