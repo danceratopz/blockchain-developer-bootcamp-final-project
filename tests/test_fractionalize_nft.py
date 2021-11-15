@@ -62,7 +62,7 @@ class TestFractionalizeNFT:
     ):
         nft_contract.approve(frac_contract.address, nft_id, {"from": user_address})
         tx = frac_contract.fractionalizeNft(
-            nft_contract, nft_id, erc20_name, erc20_symbol, erc20_supply, buyout_price, {"from": user_address}
+            nft_contract.address, nft_id, erc20_name, erc20_symbol, erc20_supply, buyout_price, {"from": user_address}
         )
         return tx
 
