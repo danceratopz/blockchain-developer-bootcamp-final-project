@@ -101,14 +101,6 @@ class App extends Component {
         const {web3} = this.state
 
         const address = await this.getAddress( chain, contractName)
-        // // Get the address of the most recent deployment from the deployment map
-        // let address
-        // try {
-        //     address = map[chain][contractName][0]
-        // } catch (e) {
-        //     console.log(`Couldn't find any deployed contract "${contractName}" on the chain "${chain}".`)
-        //     return undefined
-        // }
 
         // Load the artifact with the specified address
         let contractArtifact
@@ -126,7 +118,6 @@ class App extends Component {
                accounts,
                fractionalizeNFT,
                fractionalizeNFTAddress,
-               fracNFTCount,
                nftContractAddress,
                nftTokenId,
               } = this.state
@@ -147,8 +138,6 @@ class App extends Component {
                accounts,
                fractionalizeNFT,
                fractionalizeNFTAddress,
-               fracNFTCount,
-               nftContractAddress,
                fracNFTId
               } = this.state
         e.preventDefault()
@@ -171,15 +160,12 @@ class App extends Component {
         const {web3,
                accounts,
                fractionalizeNFT,
-               fracNFTCount,
                nftContractAddress,
                nftTokenId,
                erc20Symbol,
                erc20Name,
                erc20Supply,
-               buyoutPrice,
-               fracButton
-              } = this.state
+               buyoutPrice              } = this.state
         e.preventDefault()
         const nftTokenId_i = parseInt(nftTokenId)
         const erc20Supply_i = parseInt(erc20Supply)
@@ -201,7 +187,6 @@ class App extends Component {
         const {web3,
                accounts,
                fractionalizeNFT,
-               fracNFTCount,
                nftFracId,
                buyoutPrice
               } = this.state
@@ -217,10 +202,8 @@ class App extends Component {
     }
 
     interactClaim = async (e) => {
-        const {web3,
-               accounts,
+        const {accounts,
                fractionalizeNFT,
-               fracNFTCount,
                fracNFTId
               } = this.state
         e.preventDefault()
@@ -234,10 +217,8 @@ class App extends Component {
 
 
     interactRedeem = async (e) => {
-        const {web3,
-               accounts,
+        const {accounts,
                fractionalizeNFT,
-               fracNFTCount,
                nftFracId,
               } = this.state
         e.preventDefault()
@@ -248,27 +229,6 @@ class App extends Component {
                 })
             })
     }
-    changeSolidity = async (e) => {
-        const {web3, accounts, fractionalizeNFT, fracNFTId, fracNFTCount} = this.state
-        e.preventDefault()
-        const fracNFTId_input = parseInt(fracNFTId)
-        if (isNaN(fracNFTId_input)) {
-            alert("invalid value")
-            return
-        }
-        await fractionalizeNFT.methods.getFracNFTCount().call()
-            .on('receipt', async () => {
-                this.setState({
-                    fracNFT: fractionalizeNFT.methods.getFracNFT(fracNFTId_input).call()
-                })
-            })
-        // await fractionalizeNFT.methods.buyout(fracNFTId_input).send({from: accounts[0], value: web3.utils.toWei("10", "ether")})
-        //     .on('receipt', async () => {
-        //         this.setState({
-        //             fracNFTId: 1  //await fractionalizeNFT.methods.getERC20Address(value).call()
-        //         })
-        //     })
-    }
 
     render() {
         const {
@@ -276,7 +236,6 @@ class App extends Component {
             fractionalizeNFT,
             fracNFTId,
             fracNFTCount,
-            owner,
             nftContractAddress,
             nftFracId,
             nftTokenId,
@@ -295,7 +254,6 @@ class App extends Component {
             return <div>Wrong Network! Switch to your local RPC "Localhost: 8545" in your Web3 provider (e.g. Metamask)</div>
         }
 
-        //if (!vyperStorage || !solidityStorage) {
         if (!fractionalizeNFT) {
             return <div>Could not find a deployed contract. Check console for details.</div>
         }
