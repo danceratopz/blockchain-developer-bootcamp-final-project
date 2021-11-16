@@ -1,6 +1,6 @@
 dotenv: .env
 project_structure:
-    build: client/src/artifacts
+  build: client/src/artifacts
 
 # automatically fetch contract sources from Etherscan
 autofetch_sources: True
@@ -23,7 +23,7 @@ networks:
 dev_deployment_artifacts: true
 
 dependencies:
-    - OpenZeppelin/openzeppelin-contracts@4.3.2
+  - OpenZeppelin/openzeppelin-contracts@4.3.2
 
 compiler:
   solc:
