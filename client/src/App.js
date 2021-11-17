@@ -14,7 +14,7 @@ class App extends Component {
         chainid: null,
         fractionalizeNFT: null,
         fractionalizeNFTAddress: null,
-        fracNFTId: null,
+        fracNFTId: 0,  // TODO
         fracNFTCount: null,
     }
 
@@ -92,7 +92,7 @@ class App extends Component {
 
     loadContract = async (chain, address) => {
         // Load a deployed contract instance into a web3 contract object
-        const {web3} = this.state        
+        const {web3} = this.state
         // Load the artifact with the specified address
         let contractArtifact
         try {
@@ -268,8 +268,6 @@ class App extends Component {
                 <p>Fractionalize an NFT</p>
             <form onSubmit={(e) => this.interactFractionalizeNft(e)}>
                 <div>
-                    <label></label>
-                    <br/>
                     <input
                         name="nftContractAddress"
                         placeholder="NFT contract address (string, 0x...)"
@@ -333,8 +331,6 @@ class App extends Component {
                 <p>Buy a fractionalized NFT and become its sole owner.</p>
                 <form onSubmit={(e) => this.interactBuyout(e)}>
                 <div>
-                    <label></label>
-                    <br/>
                     <input
                         name="nftFracId"
                         placeholder="Fractionalised NFT Index (integer)"
@@ -362,8 +358,6 @@ class App extends Component {
                 <p>Claim your share of the proceeds following the buyout of an NFT you own tokens for.</p>
                 <form onSubmit={(e) => this.interactClaim(e)}>
                 <div>
-                    <label></label>
-                    <br/>
                     <input
                         name="fracNFTId"
                         placeholder="Fractionalised NFT Index (integer)"
@@ -386,8 +380,6 @@ class App extends Component {
                 <p>If you hold the entire ERC20 supply of a fractionalized NFT, you can redeem it for the NFT.</p>
                 <form onSubmit={(e) => this.interactRedeem(e)}>
                 <div>
-                    <label></label>
-                    <br/>
                     <input
                         name="nftFracId"
                         placeholder="Fractionalised NFT Index (integer)"
