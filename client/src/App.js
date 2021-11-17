@@ -1,10 +1,10 @@
 import React, {Component} from "react"
 import './App.css'
 import {getWeb3} from "./getWeb3"
+import {getEthereum} from "./getEthereum"
 import map from "./artifacts/deployments/map.json"
 import Erc20Factory from "./artifacts/contracts/ERC20Factory.json"
 import TestNft from "./artifacts/contracts/TestNFT.json"
-import {getEthereum} from "./getEthereum"
 
 class App extends Component {
 
@@ -22,19 +22,17 @@ class App extends Component {
 
         // Get network provider and web3 instance.
         const web3 = await getWeb3()
-
+       
         // Try and enable accounts (connect metamask)
+        let accounts
         try {
-            const ethereum = await getEthereum()
-            ethereum.enable()
+            const ethereum = await getEthereum()            
+            accounts = await ethereum.request({ method: 'eth_requestAccounts' });
         } catch (e) {
             console.log(`Could not enable accounts. Interaction with contracts not available.
             Use a modern browser with a Web3 plugin to fix this issue.`)
             console.log(e)
         }
-
-        // Use web3 to get the user's accounts
-        const accounts = await web3.eth.getAccounts()
 
         // Get the current chain id
         const chainid = parseInt(await web3.eth.getChainId())
@@ -53,7 +51,7 @@ class App extends Component {
             // Wrong Network!
             return
         }
-        console.log(this.state.chainid)
+        console.log("Chain ID:", this.state.chainid)
 
         var _chainID = 0;
         if (this.state.chainid === 42){
@@ -62,7 +60,7 @@ class App extends Component {
         if (this.state.chainid === 1337){
             _chainID = "dev"
         }
-        console.log(_chainID)
+        console.log("Chain ID (parsed): " + _chainID)
         const fractionalizeNFTAddress = await this.getContractAddress(_chainID, "FractionalizeNFT")
         const fractionalizeNFT = await this.loadContract(_chainID, fractionalizeNFTAddress)
         if (!fractionalizeNFT) {
@@ -186,6 +184,7 @@ class App extends Component {
         await fractionalizeNFT.methods.buyout(nftFracId,
                                              ).send({"from": accounts[0], "value": buyoutPrice_wei})
             .on('receipt', async () => {
+                console.log('Buyout on receipt')
                 this.setState({
                     fracNFTCount: await fractionalizeNFT.methods.fracNFTCount().call()
                 })
@@ -252,7 +251,7 @@ class App extends Component {
         const isAccountsUnlocked = accounts ? accounts.length > 0 : false
 
         return (<div className="App">
-                
+
                 <h1>Fractionalize NFT</h1>
             {
                 !isAccountsUnlocked ?
