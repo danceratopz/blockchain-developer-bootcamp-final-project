@@ -16,7 +16,6 @@ class App extends Component {
         fractionalizeNFTAddress: null,
         fracNFTId: null,
         fracNFTCount: null,
-        owner: null,
     }
 
     componentDidMount = async () => {
@@ -64,27 +63,22 @@ class App extends Component {
             _chainID = "dev"
         }
         console.log(_chainID)
-        const fractionalizeNFTAddress = await this.getAddress(_chainID, "FractionalizeNFT")
-        const fractionalizeNFT = await this.loadContract(_chainID, "FractionalizeNFT")
+        const fractionalizeNFTAddress = await this.getContractAddress(_chainID, "FractionalizeNFT")
+        const fractionalizeNFT = await this.loadContract(_chainID, fractionalizeNFTAddress)
         if (!fractionalizeNFT) {
             return
         }
 
         const fracNFTCount = await fractionalizeNFT.methods.fracNFTCount().call()
         console.log(fracNFTCount)
-        const owner = await fractionalizeNFT.methods.owner().call()
         this.setState({
             fractionalizeNFT: fractionalizeNFT,
             fractionalizeNFTAddress: fractionalizeNFTAddress,
-            fracNFTCount: fracNFTCount,
-            owner: owner,
+            fracNFTCount: fracNFTCount
         })
     }
 
-    getAddress = async (chain, contractName) => {
-        // Load a deployed contract instance into a web3 contract object
-        const {web3} = this.state
-
+    getContractAddress = async (chain, contractName) => {
         // Get the address of the most recent deployment from the deployment map
         let address
         try {
@@ -96,12 +90,9 @@ class App extends Component {
         return address
     }
 
-    loadContract = async (chain, contractName) => {
+    loadContract = async (chain, address) => {
         // Load a deployed contract instance into a web3 contract object
-        const {web3} = this.state
-
-        const address = await this.getAddress( chain, contractName)
-
+        const {web3} = this.state        
         // Load the artifact with the specified address
         let contractArtifact
         try {
@@ -261,6 +252,7 @@ class App extends Component {
         const isAccountsUnlocked = accounts ? accounts.length > 0 : false
 
         return (<div className="App">
+                
                 <h1>Fractionalize NFT</h1>
             {
                 !isAccountsUnlocked ?
