@@ -1,5 +1,29 @@
+dotenv: .env
+project_structure:
+  build: client/src/artifacts
+
+# automatically fetch contract sources from Etherscan
+autofetch_sources: True
+
+networks:
+  default: development
+  development:
+    cmd_settings:
+      mnemonic: ${MNEMONIC}
+      default_balance: 100
+    update_interval: 60
+    verify: False
+  development_no_dotenv:
+    cmd_settings:
+      default_balance: 100
+    update_interval: 60
+    verify: False
+
+# enable output of development artifacts to load with react
+dev_deployment_artifacts: true
+
 dependencies:
-    - OpenZeppelin/openzeppelin-contracts@4.3.2
+  - OpenZeppelin/openzeppelin-contracts@4.3.2
 
 compiler:
   solc:
