@@ -8,6 +8,7 @@ import { injected } from '../connectors';
 import { shortenAddress } from '../utils/shortenAddress';
 import { useAppContext } from '../AppContext';
 import MMLogo from '../static/metamask-logo.svg';
+import { colors } from '../theme';
 
 const MetamaskLogo = styled.img.attrs({
   src: MMLogo,
@@ -16,7 +17,7 @@ const MetamaskLogo = styled.img.attrs({
 `;
 
 const ConnectBtn = styled.button`
-  border: 1px solid white;
+  border: 1px solid ${colors.blue};
   background: transparent;
   color: white;
   border-radius: 5px;
