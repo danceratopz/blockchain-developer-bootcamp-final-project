@@ -1,0 +1,191 @@
+{
+  "contracts": {
+    "ERC20Factory": "0a0f1e12702fd70efbd440c56d4c30fb0a53591a",
+    "FractionalizeNFT": "83df778d5266eef0f48880e32c3af0d30c252f01",
+    "OpenZeppelin/openzeppelin-contracts@4.3.2/Address": "1ce946f6a4eaa185320328620ccf999b9e86db7c",
+    "OpenZeppelin/openzeppelin-contracts@4.3.2/Counters": "1ce946f6a4eaa185320328620ccf999b9e86db7c",
+    "OpenZeppelin/openzeppelin-contracts@4.3.2/ERC20": "5c27d7156fdbfe889902cc167df697405a50ad20",
+    "OpenZeppelin/openzeppelin-contracts@4.3.2/ERC721": "33e1606cf1eeeaac7cee0118de12a874eaf258d7",
+    "OpenZeppelin/openzeppelin-contracts@4.3.2/Strings": "1ce946f6a4eaa185320328620ccf999b9e86db7c",
+    "TestNFT": "d7e4acf103af7680134635158bb3ece1f151aa3c"
+  },
+  "tests": {
+    "tests/test_erc20_factory.py": {
+      "coverage": true,
+      "isolated": [
+        "ERC20Factory",
+        "OpenZeppelin/openzeppelin-contracts@4.3.2/ERC20"
+      ],
+      "results": "....",
+      "sha1": "1896f9bdea8f694f00674a109af0848a664e19e1",
+      "txhash": [
+        "1b3e68d451c2172d3d4cc057307da26a7d52c043",
+        "1b5cd8a2eedb4cbfd4cfba47be0280d2c5b25f1e",
+        "33bbcfd689eea7b300ea0f71467e566f26ebf3ee",
+        "8997ec153ed741988aed7c054fe5ab1227ac6b6d",
+        "9166d1d6e691d4e4bfdabded7b62df2f0687fa6c",
+        "94cc83e3da8d88c6a59f840bc8ce5e53f839c750",
+        "ef0e1e042aa95b64c2b09966d3da565740e3af32"
+      ]
+    },
+    "tests/test_fractionalize_nft.py": {
+      "coverage": false,
+      "isolated": [
+        "ERC20Factory",
+        "FractionalizeNFT",
+        "OpenZeppelin/openzeppelin-contracts@4.3.2/Address",
+        "OpenZeppelin/openzeppelin-contracts@4.3.2/Counters",
+        "OpenZeppelin/openzeppelin-contracts@4.3.2/ERC20",
+        "OpenZeppelin/openzeppelin-contracts@4.3.2/ERC721",
+        "OpenZeppelin/openzeppelin-contracts@4.3.2/Strings",
+        "TestNFT"
+      ],
+      "results": "...x.........",
+      "sha1": "e1c50bdea0e7659c1f7b6747543fd4a1bfcff347",
+      "txhash": [
+        "59b563917a0449f209c66aa34b6975caac689b66"
+      ]
+    }
+  },
+  "tx": {
+    "1b3e68d451c2172d3d4cc057307da26a7d52c043": {
+      "ERC20Factory": {
+        "0": [
+          [
+            17,
+            22,
+            23,
+            24
+          ],
+          [
+            34
+          ],
+          [
+            32,
+            33
+          ]
+        ],
+        "12": [
+          [],
+          [],
+          []
+        ],
+        "8": [
+          [],
+          [],
+          []
+        ]
+      }
+    },
+    "1b5cd8a2eedb4cbfd4cfba47be0280d2c5b25f1e": {},
+    "33bbcfd689eea7b300ea0f71467e566f26ebf3ee": {
+      "ERC20Factory": {
+        "0": [
+          [
+            7,
+            17,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27
+          ],
+          [],
+          [
+            32,
+            33,
+            34
+          ]
+        ],
+        "12": [
+          [],
+          [],
+          []
+        ],
+        "8": [
+          [],
+          [],
+          []
+        ]
+      }
+    },
+    "59b563917a0449f209c66aa34b6975caac689b66": {
+      "FractionalizeNFT": {
+        "13": [
+          [
+            9
+          ],
+          [
+            25
+          ],
+          []
+        ]
+      }
+    },
+    "8997ec153ed741988aed7c054fe5ab1227ac6b6d": {
+      "ERC20Factory": {
+        "0": [
+          [
+            2
+          ],
+          [],
+          []
+        ],
+        "12": [
+          [],
+          [],
+          []
+        ]
+      }
+    },
+    "9166d1d6e691d4e4bfdabded7b62df2f0687fa6c": {
+      "ERC20Factory": {
+        "0": [
+          [
+            2
+          ],
+          [],
+          []
+        ],
+        "12": [
+          [],
+          [],
+          []
+        ]
+      }
+    },
+    "94cc83e3da8d88c6a59f840bc8ce5e53f839c750": {
+      "ERC20Factory": {
+        "0": [
+          [
+            0
+          ],
+          [],
+          []
+        ],
+        "12": [
+          [],
+          [],
+          []
+        ]
+      }
+    },
+    "ef0e1e042aa95b64c2b09966d3da565740e3af32": {
+      "ERC20Factory": {
+        "0": [
+          [
+            2
+          ],
+          [],
+          []
+        ],
+        "12": [
+          [],
+          [],
+          []
+        ]
+      }
+    }
+  }
+}
