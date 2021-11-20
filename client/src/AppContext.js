@@ -3,14 +3,12 @@ import React, { createContext, useReducer } from 'react';
 const initialContext = {
   ethBalance: '--',
   setEthBalance: () => {},
-  cTokenBalance: '--',
-  setCTokenBalance: () => {},
-  exchangeRate: 0,
-  setExchangeRate: () => {},
   isWalletConnectionModalOpen: false,
   setWalletConnectModal: () => {},
   txnStatus: 'NOT_SUBMITTED',
   setTxnStatus: () => {},
+  contentError: undefined,
+  setContentError: () => {},
 };
 
 const appReducer = (state, { type, payload }) => {
@@ -19,18 +17,6 @@ const appReducer = (state, { type, payload }) => {
       return {
         ...state,
         ethBalance: payload,
-      };
-
-    case 'SET_C_TOKEN_BALANCE':
-      return {
-        ...state,
-        cTokenBalance: payload,
-      };
-
-    case 'SET_EXCHANGE_RATE':
-      return {
-        ...state,
-        exchangeRate: payload,
       };
 
     case 'SET_WALLET_MODAL':
@@ -44,6 +30,13 @@ const appReducer = (state, { type, payload }) => {
         ...state,
         txnStatus: payload,
       };
+
+    case 'SET_CONTENT_ERROR':
+      return {
+        ...state,
+        contentError: payload,
+      };
+
     default:
       return state;
   }
@@ -59,14 +52,6 @@ export const AppContextProvider = ({ children }) => {
     setEthBalance: (balance) => {
       dispatch({ type: 'SET_ETH_BALANCE', payload: balance });
     },
-    cTokenBalance: store.cTokenBalance,
-    setCTokenBalance: (balance) => {
-      dispatch({ type: 'SET_C_TOKEN_BALANCE', payload: balance });
-    },
-    exchangeRate: store.exchangeRate,
-    setExchangeRate: (rate) => {
-      dispatch({ type: 'SET_EXCHANGE_RATE', payload: rate });
-    },
     isWalletConnectModalOpen: store.isWalletConnectModalOpen,
     setWalletConnectModal: (open) => {
       dispatch({ type: 'SET_WALLET_MODAL', payload: open });
@@ -74,6 +59,10 @@ export const AppContextProvider = ({ children }) => {
     txnStatus: store.txnStatus,
     setTxnStatus: (status) => {
       dispatch({ type: 'SET_TXN_STATUS', payload: status });
+    },
+    contentError: store.contentError,
+    setContentError: (str) => {
+      dispatch({ type: 'SET_CONTENT_ERROR', payload: str });
     },
   };
 

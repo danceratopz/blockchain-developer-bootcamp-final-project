@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import Text from '../../components/Text';
-import BalanceInput from '../../components/BalanceInput';
+//import BalanceInput from '../../components/BalanceInput';
 import Card from '../../components/Card';
 import Button from 'react-bootstrap/Button';
 import { colors } from '../../theme';
@@ -68,12 +68,10 @@ const CompInteractionCard = () => {
   return (
     <Container show>
       <Card style={{ maxWidth: 420, minHeight: 400 }}>
-        <Text block t2 color={colors.green} className="mb-3">
+        <Text block t2 color={colors.blue} className="mb-3">
           Deposit
         </Text>
-        <BalanceInput balance={ethBalance} value={depositAmount} setValue={setDepositAmount} currency="eth" />
-        <ArrowDown color={colors.green} size={36} style={{ margin: '1rem auto' }} />
-        <BalanceInput balance={cTokenBalance} value={convertedAmount} currency="cToken" title="To" />
+        <ArrowDown color={colors.blue} size={36} style={{ margin: '1rem auto' }} />
         <Button variant="outline-dark" disabled={depositAmount <= 0} className="mt-3" onClick={handleDepositSubmit}>
           Deposit {depositAmount} ETH
         </Button>

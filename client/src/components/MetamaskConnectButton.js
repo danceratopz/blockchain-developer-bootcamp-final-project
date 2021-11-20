@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
-import Button from 'react-bootstrap/Button';
-import { useWeb3React } from '@web3-react/core';
-import MMLogo from '../static/metamask-logo.svg';
+import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
 import Text from './Text';
-import Card from './Card';
+import { StyledHeaderBox } from './StyledHelpers';
 import { injected } from '../connectors';
 import { shortenAddress } from '../utils/shortenAddress';
+import { useAppContext } from '../AppContext';
+import MMLogo from '../static/metamask-logo.svg';
 
 const MetamaskLogo = styled.img.attrs({
   src: MMLogo,
@@ -14,31 +15,72 @@ const MetamaskLogo = styled.img.attrs({
   height: 40px;
 `;
 
-const ConnectBtn = styled(Button).attrs({ variant: 'outline-dark' })``;
+const ConnectBtn = styled.button`
+  border: 1px solid white;
+  background: transparent;
+  color: white;
+  border-radius: 5px;
+  margin-left: 10px;
+`;
+
+const pageState = {
+  LOADING: 'LOADING',
+  READY: 'READY',
+};
+
+const onLogOut = (deactivate, cb) => {
+  deactivate();
+  cb();
+};
 
 const MetamaskConnectButton = () => {
+  const history = useHistory();
+  const { setContentError } = useAppContext();
   const { activate, active, account, deactivate } = useWeb3React();
+  const [status, setStatus] = useState(pageState.LOADING);
 
-  if (active) {
+  useEffect(() => {
+    const tryActivate = async () => {
+      await activate(injected, () => {
+        setStatus(pageState.READY);
+      });
+      setStatus(pageState.READY);
+    };
+    tryActivate();
+  }, []);
+
+  if (status === pageState.LOADING) {
+    return <Text>Loading..</Text>;
+  }
+
+  if (status === pageState.READY && !active) {
     return (
-      <Card className="d-flex flex-row justify-content-between" style={{ width: 350 }}>
-        <MetamaskLogo />
-        <Text uppercase color="green" t3 lineHeight="40px" className="mx-4">
-          {shortenAddress(account)}
-        </Text>
-        <ConnectBtn onClick={deactivate}>Log Out</ConnectBtn>
-      </Card>
+      <ConnectBtn
+        onClick={() => {
+          if (!window.ethereum) {
+            setContentError("Looks like Metamask is not installed - please install it from https://metamask.io/download.html");
+            return;
+          }
+          activate(injected, (e) => {
+            if (e instanceof UnsupportedChainIdError) {
+              setContentError('Only Ropsten supported - please change to the Ropsten Test Network in Metamask.');
+            }
+          });
+        }}
+      >
+        Connect
+      </ConnectBtn>
     );
   }
 
   return (
-    <Card className="d-flex flex-row justify-content-between" style={{ width: 350 }}>
+    <StyledHeaderBox>
       <MetamaskLogo />
-      <Text uppercase color="green" t3 lineHeight="40px" className="mx-2">
-        Metamask
+      <Text uppercase color="white">
+        -> {shortenAddress(account)}
       </Text>
-      <ConnectBtn onClick={() => activate(injected)}>Connect</ConnectBtn>
-    </Card>
+      <ConnectBtn onClick={() => onLogOut(deactivate, () => history.push('/'))}>Log Out</ConnectBtn>
+    </StyledHeaderBox>
   );
 };
 
