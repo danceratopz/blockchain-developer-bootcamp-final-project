@@ -13,7 +13,7 @@ import { colors } from '../theme';
 const MetamaskLogo = styled.img.attrs({
   src: MMLogo,
 })`
-  height: 40px;
+  height: 25px;
 `;
 
 const ConnectBtn = styled.button`
@@ -77,10 +77,17 @@ const MetamaskConnectButton = () => {
   return (
     <StyledHeaderBox>
       <MetamaskLogo />
-      <Text uppercase color="white">
-        -> {shortenAddress(account)}
+      <Text
+        uppercase
+        color="white"
+        style={{ marginLeft: "10px", fontFamily: "Courier New" }}>
+        {shortenAddress(account)}
       </Text>
-      <ConnectBtn onClick={() => onLogOut(deactivate, () => history.push('/'))}>Log Out</ConnectBtn>
+      <ConnectBtn
+        style={{ fontFamily: "Source Sans Pro" }}
+        onClick={() => onLogOut(deactivate, () => history.push('/'))}>
+        Log Out
+      </ConnectBtn>
     </StyledHeaderBox>
   );
 };

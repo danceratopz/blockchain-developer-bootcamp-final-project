@@ -46,7 +46,7 @@ const getTransform = (p) => {
 };
 
 const Text = styled.span`
-  font-family: ${(p) => p.fontFamily || 'Noto Sans'};
+  font-family: ${(p) => p.fontFamily || 'Source Sans Pro'};
   text-decoration: ${(p) => (p.underline ? 'underline' : '')};
   text-transform: ${getTransform};
   cursor: ${(p) => (p.pointer ? 'pointer' : '')};
@@ -61,6 +61,7 @@ const Text = styled.span`
   white-space: ${(p) => (p.ellipsis ? 'nowrap' : '')};
   line-height: ${getLineHeight};
   opacity: ${(p) => p.opacity || 1};
+  margin: 5px;
 `;
 
 export default Text;

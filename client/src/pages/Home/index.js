@@ -2,13 +2,13 @@ import React from 'react';
 import { Container } from 'react-bootstrap';
 import { useWeb3React } from '@web3-react/core';
 import Text from '../../components/Text';
-// import Listings from '../../components/Listings';
-// import { useRentals } from '../../hooks/useRentals';
+import FractionalizeNft from '../../components/FractionalizeNft';
+import { useFractionalizeNft } from '../../hooks/useFractionalizeNft';
 import { colors } from '../../theme';
 
 const Home = () => {
   const { active } = useWeb3React();
-  // const { rentalsAddress } = useRentals();
+  const { fractionalizeNftAddress } = useFractionalizeNft();
 
   const NotActive = () => {
     return (
@@ -28,11 +28,11 @@ const Home = () => {
 
   return (
     <Container className="mt-5 d-flex flex-column justify-content-center align-items-center">
-      <Text center t1 style={{ marginBottom: '20px' }}>
-        Fractionalize an NFT
-      </Text>
-      <br/>
       {!active && <NotActive />}
+      {fractionalizeNftAddress && <FractionalizeNft fractionalizeNftAddress={fractionalizeNftAddress} />}
+      <Text center t2>
+        <a href="#buyout">Buyout</a> - <a href="#claim">Claim</a> - <a href="#redeem">Redeem</a>
+      </Text>
     </Container>
   );
 };

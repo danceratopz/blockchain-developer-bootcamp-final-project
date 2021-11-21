@@ -3,6 +3,7 @@ import { colors } from '../theme';
 
 export const StyledHeaderBox = styled.div`
   display: flex;
+  background: #1f1f1f;
   justify-content: center;
   align-items: center;
   margin-top: 1%;
