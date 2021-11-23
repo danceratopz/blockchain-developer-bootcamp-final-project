@@ -3,7 +3,7 @@ name: Build
 # NOTE: Initially created using the brownie github-actions-mix:
 # https://github.com/brownie-mix/github-actions-mix
 
-on: ["push", "pull_request"]
+on: push
 
 env:
   # ETHERSCAN_TOKEN:
