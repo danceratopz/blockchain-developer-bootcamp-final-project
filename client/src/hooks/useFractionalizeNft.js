@@ -10,7 +10,7 @@ export function useFractionalizeNft() {
     if (chainId) {
       //setFractionalizeNftAddress(fractionalizeNftContract.networks[chainId]?.address);
       // TODO!
-      setFractionalizeNftAddress("0xf976B3EADa13DcE4a20a37bd2A7427A9ba38EEc2");
+      setFractionalizeNftAddress("0x60942c0623CCdAd1441aCe477c21E5fFb93A4D38");
     }
   }, [chainId]);
 

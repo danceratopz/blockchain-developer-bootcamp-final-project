@@ -78,9 +78,8 @@ const MetamaskConnectButton = () => {
     <StyledHeaderBox>
       <MetamaskLogo />
       <Text
-        uppercase
         color="white"
-        style={{ marginLeft: "10px", fontFamily: "Courier New" }}>
+        style={{ marginLeft: "12px", fontFamily: "Source Code Pro"}}>
         {shortenAddress(account)}
       </Text>
       <ConnectBtn

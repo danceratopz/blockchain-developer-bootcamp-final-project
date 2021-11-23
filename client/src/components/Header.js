@@ -3,8 +3,9 @@ import styled from 'styled-components';
 import { Container } from 'react-bootstrap';
 import Navbar from 'react-bootstrap/Navbar';
 import { useAppContext } from '../AppContext';
-import MetamaskConnectButton from './MetamaskConnectButton';
 import BalancesCard from './BalancesCard';
+import Navigation from './Navigation';
+import MetamaskConnectButton from './MetamaskConnectButton';
 import Text from './Text';
 
 const StyledContainer = styled(Container)`
@@ -40,6 +41,7 @@ const Header = () => {
       <GlobalError />
       <Navbar className="justify-content-between">
         <BalancesCard />
+        <Navigation />
         <MetamaskConnectButton />
       </Navbar>
     </>

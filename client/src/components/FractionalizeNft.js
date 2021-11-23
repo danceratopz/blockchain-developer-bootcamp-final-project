@@ -60,7 +60,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
   const [mmError, setMmError] = useState(null);
   const [pageError, setPageError] = useState(null);
   const [txHash, setTxHash] = useState(null);
-  const [nftContractAddress, setNftContractAddress] = useState("0x21F54a78f2A027Fdb0C921c13b7b628af95f4243")
+  const [nftContractAddress, setNftContractAddress] = useState("0x3f4d004805BcfB46b225b37f5900F1291b227716")
   const [nftTokenIndex, setNftTokenIndex] = useState("")
   const [erc20Name, setErc20Name] = useState("")
   const [erc20Symbol, setErc20Symbol] = useState("")
@@ -88,8 +88,8 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
     } catch (e) {
       console.log(e)
       setStatus(InteractionState.ERROR);
-      if (e.code && typeof e.code === 'number') {
-        setMmError("Error calling fractionalizeNFT() - " + e.message + ": " + e.data.message);
+        if (e.code && typeof e.code === 'number') {
+            setMmError("Error calling fractionalizeNFT() - " + e.message)
       } else {
         setPageError(e)
       }
@@ -116,34 +116,33 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
       console.log(e)
       setStatus(InteractionState.ERROR);
       if (e.code && typeof e.code === 'number') {
-        setMmError("Error calling fractionalizeNFT() - " + e.message + ": " + e.data.message);
+        setMmError("Error calling fractionalizeNFT() - " + e.message) // + ": " + e.data.message);
       }
     }
   };
 
+  // TODO: Return to about?
   if (!active) return <Redirect to="/" />;
 
   const { LOADING, WAITING, READY, APPROVED, FRACTIONALIZED, ERROR } = InteractionState;
 
-  if (!active) {
-    return null;
-  }
+  if (!active) return;
 
   return (
     <Container className="mt-5 d-flex flex-column justify-content-center align-items-center">
-      {(status === READY || 
+      {(status === READY ||
         status === APPROVED) && (
       <FractFieldset>
         <legend style={{ float: "left" }}>
           Fractionalize NFT
         </legend>
-        <Text>
-          Fractionalize an NFT into an ERC20 token - the fractionalizing account receives the total supply.
+        <Text style={{ display: "inline-block" }}>
+          Fractionalize an ERC721 NFT into an ERC20 token - the fractionalizing account receives the total supply.
         </Text>
         <FractFieldset>
           <legend style={{ float: "left" }}>
             Approve</legend>
-          <Text>
+        <Text style={{ display: "inline-block" }}>
             Approve the FractionalizeNFT contract to take ownership of the NFT.
           </Text>
           <br />
@@ -175,11 +174,9 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
           <legend style={{ float: "left" }}>
             Fractionalize
           </legend>
-          <Text>
+          <Text style={{ display: "inline-block" }}>
             Specify the parameters of the ERC20 token that will represent partial ownership of the NFT.
-          </Text>
-          <br />
-          <Text>
+            <br />
             The buyout price specifies the price at which the NFT may be bought from the contract by a third party.
           </Text>
           <form>

@@ -21,9 +21,7 @@ const BalanceCard = () => {
 
   return (
     <StyledHeaderBox>
-      <Text block color={colors.white}>
         Balance: {ethBalance} ETH
-      </Text>
     </StyledHeaderBox>
   );
 };

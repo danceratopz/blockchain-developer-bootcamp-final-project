@@ -1,11 +1,14 @@
 import React from 'react';
 import { Web3ReactProvider } from '@web3-react/core';
+import { Route } from 'react-router-dom';
 import { ethers } from 'ethers';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Route } from 'react-router-dom';
 import './styles/App.css';
-import Home from './pages/Home';
 import Header from './components/Header';
+import Home from './pages/Home';
+import Redeem from './pages/Redeem';
+import Buyout from './pages/Buyout';
+import Payout from './pages/Payout';
 import { AppContextProvider } from './AppContext';
 
 function getLibrary(provider) {
@@ -23,6 +26,9 @@ const App = () => {
         <div>
           <Header />
           <Route exact path="/" component={Home} />
+          <Route exact path="/redeem" component={Redeem} />
+          <Route exact path="/buyout" component={Buyout} />
+          <Route exact path="/payout" component={Payout} />
         </div>
       </Web3ReactProvider>
     </AppContextProvider>
