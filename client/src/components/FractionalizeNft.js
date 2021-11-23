@@ -11,6 +11,7 @@ import { Contract } from '@ethersproject/contracts';
 import { ethers } from "ethers";
 import { shortenAddress } from '../utils/shortenAddress';
 import { colors } from '../theme';
+import { ConnectBtn, FractFieldset, Legend, FractInput } from './StyledHelpers';
 
 import fractionalizeNftContract from '../artifacts/contracts/FractionalizeNFT.json';
 import exampleErc721Contract from '../artifacts/contracts/TestNFT.json';
@@ -18,33 +19,6 @@ import exampleErc721Contract from '../artifacts/contracts/TestNFT.json';
 const CONFIRMATION_COUNT = 2;
 
 const BuyButton = styled(Button).attrs({ variant: 'outline-success' })
-
-const ConnectBtn = styled.button`
-  border: 1px solid ${colors.blue};
-  background: transparent;
-  color: white;
-  border-radius: 5px;
-  margin: 5px;
-`;
-
-const FractInput = styled.input`
-  border: 1px solid ${colors.blue};
-  background: ${colors.blue};
-  width: 250px
-  color: white;
-  border-radius: 5px;
-  margin: 5px;
-`;
-
-const FractFieldset = styled.fieldset`
-  border: 1px solid ${colors.blue};
-  background: #1f1f1f;
-  color: white;
-  border-radius: 10px;
-  padding: 10px;
-  margin: 5px;
-`;
-//const InputBox =
 
 const InteractionState = {
   LOADING: 'LOADING',

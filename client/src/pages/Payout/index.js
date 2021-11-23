@@ -20,8 +20,8 @@ const Payout = () => {
             Claim a Payout
           </Legend>
           <Text display="block">
-            Following a buyout of a fractionalized NFT, an account that holds any of the corresponding ERC20 tokens can
-            use this page to claim their payout from the sale proceedings.
+            Following a buyout of a fractionalized NFT, an account that holds corresponding ERC20 tokens can
+            claim their payout from the sale proceedings.
           </Text>
           {fractionalizeNftAddress && <Listings fractionalizeNftAddress={fractionalizeNftAddress} fracNftState={2} action="payout" />}
         </FractFieldset>)}

@@ -1,13 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components';
-import { Button, Spinner } from 'react-bootstrap';
+import { Button, Container, Spinner } from 'react-bootstrap';
 import { useWeb3React } from '@web3-react/core';
 import { BigNumber, Contract } from 'ethers';
 import { formatEther } from '@ethersproject/units';
-import Text from './Text';
 import { useContract } from '../hooks/useContract';
 import { shortenAddress } from '../utils/shortenAddress';
+import Text from './Text';
+import styled from 'styled-components';
+import { FractFieldset, NoFractFieldset, Legend, ConnectBtn } from './StyledHelpers';
 import { colors } from '../theme';
 
 import fractionalizeNftContract from '../artifacts/contracts/FractionalizeNFT.json';
@@ -51,31 +52,22 @@ const StyledItemTextContainer = styled.div`
 
 const BuyButton = styled(Button).attrs({ variant: 'outline-success' })
 
-const ConnectBtn = styled.button`
-  border: 1px solid ${colors.blue};
-  background: transparent;
-  color: white;
-  border-radius: 5px;
-  margin: 5px;
-`;
+const NoListings = ({ message }) => {
+  return (
+    <StyledDiv>
+      <NoFractFieldset>
+        <Text color={colors.secondary} text-align="center">
+          {message}
+        </Text>
+      </NoFractFieldset>
+    </StyledDiv>
+  );
+};
 
-const FractInput = styled.input`
-  border: 1px solid ${colors.blue};
-  background: ${colors.blue};
-  width: 250px
-  color: white;
-  border-radius: 5px;
-  margin: 5px;
-`;
-
-const FractFieldset = styled.fieldset`
-  border: 1px solid ${colors.blue};
-  background: #1f1f1f;
-  color: white;
-  border-radius: 10px;
-  padding: 10px;
-  margin: 5px;
-`;
+const StyledAddress = ({ account }) => {
+  const _account = account;
+  return (<span style={{ fontFamily: "Courier New" }}>{shortenAddress(_account)}</span>);
+};
 
 const FilteredListing = ({ fractionalizeNftAddress, listings, fracNftState, action }) => {
   const filtered = listings.filter((l) => l.state === fracNftState);
@@ -84,24 +76,12 @@ const FilteredListing = ({ fractionalizeNftAddress, listings, fracNftState, acti
   const _action = action
 
   if (filtered.length < 1) {
-    if (fracNftState === "buyout") {
-      return (
-        <Text style={{ display: "inline-block" }} color="red" center>
-          There are currently no fractionalized NFTs in the contract to buy.
-        </Text>
-      );
-    } else if (fracNftState === "redeem") {
-      return (
-        <Text style={{ display: "inline-block" }} color="red" text-align="center">
-          No redemptions are available for the account <span style={{ fontFamily: "Courier New" }}>{shortenAddress(account)}</span>.
-        </Text>
-      );
-    } else if (fracNftState == "payout") {
-      return (
-        <Text style={{ display: "inline-block" }} color="red" text-align="center">
-          No payouts are available for the account <span style={{ fontFamily: "Courier New" }}>{shortenAddress(account)}</span>.
-        </Text>
-      );
+    if (action === "buyout") {
+      return (<NoListings message={"There are currently no fractionalized NFTs in the contract to buy."} />);
+    } else if (action === "redeem") {
+      return (<NoListings message={["No redemptions are available for the account ", <StyledAddress account={account} />]} />);
+    } else if (action == "payout") {
+      return (<NoListings message={["No payouts are available for the account ", <StyledAddress account={account} />]} />);
     }
   }
 

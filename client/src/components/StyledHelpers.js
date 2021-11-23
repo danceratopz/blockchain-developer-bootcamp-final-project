@@ -22,6 +22,33 @@ export const FractFieldset = styled.fieldset`
   margin: 5px;
 `;
 
+export const NoFractFieldset = styled.fieldset`
+  border: 1px solid ${colors.secondary};
+  background: #1f1f1f;
+  color: white;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 15px;
+  margin-top: 20px;
+`;
+
 export const Legend = styled.legend`
   float: left;
-`
+`;
+
+export const FractInput = styled.input`
+  border: 1px solid ${colors.blue};
+  background: ${colors.blue};
+  width: 250px
+  color: white;
+  border-radius: 5px;
+  margin: 5px;
+`;
+
+export const ConnectBtn = styled.button`
+  border: 1px solid ${colors.blue};
+  background: transparent;
+  color: white;
+  border-radius: 5px;
+  margin: 5px;
+`;
