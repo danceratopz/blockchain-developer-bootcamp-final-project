@@ -13,3 +13,4 @@ public/static
 .env.production.local
 .idea
 cache
+src/artifacts
