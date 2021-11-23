@@ -2,6 +2,7 @@ import React from 'react';
 import { Container } from 'react-bootstrap';
 import { useWeb3React } from '@web3-react/core';
 import { useFractionalizeNft } from '../../hooks/useFractionalizeNft';
+import FractionalizeNft from '../../components/FractionalizeNft';
 import NotActive from '../../components/NotActive';
 
 const Home = () => {
