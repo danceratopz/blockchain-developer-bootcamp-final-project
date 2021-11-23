@@ -14,16 +14,18 @@ contract FractionalizeNFT is IERC721Receiver {
 
     address public owner = msg.sender;
 
-    mapping (uint => FractionalizedNFT) private fracNFTs;
+    mapping (uint => FractionalizedNFT) public fracNFTs;
     uint256 public fracNFTCount = 0;
 
     //    mapping (address => uint256) userFracNFTs;
 
     struct FractionalizedNFT {
+        uint256 fracNFTId;
         uint256 nftTokenId;
         address erc721Address;
         address erc20Address;
         string erc20Symbol;
+        string erc20Name;
 	address payable originalOwner;
         uint256 buyoutPrice;
         State state;
@@ -41,6 +43,14 @@ contract FractionalizeNFT is IERC721Receiver {
     event Redeemed(address, uint);
     event BoughtOut(address, uint);
     event Claimed(address, uint);
+
+    /// @notice List of all property ids.
+    /// @dev Used as a helper when iterating available properties in frontend client.
+    uint[] public idList;
+
+    /// @notice idList length.
+    /// @dev Used as a helper when iterating available properties in frontend client.
+    uint public idListLength;
 
     // https://blog.soliditylang.org/2020/03/26/fallback-receive-split/
     receive() external payable {
@@ -72,15 +82,19 @@ contract FractionalizeNFT is IERC721Receiver {
         ERC721 nft = ERC721(nftContractAddress);
         nft.safeTransferFrom(msg.sender, address(this), nftTokenId);
         ERC20 erc20 = (new ERC20Factory)(erc20Name, erc20Symbol, erc20Supply, msg.sender);
+        uint256 fracNFTId = fracNFTCount;
         fracNFTs[fracNFTCount] = FractionalizedNFT({
+            fracNFTId: fracNFTId,
             nftTokenId: nftTokenId,
             erc721Address: nftContractAddress,
             erc20Address: address(erc20),
             erc20Symbol: erc20Symbol,
+            erc20Name: erc20Name,
             originalOwner: payable(msg.sender),
             buyoutPrice: buyoutPrice,
             state: State.Fractionalized});
-        uint256 fracNFTId = fracNFTCount;
+        idList.push(fracNFTCount);
+        idListLength = idList.length;
         fracNFTCount += 1;
         emit Fractionalized(msg.sender, fracNFTId);
         return fracNFTId;
