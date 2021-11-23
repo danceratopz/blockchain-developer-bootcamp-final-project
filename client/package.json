@@ -1,7 +1,7 @@
 {
-  "name": "consensys-hackathon-build-a-dapp",
+  "name": "fractionalize-nft",
   "version": "1.0.0",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "scripts": {
     "start": "razzle start",
     "build": "razzle build --noninteractive "
