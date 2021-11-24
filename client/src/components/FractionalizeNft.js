@@ -129,15 +129,16 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
             onChange={(e) => setNftContractAddress(e.target.value)}
           />
           <FractInput
-            style={{ width: "120px" }}
+            style={ nftTokenIndex < 0 ? {width: "120px", border: "1px solid " + colors.red} : {width: "120px"}}
             name="nftTokenIndex"
             placeholder="Token Index (int)"
             type="text"
             value={nftTokenIndex}
             onChange={(e) => setNftTokenIndex(e.target.value)}
           />
-          <ConnectBtn
-            style={{ width: "200px" }}
+            <ConnectBtn
+              style={ nftTokenIndex < 1 ? {border: "1px solid " + colors.red} : {}}
+            disabled={ nftTokenIndex < 1 }
             onClick={onApproveNftClick}
             type="submit"
             name="approveNft">
@@ -188,8 +189,9 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
                 value={buyoutPrice}
                 onChange={(e) => setBuyoutPrice(e.target.value)}
               />
-              <ConnectBtn
-                style={{ width: "200px" }}
+            <ConnectBtn
+               style={ erc20Name.length === 0 || erc20Symbol.length === 0 || erc20Supply < 1 || buyoutPrice <= 0 ? {width: "200px", border: "1px solid " + colors.red} : {width: "200px"} }
+                disabled={ erc20Name.length === 0 || erc20Symbol.length === 0 || erc20Supply < 1 || buyoutPrice <= 0 }
                 onClick={onFractionalizeNftClick}
                 type="submit"
                 name="fractionalize">
@@ -228,7 +230,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
       {status === ERROR && (
         <>
           <Text style={{ marginTop: '20px', marginBottom: '20px' }} color={colors.red}>
-          {mmError || 'Error encountered!'}
+          {mmError || 'error encountered! Please reload.'}
           </Text>
         </>
       )}
