@@ -29,6 +29,18 @@ const InteractionState = {
   ERROR: 'ERROR',
 };
 
+function isPositiveFloat(str) {
+  // see https://stackoverflow.com/a/10834843
+  var n = Number(str);
+  return n !== Infinity && String(n) === str && n >= 0;
+}
+
+function isPositiveInteger(str) {
+  // see https://stackoverflow.com/a/10834843
+  var n = Math.floor(Number(str));
+  return n !== Infinity && String(n) === str && n >= 0;
+}
+
 const FractionalizeNft = ({ fractionalizeNftAddress }) => {
   const [status, setStatus] = useState(InteractionState.READY);
   const [mmError, setMmError] = useState(null);
@@ -45,9 +57,10 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
   const contract = useContract(fractionalizeNftAddress, fractionalizeNftContract.abi);
 
   const onApproveNftClick = async () => {
+    setStatus(InteractionState.LOADING);
     console.log("onApproveNftClick")
     try {
-      setStatus(InteractionState.LOADING);
+      setStatus(InteractionState.WAITING);
       const signerOrProvider = account ? library.getSigner(account).connectUnchecked() : library;
       const nftContract = new Contract(nftContractAddress, exampleErc721Contract.abi, signerOrProvider);
       const transaction = await nftContract.approve(
@@ -62,18 +75,25 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
     } catch (e) {
       console.log(e)
       setStatus(InteractionState.ERROR);
-        if (e.code && typeof e.code === 'number') {
-            setMmError("Error calling fractionalizeNFT() - " + e.message)
-      } else {
-        setPageError(e)
+      if (e.code && typeof e.code === 'number') {
+        let message
+        if ( e.hasOwnProperty('data') && e.data.hasOwnProperty('message')) {
+          message = "Error calling fractionalizeNFT() - " + e.message + ": " + e.data.message
+        } else {
+          message = "Error calling fractionalizeNFT() - " + e.message
+        }
+        setMmError(message)
+      } else if (e.hasOwnProperty('message')) {
+        setMmError(e.message)
       }
     }
   }
 
   const onFractionalizeNftClick = async () => {
+    setStatus(InteractionState.LOADING);
     console.log("onFractionalizeNftClick")
     try {
-      setStatus(InteractionState.LOADING);
+      setStatus(InteractionState.WAITING);
       const transaction = await contract.fractionalizeNft(
         nftContractAddress,
         nftTokenIndex,
@@ -90,7 +110,15 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
       console.log(e)
       setStatus(InteractionState.ERROR);
       if (e.code && typeof e.code === 'number') {
-        setMmError("Error calling fractionalizeNFT() - " + e.message) // + ": " + e.data.message);
+        let message
+        if ( e.hasOwnProperty('data') && e.data.hasOwnProperty('message')) {
+          message = "Error calling fractionalizeNFT() - " + e.message + ": " + e.data.message
+        } else {
+          message = "Error calling fractionalizeNFT() - " + e.message
+        }
+        setMmError(message)
+      } else if (e.hasOwnProperty('message')) {
+        setMmError(e.message)
       }
     }
   };
@@ -102,10 +130,14 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
 
   if (!active) return;
 
+  // TODO: Why does main fieldset triggers a page reload if status is WAITING?
   return (
     <Container className="mt-5 d-flex flex-column justify-content-center align-items-center">
       {(status === READY ||
-        status === APPROVED) && (
+        status === APPROVED ||
+        status === FRACTIONALIZED ||
+        status === LOADING ||
+        status === ERROR) && (
       <FractFieldset>
         <legend style={{ float: "left" }}>
           Fractionalize NFT
@@ -120,8 +152,8 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
             Approve the FractionalizeNFT contract to take ownership of the NFT.
           </Text>
           <br />
-          <FractInput
-            style={{ width: "410px" }}
+            <FractInput
+            style={ nftContractAddress.length != 42 ? {width: "410px", border: "1px solid " + colors.red} : {width: "410px"}}
             name="nftContractAddress"
             placeholder="NFT contract address (string, 0x...)"
             type="text"
@@ -129,21 +161,43 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
             onChange={(e) => setNftContractAddress(e.target.value)}
           />
           <FractInput
-            style={ nftTokenIndex < 0 ? {width: "120px", border: "1px solid " + colors.red} : {width: "120px"}}
+            style={ !isPositiveInteger(nftTokenIndex) ? {width: "120px", border: "1px solid " + colors.red} : {width: "120px"}}
             name="nftTokenIndex"
             placeholder="Token Index (int)"
             type="text"
             value={nftTokenIndex}
             onChange={(e) => setNftTokenIndex(e.target.value)}
-          />
-            <ConnectBtn
-              style={ nftTokenIndex < 1 ? {border: "1px solid " + colors.red} : {}}
-            disabled={ nftTokenIndex < 1 }
-            onClick={onApproveNftClick}
-            type="submit"
-            name="approveNft">
-            Approve
-          </ConnectBtn>
+            />
+            {(status != APPROVED && status != ERROR) && (
+              <ConnectBtn
+              style={ !isPositiveInteger(nftTokenIndex) ? {border: "1px solid white", width: "200px"} : {width: "200px"}}
+               disabled={ !isPositiveInteger(nftTokenIndex) }
+               onClick={onApproveNftClick}
+               type="submit"
+               name="approveNft">
+               Approve
+              </ConnectBtn>)}
+          {(status === ERROR) && (
+            <>
+              <ConnectBtn
+              style={ !isPositiveInteger(nftTokenIndex) ? {border: "1px solid white", width: "200px"} : {border: "1px solid " + colors.red, width: "200px"}}
+              disabled={ !isPositiveInteger(nftTokenIndex) }
+               onClick={onApproveNftClick}
+               type="submit"
+               name="approveNft">
+                Approve
+              </ConnectBtn>
+              <Text>(see error below)</Text>
+            </>)}
+             {(status === APPROVED && txHash ) && (
+               <ConnectBtn
+               style={{border: "1px solid " + colors.green, width: "200px"}}
+                    disabled="1"
+                    type="submit"
+                    name="buyNft">
+                    <Link to={{ pathname: `https://ropsten.etherscan.io/tx/${txHash}` }} target="_blank">{shortenAddress(txHash)}</Link>
+                  </ConnectBtn>)}
+
         </FractFieldset>
         <FractFieldset>
           <legend style={{ float: "left" }}>
@@ -157,7 +211,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
           <form>
             <div>
               <FractInput
-                style={{ width: "265px" }}
+                style={ erc20Name.length === 0 ? {width: "265px", border: "1px solid " + colors.red} : {width: "265px"}}
                 name="erc20Name"
                 placeholder="ERC Token Name (string)"
                 type="text"
@@ -165,7 +219,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
                 onChange={(e) => setErc20Name(e.target.value)}
               />
               <FractInput
-                style={{ width: "265px" }}
+                style={ erc20Symbol.length === 0 ? {width: "265px", border: "1px solid " + colors.red} : {width: "265px"}}
                 name="erc20Symbol"
                 placeholder="ERC Token Symbol (string)"
                 type="text"
@@ -174,15 +228,15 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
               />
               <br />
               <FractInput
-                style={{ width: "265px" }}
+                style={ !isPositiveInteger(erc20Supply) ? {width: "265px", border: "1px solid " + colors.red} : {width: "265px"}}
                 name="erc20Supply"
                 placeholder="ERC Token Supply (int)"
                 type="text"
                 value={erc20Supply}
                 onChange={(e) => setErc20Supply(e.target.value)}
               />
-              <FractInput
-                style={{ width: "265px" }}
+            <FractInput
+                style={ !isPositiveFloat(buyoutPrice) ? {width: "265px", border: "1px solid " + colors.red} : {width: "265px"}}
                 name="buyoutPrice"
                 placeholder="Buyout Price (Ether)"
                 type="text"
@@ -190,8 +244,8 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
                 onChange={(e) => setBuyoutPrice(e.target.value)}
               />
             <ConnectBtn
-               style={ erc20Name.length === 0 || erc20Symbol.length === 0 || erc20Supply < 1 || buyoutPrice <= 0 ? {width: "200px", border: "1px solid " + colors.red} : {width: "200px"} }
-                disabled={ erc20Name.length === 0 || erc20Symbol.length === 0 || erc20Supply < 1 || buyoutPrice <= 0 }
+               style={ erc20Name.length === 0 || erc20Symbol.length === 0 || !isPositiveInteger(erc20Supply) || !isPositiveFloat(buyoutPrice) ? {width: "200px", border: "1px solid white" } : {width: "200px"} }
+                disabled={ erc20Name.length === 0 || erc20Symbol.length === 0 || !isPositiveInteger(erc20Supply) || !isPositiveFloat(buyoutPrice) }
                 onClick={onFractionalizeNftClick}
                 type="submit"
                 name="fractionalize">
@@ -200,8 +254,8 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
             </div>
           </form>
         </FractFieldset>
-      </FractFieldset>
-        )}
+            </FractFieldset>
+      )}
       {status === LOADING ||
         (status === WAITING && (
           <>
@@ -215,14 +269,14 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
         ))}
       {status === APPROVED && !!txHash && (
         <>
-          <Text t2 color={colors.green} style={{ marginTop: '20px', marginBottom: '20px' }}>
+          <Text style={{ marginTop: '20px', marginBottom: '20px' }}>
           NFT was successfully approved for transfer in transaction <Link to={{ pathname: `https://ropsten.etherscan.io/tx/${txHash}` }} target="_blank">{shortenAddress(txHash)}</Link>
           </Text>
-        </>
+          </>
       )}
       {status === FRACTIONALIZED && !!txHash && (
         <>
-          <Text t2 color={colors.green} style={{ marginTop: '20px', marginBottom: '20px' }}>
+          <Text style={{ marginTop: '20px', marginBottom: '20px' }}>
           NFT was successfully fractionalized in transaction <Link to={{ pathname: `https://ropsten.etherscan.io/tx/${txHash}` }} target="_blank">{shortenAddress(txHash)}</Link>
           </Text>
         </>
@@ -230,7 +284,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
       {status === ERROR && (
         <>
           <Text style={{ marginTop: '20px', marginBottom: '20px' }} color={colors.red}>
-          {mmError || 'error encountered! Please reload.'}
+          {mmError || 'Unknown error encountered! Please reload.'}
           </Text>
         </>
       )}
