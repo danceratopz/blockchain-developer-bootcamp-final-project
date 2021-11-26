@@ -7,7 +7,7 @@ import { formatEther } from '@ethersproject/units';
 import { useContract } from '../hooks/useContract';
 import useTransaction from '../hooks/useTransaction';
 import { shortenAddress } from '../utils/shortenAddress';
-import { TransactionState } from  '../utils/states';
+import { TransactionState } from '../utils/states';
 import Text from './Text';
 import styled from 'styled-components';
 import { FractFieldset, NoFractFieldset, Legend, ConnectBtn } from './StyledHelpers';
@@ -33,6 +33,7 @@ const InteractionState = {
   READY: 'READY',
   APPROVED: 'APPROVED',
   SOLD: 'SOLD',
+  ACTION_COMPLETE: 'ACTION_COMPLETE',  
   ERROR: 'ERROR',
 };
 
@@ -73,15 +74,13 @@ const NoListings = ({ message }) => {
 };
 
 const StyledAddress = ({ account }) => {
-  const _account = account;
-  return (<span style={{ fontFamily: "Courier New" }}>{shortenAddress(_account)}</span>);
+  return (<span style={{ fontFamily: "Courier New" }}>{shortenAddress(account)}</span>);
 };
 
 const FilteredListing = ({ fractionalizeNftAddress, listings, action }) => {
   const { active, account, library } = useWeb3React();
   let [filteredByHolder, setFilteredByHolder] = useState([]);
   let accountHoldsEnoughErc20Tokens = new Array(listings.length)
-  const _action = action
 
   const holdsEnoughErc20TokensForAction = useCallback(async (account, action, library, erc20Address) => {
     const abi = [
@@ -123,6 +122,8 @@ const FilteredListing = ({ fractionalizeNftAddress, listings, action }) => {
         accountHoldsEnoughErc20TokensForAction[i] = await holdsEnoughErc20TokensForAction(account, action, library, listings[i].erc20Address);
       }
       filtered = filtered.filter((l) => accountHoldsEnoughErc20TokensForAction[l.fracNFTId]);
+    } else if (action === "buyout") {
+      return
     } else {
       console.log("Error: unexpected action: '", action, "'")
     }
@@ -149,7 +150,7 @@ const FilteredListing = ({ fractionalizeNftAddress, listings, action }) => {
     <StyledDiv>
       {filteredByHolder.map((l) => {
         const id = BigNumber.from(l.fracNFTId).toNumber();
-        return <ListingItem fractionalizeNftAddress={fractionalizeNftAddress} key={id} item={l} action={_action} />;
+        return <ListingItem fractionalizeNftAddress={fractionalizeNftAddress} key={id} item={l} action={action} />;
       })}
     </StyledDiv>
   );
@@ -170,23 +171,23 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
   const contract = useContract(fractionalizeNftAddress, fractionalizeNftContract.abi);
 
   const processTxnError = (e) => {
-      console.log(e)
-      setStatus(InteractionState.ERROR);
-      if (e.code && typeof e.code === 'number') {
-        let message
-        if ( e.hasOwnProperty('data') && e.data.hasOwnProperty('message')) {
-          message = "Error - " + e.message + ": " + e.data.message
-        } else {
-          message = "Error - " + e.message
-        }
-        setTxnStatus(TransactionState.FAIL);
-        setMmError(message)
-      } else if (e.hasOwnProperty('message')) {
-        setTxnStatus(TransactionState.ERROR);
-        setMmError(e.message)
+    console.log(e)
+    setStatus(InteractionState.ERROR);
+    if (e.code && typeof e.code === 'number') {
+      let message
+      if (e.hasOwnProperty('data') && e.data.hasOwnProperty('message')) {
+        message = "Error - " + e.message + ": " + e.data.message
       } else {
-        setTxnStatus(TransactionState.ERROR);
+        message = "Error - " + e.message
       }
+      setTxnStatus(TransactionState.FAIL);
+      setMmError(message)
+    } else if (e.hasOwnProperty('message')) {
+      setTxnStatus(TransactionState.ERROR);
+      setMmError(e.message)
+    } else {
+      setTxnStatus(TransactionState.ERROR);
+    }
   }
 
   const onBuyNftClick = async (fracNFTId, buyoutPrice) => {
@@ -204,7 +205,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
   };
 
   const onRedeemNftClick = async (fracNFTId) => {
-    console.log("onRedeemNftClick " + fracNFTId)
+    console.log("onRedeemNftClick, fracNFTId " + fracNFTId)
     try {
       setTxnStatus(TransactionState.PENDING);
       const transaction = await contract.redeem(fracNFTId, { from: account });
@@ -212,6 +213,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
       await transaction.wait(confirmations);
       setTxHash(transaction.hash);
       setTxnStatus(TransactionState.SUCCESS);
+      setStatus(InteractionState.ACTION_COMPLETE);      
     } catch (e) {
       processTxnError(e);
     }
@@ -232,12 +234,13 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
       const transaction = await erc20.approve(
         fractionalizeNftContractAddress,
         balance,
-        {from: account});
+        { from: account });
       const confirmations = chainId === 1337 ? 1 : CONFIRMATION_COUNT;
       await transaction.wait(confirmations);
       setTxHash(transaction.hash);
       setTxnStatus(TransactionState.SUCCESS);
       setErc20ApprovalStatus(Erc20ApprovalState.APPROVED);
+      console.log("erc20ApprovalStatus: ", erc20ApprovalStatus, "txhash: ", txHash)
     } catch (e) {
       processTxnError(e);
     }
@@ -252,6 +255,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
       await transaction.wait(confirmations);
       setTxHash(transaction.hash);
       setTxnStatus(TransactionState.SUCCESS);
+      setStatus(InteractionState.ACTION_COMPLETE);
     } catch (e) {
       processTxnError(e);
     }
@@ -286,7 +290,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
       }
     }
   };
-    // <Container className="mt-5 d-flex flex-column justify-content-center align-items-center">
+  // <Container className="mt-5 d-flex flex-column justify-content-center align-items-center">
   return (
     <>
       {status === InteractionState.ERROR && (
@@ -328,7 +332,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                   </ConnectBtn>
                 </StyledItem>)}
 
-                 {(action === "redeem" && txHash === 'undefined') && (
+              {(action === "redeem" && txHash === 'undefined') && (
                 <StyledItem>
                   <ConnectBtn
                     style={{ width: "150px" }}
@@ -336,17 +340,48 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     type="submit"
                     name="onApproveErc20Click">
                     Approve
-                 </ConnectBtn>
-                </StyledItem>)}
-                 {(action === "redeem" && txHash !== 'undefined') && (
+                  </ConnectBtn>
+                  <ConnectBtn
+                    style={{ width: "150px" }}
+                    onClick={() => onRedeemNftClick(item.fracNFTId)}
+                    type="submit"
+                    name="reddemNft">
+                    Redeem
+                  </ConnectBtn>
+                  </StyledItem>)}
+               {(action === "redeem" && status != InteractionState.ACTION_COMPLETE && erc20ApprovalStatus === Erc20ApprovalState.APPROVED) && (
                 <StyledItem>
                   <ConnectBtn
                     style={{ width: "150px", border: "1px solid " + colors.green }}
                     disabled="1"
                     type="submit">
-                  <Link to={{ pathname: `https://ropsten.etherscan.io/tx/${txHash}` }} target="_blank">{shortenAddress(txHash)}</Link>
+                    <Link to={{ pathname: `https://ropsten.etherscan.io/tx/${txHash}` }} target="_blank">{shortenAddress(txHash)}</Link>
                   </ConnectBtn>
-               </StyledItem>)}
+                  <ConnectBtn
+                    style={{ width: "150px" }}
+                    onClick={() => onRedeemNftClick(item.fracNFTId)}
+                    type="submit"
+                    name="reddemNft">
+                    Redeem
+                  </ConnectBtn>
+                </StyledItem>)}
+              {(action === "redeem" && status === InteractionState.ACTION_COMPLETE && txHash != 'undefined') && (
+                <StyledItem>
+                  <ConnectBtn
+                   style={{border: "1px solid white", width: "150px"}}
+                    disabled="1"
+                    onClick={() => onApproveErc20Click(item.fracNFTId)}
+                    type="submit"
+                    name="onApproveErc20Click">
+                    Approved
+                  </ConnectBtn>
+                  <ConnectBtn
+                    style={{ width: "150px", border: "1px solid " + colors.green }}
+                    disabled="1"
+                    type="submit">
+                    <Link to={{ pathname: `https://ropsten.etherscan.io/tx/${txHash}` }} target="_blank">{shortenAddress(txHash)}</Link>
+                  </ConnectBtn>
+                </StyledItem>)}
 
 
               {(action === "payout" && txHash === 'undefined') && (
@@ -366,14 +401,13 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     Payout
                   </ConnectBtn>
                   </StyledItem>)}
-
-                {(action === "payout" && status === InteractionState.APPROVED && txHash !== 'undefined') && (
+               {(action === "payout" && status != InteractionState.ACTION_COMPLETE && erc20ApprovalStatus === Erc20ApprovalState.APPROVED) && (
                 <StyledItem>
                   <ConnectBtn
                     style={{ width: "150px", border: "1px solid " + colors.green }}
                     disabled="1"
                     type="submit">
-                  <Link to={{ pathname: `https://ropsten.etherscan.io/tx/${txHash}` }} target="_blank">{shortenAddress(txHash)}</Link>
+                    <Link to={{ pathname: `https://ropsten.etherscan.io/tx/${txHash}` }} target="_blank">{shortenAddress(txHash)}</Link>
                   </ConnectBtn>
                   <ConnectBtn
                     style={{ width: "150px" }}
@@ -383,20 +417,21 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     Payout
                   </ConnectBtn>
                 </StyledItem>)}
-              {(action === "payout" && status === InteractionState.SOLD && txHash !== 'undefined') && (
+              {(action === "payout" && status === InteractionState.ACTION_COMPLETE && txHash != 'undefined') && (
                 <StyledItem>
                   <ConnectBtn
-                    style={{ width: "150px" }}
+                   style={{border: "1px solid white", width: "150px"}}
+                    disabled="1"
                     onClick={() => onApproveErc20Click(item.fracNFTId)}
                     type="submit"
                     name="onApproveErc20Click">
-                    Approve
+                    Approved
                   </ConnectBtn>
                   <ConnectBtn
                     style={{ width: "150px", border: "1px solid " + colors.green }}
                     disabled="1"
                     type="submit">
-                  <Link to={{ pathname: `https://ropsten.etherscan.io/tx/${txHash}` }} target="_blank">{shortenAddress(txHash)}</Link>
+                    <Link to={{ pathname: `https://ropsten.etherscan.io/tx/${txHash}` }} target="_blank">{shortenAddress(txHash)}</Link>
                   </ConnectBtn>
                 </StyledItem>)}
 
@@ -407,47 +442,6 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
     </>
   );
 };
-              //    <ConnectBtn
-              //       style={{ width: "150px" }}
-              //       onClick={() => onRedeemNftClick(item.fracNFTId)}
-              //       type="submit"
-              //       name="reddemNft">
-              //       Redeem
-              //     </ConnectBtn>
-              //     </StyledItem>)}
-
-              //   {(action === "redeem" && {status === InteractionState.APPROVED && txHash !== 'undefined') && (
-              //   <StyledItem>
-              //     <ConnectBtn
-              //       style={{ width: "150px", border: "1px solid " + colors.green }}
-              //       disabled="1"
-              //       type="submit">
-              //     <Link to={{ pathname: `https://ropsten.etherscan.io/tx/${txHash}` }} target="_blank">{shortenAddress(txHash)}</Link>
-              //     </ConnectBtn>
-              //     <ConnectBtn
-              //       style={{ width: "150px" }}
-              //       onClick={() => onRedeemNftClick(item.fracNFTId)}
-              //       type="submit"
-              //       name="reddemNft">
-              //       Redeem
-              //     </ConnectBtn>
-              //   </StyledItem>)}
-              // {(action === "redeem" && status === InteractionState.SOLD && txHash !== 'undefined') && (
-              //   <StyledItem>
-              //     <ConnectBtn
-              //       style={{ width: "150px" }}
-              //       onClick={() => onApproveErc20Click(item.fracNFTId)}
-              //       type="submit"
-              //       name="onApproveErc20Click">
-              //       Approve
-              //     </ConnectBtn>
-              //     <ConnectBtn
-              //       style={{ width: "150px", border: "1px solid " + colors.green }}
-              //       disabled="1"
-              //       type="submit">
-              //     <Link to={{ pathname: `https://ropsten.etherscan.io/tx/${txHash}` }} target="_blank">{shortenAddress(txHash)}</Link>
-              //     </ConnectBtn>
-              //   </StyledItem>)}
 
 const Listings = ({ fractionalizeNftAddress, action }) => {
   const [listings, setListings] = useState([]);
@@ -455,7 +449,6 @@ const Listings = ({ fractionalizeNftAddress, action }) => {
   const { active } = useWeb3React();
   const fractionalizeNftContractAddress = fractionalizeNftAddress
   const contract = useContract(fractionalizeNftAddress, fractionalizeNftContract.abi);
-  const _action = action
 
   const getProperties = useCallback(async (contract) => {
     try {
@@ -488,7 +481,7 @@ const Listings = ({ fractionalizeNftAddress, action }) => {
 
   return (
     <>
-      <FilteredListing fractionalizeNftAddress={fractionalizeNftAddress} listings={listings} action={_action} />
+      <FilteredListing fractionalizeNftAddress={fractionalizeNftAddress} listings={listings} action={action} />
     </>
   );
 };
