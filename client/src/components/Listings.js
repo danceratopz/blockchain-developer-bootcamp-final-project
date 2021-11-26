@@ -122,12 +122,13 @@ const FilteredListing = ({ fractionalizeNftAddress, listings, action }) => {
         accountHoldsEnoughErc20TokensForAction[i] = await holdsEnoughErc20TokensForAction(account, action, library, listings[i].erc20Address);
       }
       filtered = filtered.filter((l) => accountHoldsEnoughErc20TokensForAction[l.fracNFTId]);
+      setFilteredByHolder(filtered)      
     } else if (action === "buyout") {
-      return
+      setFilteredByHolder(filtered)
     } else {
       console.log("Error: unexpected action: '", action, "'")
     }
-    setFilteredByHolder(filtered)
+
   }, []);
 
   useEffect(() => {
