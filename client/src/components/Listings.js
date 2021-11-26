@@ -169,6 +169,26 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
   const fractionalizeNftContractAddress = fractionalizeNftAddress;
   const contract = useContract(fractionalizeNftAddress, fractionalizeNftContract.abi);
 
+  const processTxnError = (e) => {
+      console.log(e)
+      setStatus(InteractionState.ERROR);
+      if (e.code && typeof e.code === 'number') {
+        let message
+        if ( e.hasOwnProperty('data') && e.data.hasOwnProperty('message')) {
+          message = "Error - " + e.message + ": " + e.data.message
+        } else {
+          message = "Error - " + e.message
+        }
+        setTxnStatus(TransactionState.FAIL);
+        setMmError(message)
+      } else if (e.hasOwnProperty('message')) {
+        setTxnStatus(TransactionState.ERROR);
+        setMmError(e.message)
+      } else {
+        setTxnStatus(TransactionState.ERROR);
+      }
+  }
+
   const onBuyNftClick = async (fracNFTId, buyoutPrice) => {
     console.log("onBuyNftClick " + fracNFTId)
     try {
@@ -179,13 +199,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
       setTxHash(transaction.hash);
       setTxnStatus(TransactionState.SUCCESS);
     } catch (e) {
-      console.log(e)
-      if (e.code && typeof e.code === 'number') {
-        setTxnStatus(TransactionState.FAIL);
-        setMmError("Error calling fractionalizeNFT() - " + e.message)
-      } else {
-        setTxnStatus(TransactionState.ERROR);
-      }
+      processTxnError(e);
     }
   };
 
@@ -199,14 +213,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
       setTxHash(transaction.hash);
       setTxnStatus(TransactionState.SUCCESS);
     } catch (e) {
-      console.log(e)
-      setStatus(InteractionState.ERROR);
-      if (e.code && typeof e.code === 'number') {
-        setTxnStatus(TransactionState.FAIL);
-        setMmError("Error - " + e.message)
-      } else {
-        setTxnStatus(TransactionState.ERROR);
-      }
+      processTxnError(e);
     }
   };
 
@@ -232,13 +239,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
       setTxnStatus(TransactionState.SUCCESS);
       setErc20ApprovalStatus(Erc20ApprovalState.APPROVED);
     } catch (e) {
-      console.log(e)
-      if (e.code && typeof e.code === 'number') {
-        setMmError("Error - " + e.message);
-        setTxnStatus(TransactionState.FAIL);
-      } else {
-        setTxnStatus(TransactionState.ERROR);
-      }
+      processTxnError(e);
     }
   };
 
@@ -252,14 +253,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
       setTxHash(transaction.hash);
       setTxnStatus(TransactionState.SUCCESS);
     } catch (e) {
-      console.log(e)
-      setStatus(InteractionState.ERROR);
-      if (e.code && typeof e.code === 'number') {
-        setMmError("Error - " + e.message)
-        setTxnStatus(TransactionState.FAIL);
-      } else {
-        setTxnStatus(TransactionState.ERROR);
-      }
+      processTxnError(e);
     }
   };
 
@@ -296,11 +290,11 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
   return (
     <>
       {status === InteractionState.ERROR && (
-        <>
+        <Container className="mt-5 d-flex flex-column justify-content-center align-items-center">
           <Text style={{ marginTop: '20px', marginBottom: '20px' }} color={colors.red}>
-            {mmError || 'Error encountered!'}
+            {mmError || 'Unknown error encountered! Please reload.'}
           </Text>
-        </>
+        </Container>
       )}
       <FractFieldset>
         <div>
