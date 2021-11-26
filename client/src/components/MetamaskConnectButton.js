@@ -59,7 +59,7 @@ const MetamaskConnectButton = () => {
       <ConnectBtn
         onClick={() => {
           if (!window.ethereum) {
-            setContentError("Looks like Metamask is not installed - please install it from https://metamask.io/download.html");
+            setContentError(["Failed to detect Metamask - please install it from ", <a href="https://metamask.io/download.html">https://metamask.io/download.html</a>]);
             return;
           }
           activate(injected, (e) => {
