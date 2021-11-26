@@ -59,6 +59,23 @@ const StyledItemTextContainer = styled.div`
   flex-direction: column;
 `;
 
+
+var getJSON = function(url, callback) {
+    // https://stackoverflow.com/a/35970894
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.responseType = 'json';
+    xhr.onload = function() {
+      var status = xhr.status;
+      if (status === 200) {
+        callback(null, xhr.response);
+      } else {
+        callback(status, xhr.response);
+      }
+    };
+    xhr.send();
+};
+
 const BuyButton = styled(Button).attrs({ variant: 'outline-success' })
 
 const NoListings = ({ message }) => {
@@ -170,6 +187,8 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
   const { active, library, account, chainId } = useWeb3React();
   const fractionalizeNftContractAddress = fractionalizeNftAddress;
   const contract = useContract(fractionalizeNftAddress, fractionalizeNftContract.abi);
+  const [imageUrl, setImageUrl] = useState(null)
+  const [imageAltText, setImageAltText] = useState("")
 
   const processTxnError = (e) => {
     console.log(e)
@@ -263,6 +282,9 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
   };
 
   const isErc20Approved = async (fracNFTid) => {
+
+    // CURRENTLY UNUSED
+    
     try {
       const abi = [
         "function allowance(address owner, address spender) view returns (bool)"
@@ -291,7 +313,48 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
       }
     }
   };
-  // <Container className="mt-5 d-flex flex-column justify-content-center align-items-center">
+
+  const nftImage = useCallback(async () => {
+    // TODO This requires optimisation
+    const abi = [
+      "function tokenURI(uint256 id) view returns (string)",
+    ];
+    const signerOrProvider = account ? library.getSigner(account).connectUnchecked() : library;
+    const erc721Contract = new Contract(erc721Address, abi, signerOrProvider);
+    const jsonUri = await erc721Contract.tokenURI(BigNumber.from(nftTokenId).toNumber())
+
+    getJSON(jsonUri, function(err, data) {
+      if (err !== null) {
+        setImageUrl(null)                  
+        setImageAltText("Error retrieving image")        
+      } else {
+        if (data !== null) {
+          setImageUrl(data.image)
+          setImageAltText("NFT Image")
+        } else {
+          console.log(data)
+          setImageUrl(null)          
+          setImageAltText("Unable to retrieve image")
+        }
+      }
+    });
+    console.log('nft id: ' + nftTokenId +  ', imageUrl: ' + imageUrl);
+  }, []);
+  
+  nftImage();
+  
+  const NftImage = () => {
+
+    return (
+        <img src={imageUrl} style={{ height: '150px',
+                                       width: '100%',
+                                       borderRadius: '5px',
+                                       border: "1px solid " + colors.blue,
+                                       fontFamily: "Source Sans Pro",
+                                       textAlign: "center" }} alt={imageAltText}/>
+    );
+  }
+  
   return (
     <>
       {status === InteractionState.ERROR && (
@@ -306,6 +369,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
           <StyledItem>
             <StyledItemTextContainer>
               <Text center>{erc20Name}</Text>
+              <NftImage fracNftId={item.fracNftId} />
               <Text center style={{ fontFamily: "Source Code Pro" }}>ERC721: {shortenAddress(erc721Address)}</Text>
               <Text center>Token Id: {BigNumber.from(nftTokenId).toNumber()}</Text>
               <Text center bold color={colors.blue}>
