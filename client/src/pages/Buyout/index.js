@@ -24,7 +24,7 @@ const Buyout = () => {
             <br />
             Sale proceedings are distributed proportionally to the holders of the ERC20 token.
           </Text>
-          {fractionalizeNftAddress && <Listings fractionalizeNftAddress={fractionalizeNftAddress} fracNftState={0} action="buyout" />}
+          {fractionalizeNftAddress && <Listings fractionalizeNftAddress={fractionalizeNftAddress} action="buyout" />}
         </FractFieldset>)}
     </Container>
   );

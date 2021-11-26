@@ -23,7 +23,7 @@ const Payout = () => {
             Following a buyout of a fractionalized NFT, an account that holds corresponding ERC20 tokens can
             claim their payout from the sale proceedings.
           </Text>
-          {fractionalizeNftAddress && <Listings fractionalizeNftAddress={fractionalizeNftAddress} fracNftState={2} action="payout" />}
+          {fractionalizeNftAddress && <Listings fractionalizeNftAddress={fractionalizeNftAddress} action="payout" />}
         </FractFieldset>)}
     </Container>
   );

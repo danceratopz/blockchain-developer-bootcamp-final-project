@@ -23,7 +23,7 @@ const Redeem = () => {
             An address that holds the entire supply of a fractionalized NFTs ERC20 Token can redeem the NFT in exchange
             for the tokens in order to (re-)gain ownership of the NFT.
           </Text>
-          {fractionalizeNftAddress && <Listings fractionalizeNftAddress={fractionalizeNftAddress} fracNftState={0} action="redeem" />}
+          {fractionalizeNftAddress && <Listings fractionalizeNftAddress={fractionalizeNftAddress} action="redeem" />}
         </FractFieldset>)}
     </Container>
   );
