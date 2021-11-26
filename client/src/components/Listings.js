@@ -140,9 +140,9 @@ const FilteredListing = ({ fractionalizeNftAddress, listings, action }) => {
     if (action === "buyout") {
       return (<NoListings message={"There are currently no fractionalized NFTs in the contract to buy."} />);
     } else if (action === "redeem") {
-      return (<NoListings message={["No redemptions are available for the account ", <StyledAddress account={account} />]} />);
+      return (<NoListings message={["No redemptions are available for the account ", <StyledAddress key="redeem" account={account} />]} />);
     } else if (action == "payout") {
-      return (<NoListings message={["No payouts are available for the account ", <StyledAddress account={account} />]} />);
+      return (<NoListings message={["No payouts are available for the account ", <StyledAddress key="payout" account={account} />]} />);
     }
   }
 
