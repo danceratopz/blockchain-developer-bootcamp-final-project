@@ -4,16 +4,18 @@ import Text from './Text';
 import { StyledHeaderBox } from './StyledHelpers';
 import { colors } from '../theme';
 import useEth from '../hooks/useEth';
+import useTransaction from '../hooks/useTransaction';
 
 const BalanceCard = () => {
   const { active, account } = useWeb3React();
   const { fetchEthBalance, ethBalance } = useEth();
+  const { txnStatus, setTxnStatus } = useTransaction();
 
   useEffect(() => {
     if (account) {
       fetchEthBalance();
     }
-  }, [account]);
+  }, [account, txnStatus]);
 
   if (!active) {
     return <Text>{''}</Text>;

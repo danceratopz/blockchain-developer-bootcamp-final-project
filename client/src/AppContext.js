@@ -43,7 +43,9 @@ const appReducer = (state, { type, payload }) => {
 };
 
 const AppContext = createContext(initialContext);
+
 export const useAppContext = () => React.useContext(AppContext);
+
 export const AppContextProvider = ({ children }) => {
   const [store, dispatch] = useReducer(appReducer, initialContext);
 

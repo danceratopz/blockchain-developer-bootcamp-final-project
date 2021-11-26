@@ -5,14 +5,15 @@ import { useWeb3React } from '@web3-react/core';
 import { BigNumber, Contract } from 'ethers';
 import { formatEther } from '@ethersproject/units';
 import { useContract } from '../hooks/useContract';
+import useTransaction from '../hooks/useTransaction';
 import { shortenAddress } from '../utils/shortenAddress';
+import { TransactionState } from  '../utils/states';
 import Text from './Text';
 import styled from 'styled-components';
 import { FractFieldset, NoFractFieldset, Legend, ConnectBtn } from './StyledHelpers';
 import { colors } from '../theme';
 
 import fractionalizeNftContract from '../artifacts/contracts/FractionalizeNFT.json';
-
 
 const listingState = {
   LOADING: 'LOADING',
@@ -163,6 +164,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
   const [mmError, setMmError] = useState(null);
   const [pageError, setPageError] = useState(null);
   const [txHash, setTxHash] = useState('undefined');
+  const { txnStatus, setTxnStatus } = useTransaction();
   const { active, library, account, chainId } = useWeb3React();
   const fractionalizeNftContractAddress = fractionalizeNftAddress;
   const contract = useContract(fractionalizeNftAddress, fractionalizeNftContract.abi);
@@ -170,17 +172,19 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
   const onBuyNftClick = async (fracNFTId, buyoutPrice) => {
     console.log("onBuyNftClick " + fracNFTId)
     try {
-      setStatus(InteractionState.LOADING);
+      setTxnStatus(TransactionState.PENDING);
       const transaction = await contract.buyout(fracNFTId, { from: account, value: buyoutPrice });
       const confirmations = chainId === 1337 ? 1 : CONFIRMATION_COUNT;
       await transaction.wait(confirmations);
       setTxHash(transaction.hash);
-      setStatus(InteractionState.SOLD);
+      setTxnStatus(TransactionState.SUCCESS);
     } catch (e) {
       console.log(e)
-      setStatus(InteractionState.ERROR);
       if (e.code && typeof e.code === 'number') {
-        setMmError("Error calling fractionalizeNFT() - " + e.message) // + ": " + e.data.message);
+        setTxnStatus(TransactionState.FAIL);
+        setMmError("Error calling fractionalizeNFT() - " + e.message)
+      } else {
+        setTxnStatus(TransactionState.ERROR);
       }
     }
   };
@@ -188,17 +192,20 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
   const onRedeemNftClick = async (fracNFTId) => {
     console.log("onRedeemNftClick " + fracNFTId)
     try {
-      setStatus(InteractionState.LOADING);
+      setTxnStatus(TransactionState.PENDING);
       const transaction = await contract.redeem(fracNFTId, { from: account });
       const confirmations = chainId === 1337 ? 1 : CONFIRMATION_COUNT;
       await transaction.wait(confirmations);
       setTxHash(transaction.hash);
-      setStatus(InteractionState.SOLD);
+      setTxnStatus(TransactionState.SUCCESS);
     } catch (e) {
       console.log(e)
       setStatus(InteractionState.ERROR);
       if (e.code && typeof e.code === 'number') {
-        setMmError("Error - " + e.message) // + ": " + e.data.message);
+        setTxnStatus(TransactionState.FAIL);
+        setMmError("Error - " + e.message)
+      } else {
+        setTxnStatus(TransactionState.ERROR);
       }
     }
   };
@@ -206,7 +213,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
   const onApproveErc20Click = async (fractNFTId) => {
     console.log("onApproveErc20Click " + fracNFTId)
     try {
-      setStatus(InteractionState.LOADING);
+      setTxnStatus(TransactionState.PENDING);
       const abi = [
         "function balanceOf(address owner) view returns (uint256)",
         "function approve(address owner, uint256 amount) returns (bool)",
@@ -222,12 +229,15 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
       const confirmations = chainId === 1337 ? 1 : CONFIRMATION_COUNT;
       await transaction.wait(confirmations);
       setTxHash(transaction.hash);
+      setTxnStatus(TransactionState.SUCCESS);
       setErc20ApprovalStatus(Erc20ApprovalState.APPROVED);
     } catch (e) {
       console.log(e)
-      setStatus(InteractionState.ERROR);
       if (e.code && typeof e.code === 'number') {
-        setMmError("Error - " + e.message) // + ": " + e.data.message);
+        setMmError("Error - " + e.message);
+        setTxnStatus(TransactionState.FAIL);
+      } else {
+        setTxnStatus(TransactionState.ERROR);
       }
     }
   };
@@ -235,24 +245,26 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
   const onPayoutClick = async (fractNFTId) => {
     console.log("onPayoutClick " + fracNFTId)
     try {
-      setStatus(InteractionState.LOADING);
+      setTxnStatus(TransactionState.PENDING);
       const transaction = await contract.claim(fracNFTId, { from: account });
       const confirmations = chainId === 1337 ? 1 : CONFIRMATION_COUNT;
       await transaction.wait(confirmations);
       setTxHash(transaction.hash);
-      setStatus(InteractionState.SOLD);
+      setTxnStatus(TransactionState.SUCCESS);
     } catch (e) {
       console.log(e)
       setStatus(InteractionState.ERROR);
       if (e.code && typeof e.code === 'number') {
-        setMmError("Error - " + e.message) // + ": " + e.data.message);
+        setMmError("Error - " + e.message)
+        setTxnStatus(TransactionState.FAIL);
+      } else {
+        setTxnStatus(TransactionState.ERROR);
       }
     }
   };
 
   const isErc20Approved = async (fracNFTid) => {
     try {
-      setStatus(InteractionState.LOADING);
       const abi = [
         "function allowance(address owner, address spender) view returns (bool)"
       ];
@@ -280,9 +292,9 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
       }
     }
   };
-
+    // <Container className="mt-5 d-flex flex-column justify-content-center align-items-center">
   return (
-    <Container className="mt-5 d-flex flex-column justify-content-center align-items-center">
+    <>
       {status === InteractionState.ERROR && (
         <>
           <Text style={{ marginTop: '20px', marginBottom: '20px' }} color={colors.red}>
@@ -398,7 +410,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
           </StyledItem>
         </div>
       </FractFieldset>
-    </Container>
+    </>
   );
 };
               //    <ConnectBtn

@@ -5,11 +5,13 @@ import { useWeb3React } from '@web3-react/core';
 import { Link, Redirect } from 'react-router-dom';
 import { useContract } from '../hooks/useContract';
 import { useFractionalizeNft } from '../hooks/useFractionalizeNft';
+import useTransaction from '../hooks/useTransaction';
 import Text from '../components/Text';
 
 import { Contract } from '@ethersproject/contracts';
 import { ethers } from "ethers";
 import { shortenAddress } from '../utils/shortenAddress';
+import { TransactionState } from  '../utils/states';
 import { colors } from '../theme';
 import { ConnectBtn, FractFieldset, Legend, FractInput } from './StyledHelpers';
 
@@ -43,6 +45,7 @@ function isPositiveInteger(str) {
 
 const FractionalizeNft = ({ fractionalizeNftAddress }) => {
   const [status, setStatus] = useState(InteractionState.READY);
+  const { txnStatus, setTxnStatus } = useTransaction();
   const [mmError, setMmError] = useState(null);
   const [pageError, setPageError] = useState(null);
   const [txHash, setTxHash] = useState(null);
@@ -57,6 +60,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
   const contract = useContract(fractionalizeNftAddress, fractionalizeNftContract.abi);
 
   const onApproveNftClick = async () => {
+    setTxnStatus(TransactionState.PENDING);
     setStatus(InteractionState.LOADING);
     console.log("onApproveNftClick")
     try {
@@ -72,6 +76,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
       await transaction.wait(confirmations);
       setTxHash(transaction.hash);
       setStatus(InteractionState.APPROVED);
+      setTxnStatus(TransactionState.SUCCESS);
     } catch (e) {
       console.log(e)
       setStatus(InteractionState.ERROR);
@@ -82,14 +87,19 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
         } else {
           message = "Error calling fractionalizeNFT() - " + e.message
         }
+        setTxnStatus(TransactionState.FAIL);
         setMmError(message)
       } else if (e.hasOwnProperty('message')) {
+        setTxnStatus(TransactionState.ERROR);
         setMmError(e.message)
+      } else {
+        setTxnStatus(TransactionState.ERROR);
       }
     }
   }
 
   const onFractionalizeNftClick = async () => {
+    setTxnStatus(TransactionState.PENDING);
     setStatus(InteractionState.LOADING);
     console.log("onFractionalizeNftClick")
     try {
@@ -106,6 +116,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
       await transaction.wait(confirmations);
       setTxHash(transaction.hash);
       setStatus(InteractionState.FRACTIONALIZED);
+      setTxnStatus(TransactionState.SUCCESS);
     } catch (e) {
       console.log(e)
       setStatus(InteractionState.ERROR);
@@ -116,9 +127,13 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
         } else {
           message = "Error calling fractionalizeNFT() - " + e.message
         }
+        setTxnStatus(TransactionState.FAIL);
         setMmError(message)
       } else if (e.hasOwnProperty('message')) {
+        setTxnStatus(TransactionState.ERROR);
         setMmError(e.message)
+      } else {
+        setTxnStatus(TransactionState.ERROR);
       }
     }
   };
