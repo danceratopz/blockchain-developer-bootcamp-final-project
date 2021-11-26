@@ -6,6 +6,7 @@ import { Link, Redirect } from 'react-router-dom';
 import { useContract } from '../hooks/useContract';
 import { useFractionalizeNft } from '../hooks/useFractionalizeNft';
 import useTransaction from '../hooks/useTransaction';
+import { KnownNftContracts } from '../components/KnownNftContracts'
 import Text from '../components/Text';
 
 import { Contract } from '@ethersproject/contracts';
@@ -49,7 +50,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
   const [mmError, setMmError] = useState(null);
   const [pageError, setPageError] = useState(null);
   const [txHash, setTxHash] = useState(null);
-  const [nftContractAddress, setNftContractAddress] = useState("0x3f4d004805BcfB46b225b37f5900F1291b227716")
+  const [nftContractAddress, setNftContractAddress] = useState("")
   const [nftTokenIndex, setNftTokenIndex] = useState("")
   const [erc20Name, setErc20Name] = useState("")
   const [erc20Symbol, setErc20Symbol] = useState("")
@@ -168,13 +169,15 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
           </Text>
           <br />
             <FractInput
-            style={ nftContractAddress.length != 42 ? {width: "410px", border: "1px solid " + colors.red} : {width: "410px"}}
+            style={ nftContractAddress.length != 42 ? {width: "450px", border: "1px solid " + colors.red} : {width: "450px"}}
             name="nftContractAddress"
             placeholder="NFT contract address (string, 0x...)"
             type="text"
+            list="knownNftContracts"
             value={nftContractAddress}
             onChange={(e) => setNftContractAddress(e.target.value)}
-          />
+            />
+          <KnownNftContracts/>
           <FractInput
             style={ !isPositiveInteger(nftTokenIndex) ? {width: "120px", border: "1px solid " + colors.red} : {width: "120px"}}
             name="nftTokenIndex"
@@ -226,7 +229,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
           <form>
             <div>
               <FractInput
-                style={ erc20Name.length === 0 ? {width: "265px", border: "1px solid " + colors.red} : {width: "265px"}}
+                style={ erc20Name.length === 0 ? {width: "285px", border: "1px solid " + colors.red} : {width: "285px"}}
                 name="erc20Name"
                 placeholder="ERC Token Name (string)"
                 type="text"
@@ -234,7 +237,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
                 onChange={(e) => setErc20Name(e.target.value)}
               />
               <FractInput
-                style={ erc20Symbol.length === 0 ? {width: "265px", border: "1px solid " + colors.red} : {width: "265px"}}
+                style={ erc20Symbol.length === 0 ? {width: "285px", border: "1px solid " + colors.red} : {width: "285px"}}
                 name="erc20Symbol"
                 placeholder="ERC Token Symbol (string)"
                 type="text"
@@ -243,7 +246,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
               />
               <br />
               <FractInput
-                style={ !isPositiveInteger(erc20Supply) ? {width: "265px", border: "1px solid " + colors.red} : {width: "265px"}}
+                style={ !isPositiveInteger(erc20Supply) ? {width: "285px", border: "1px solid " + colors.red} : {width: "285px"}}
                 name="erc20Supply"
                 placeholder="ERC Token Supply (int)"
                 type="text"
@@ -251,7 +254,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
                 onChange={(e) => setErc20Supply(e.target.value)}
               />
             <FractInput
-                style={ !isPositiveFloat(buyoutPrice) ? {width: "265px", border: "1px solid " + colors.red} : {width: "265px"}}
+                style={ !isPositiveFloat(buyoutPrice) ? {width: "285px", border: "1px solid " + colors.red} : {width: "285px"}}
                 name="buyoutPrice"
                 placeholder="Buyout Price (Ether)"
                 type="text"
@@ -259,8 +262,8 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
                 onChange={(e) => setBuyoutPrice(e.target.value)}
               />
             <ConnectBtn
-               style={ erc20Name.length === 0 || erc20Symbol.length === 0 || !isPositiveInteger(erc20Supply) || !isPositiveFloat(buyoutPrice) ? {width: "200px", border: "1px solid white" } : {width: "200px"} }
-                disabled={ erc20Name.length === 0 || erc20Symbol.length === 0 || !isPositiveInteger(erc20Supply) || !isPositiveFloat(buyoutPrice) }
+          style={ !isPositiveInteger(nftTokenIndex) || erc20Name.length === 0 || erc20Symbol.length === 0 || !isPositiveInteger(erc20Supply) || !isPositiveFloat(buyoutPrice) ? {width: "200px", border: "1px solid white" } : {width: "200px"} }
+          disabled={ !isPositiveInteger(nftTokenIndex) || erc20Name.length === 0 || erc20Symbol.length === 0 || !isPositiveInteger(erc20Supply) || !isPositiveFloat(buyoutPrice) }
                 onClick={onFractionalizeNftClick}
                 type="submit"
                 name="fractionalize">
