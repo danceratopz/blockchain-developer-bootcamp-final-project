@@ -81,9 +81,8 @@ const MetamaskConnectButton = () => {
     <StyledHeaderBox>
       <FaEthereum />
       <Text
-        color="white"
-        style={{ padding: "0px", margin: "8px", marginLeft: "12px", fontFamily: "Source Code Pro" }}>
-        <StyledAddress address={account} /> <BalancesCard />
+        style={{ margin: "8px", marginLeft: "12px", marginRight: "12px", fontFamily: "Source Code Pro" }}>
+        <StyledAddress address={account} />  <BalancesCard />
       </Text>
       <ConnectBtn
         style={{ fontFamily: "Source Sans Pro" }}
