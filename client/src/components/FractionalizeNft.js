@@ -140,14 +140,12 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
     }
   };
 
-  // TODO: Return to about?
   if (!active) return <Redirect to="/" />;
 
   const { LOADING, WAITING, READY, APPROVED, FRACTIONALIZED, ERROR } = InteractionState;
 
   if (!active) return;
 
-  // TODO: Why does main fieldset triggers a page reload if status is WAITING?
   return (
     <Container className="mt-5 d-flex flex-column justify-content-center align-items-center">
       {(status === READY ||
@@ -170,7 +168,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
           </Text>
           <br />
             <FractInput
-            style={ nftContractAddress.length != 42 ? {width: "450px", border: "1px solid " + colors.red} : {width: "450px"}}
+            style={ nftContractAddress.length != 42 ? {width: "340px", border: "1px solid " + colors.red} : {width: "340px"}}
             name="nftContractAddress"
             placeholder="NFT contract address (string, 0x...)"
             type="text"
@@ -230,7 +228,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
           <form>
             <div>
               <FractInput
-                style={ erc20Name.length === 0 ? {width: "285px", border: "1px solid " + colors.red} : {width: "285px"}}
+                style={ erc20Name.length === 0 ? {width: "230px", border: "1px solid " + colors.red} : {width: "230px"}}
                 name="erc20Name"
                 placeholder="ERC Token Name (string)"
                 type="text"
@@ -238,7 +236,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
                 onChange={(e) => setErc20Name(e.target.value)}
               />
               <FractInput
-                style={ erc20Symbol.length === 0 ? {width: "285px", border: "1px solid " + colors.red} : {width: "285px"}}
+                style={ erc20Symbol.length === 0 ? {width: "230px", border: "1px solid " + colors.red} : {width: "230px"}}
                 name="erc20Symbol"
                 placeholder="ERC Token Symbol (string)"
                 type="text"
@@ -247,7 +245,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
               />
               <br />
               <FractInput
-                style={ !isPositiveInteger(erc20Supply) ? {width: "285px", border: "1px solid " + colors.red} : {width: "285px"}}
+                style={ !isPositiveInteger(erc20Supply) ? {width: "230px", border: "1px solid " + colors.red} : {width: "230px"}}
                 name="erc20Supply"
                 placeholder="ERC Token Supply (int)"
                 type="text"
@@ -255,7 +253,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
                 onChange={(e) => setErc20Supply(e.target.value)}
               />
             <FractInput
-                style={ !isPositiveFloat(buyoutPrice) ? {width: "285px", border: "1px solid " + colors.red} : {width: "285px"}}
+                style={ !isPositiveFloat(buyoutPrice) ? {width: "230px", border: "1px solid " + colors.red} : {width: "230px"}}
                 name="buyoutPrice"
                 placeholder="Buyout Price (Ether)"
                 type="text"
