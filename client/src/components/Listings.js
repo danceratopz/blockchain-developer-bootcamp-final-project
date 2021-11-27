@@ -9,7 +9,7 @@ import useTransaction from '../hooks/useTransaction';
 import { shortenAddress } from '../utils/shortenAddress';
 import { TransactionState } from '../utils/states';
 import Text from './Text';
-import StyledAddress from './StyledAddress';
+import { StyledAddress, StyledTxn } from './StyledAddress';
 import styled from 'styled-components';
 import { FractFieldset, NoFractFieldset, Legend, ConnectBtn } from './StyledHelpers';
 import { colors } from '../theme';
@@ -49,7 +49,7 @@ const StyledItem = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 10px;
+  padding: 5px;
   border-radius: 5px;
   max-width: 220px;
 `;
@@ -59,6 +59,14 @@ const StyledItemTextContainer = styled.div`
   display: flex;
   flex-direction: column;
 `;
+
+const LinkedNftTokenId = ({ contractAddress, tokenId }) => {
+  return (
+      <Link style={{ color: colors.blue }} to={{ pathname: `https://ropsten.etherscan.io/token/${contractAddress}?={tokenId}` }} target="_blank">
+        Token Id {BigNumber.from(tokenId).toNumber()}
+      </Link>
+  )
+};
 
 
 var getJSON = function(url, callback) {
@@ -352,7 +360,6 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
     );
   }
   
-  //https://rinkeby.etherscan.io/token/0xf5de760f2e916647fd766b4ad9e85ff943ce3a2b?a=14620
   return (
     <>
       {status === InteractionState.ERROR && (
@@ -366,10 +373,9 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
         <div>
           <StyledItem>
             <StyledItemTextContainer>
-              <Text center style={{ fontFamily: "Source Code Pro" }}>{erc20Name}</Text>
+              <Text center line-height="50px" text-overflow="ellipsis "overflow="ellipsis" style={{ fontFamily: "Source Code Pro" }}>{erc20Name}</Text>
               <NftImage fracNftId={item.fracNftId} />
-              <Text center>ERC721: <StyledAddress address={erc721Address}/></Text>
-              <Text center>Token Id: {BigNumber.from(nftTokenId).toNumber()}</Text>
+             <Text center style={{ fontFamily: "Source Code Pro" }}>ERC721 <LinkedNftTokenId contractAddress={erc721Address} tokenId={nftTokenId}/> from <StyledAddress address={erc721Address}/></Text>
               {action === "buyout" && txHash === 'undefined' && (
                 <StyledItem>
                   <ConnectBtn
@@ -377,7 +383,9 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     onClick={() => onBuyNftClick(item.fracNFTId, item.buyoutPrice)}
                     type="submit"
                     name="buyNft">
-                    Buy for {parseFloat(formatEther(buyoutPrice)).toPrecision(3)} ETH
+                    Buy for
+                    <br/>
+                   {parseFloat(formatEther(buyoutPrice)).toPrecision(3)} ETH
                   </ConnectBtn>
                 </StyledItem>)}
               {(action === "buyout" && txHash !== 'undefined') && (
@@ -387,7 +395,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     disabled="1"
                     type="submit"
                     name="buyNft">
-                     <StyledAddress address={txHash}/>
+                     <StyledTxn address={txHash}/>
                   </ConnectBtn>
                 </StyledItem>)}
 
@@ -414,7 +422,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     style={{ width: "150px", border: "1px solid " + colors.green }}
                     disabled="1"
                     type="submit">
-                   <StyledAddress address={txHash}/>
+                   <StyledTxn address={txHash}/>
                   </ConnectBtn>
                   <ConnectBtn
                     style={{ width: "150px" }}
@@ -438,7 +446,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     style={{ width: "150px", border: "1px solid " + colors.green }}
                     disabled="1"
                     type="submit">
-                    <StyledAddress address={txHash}/>
+                    <StyledTxn address={txHash}/>
                   </ConnectBtn>
                 </StyledItem>)}
 
@@ -466,7 +474,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     style={{ width: "150px", border: "1px solid " + colors.green }}
                     disabled="1"
                  type="submit">
-                    <StyledAddress address={txHash}/>
+                    <StyledTxn address={txHash}/>
                   </ConnectBtn>
                   <ConnectBtn
                     style={{ width: "150px" }}
@@ -490,7 +498,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     style={{ width: "150px", border: "1px solid " + colors.green }}
                     disabled="1"
                     type="submit">
-                    <StyledAddress address={txHash}/>
+                    <StyledTxn address={txHash}/>
                   </ConnectBtn>
                 </StyledItem>)}
 
