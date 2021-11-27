@@ -40,7 +40,6 @@ const InteractionState = {
 const StyledDiv = styled.div`
   display: flex;
   justify-content: center;
-  max-width: 90%;
   flex-wrap: wrap;
 `;
 
@@ -90,7 +89,7 @@ const NoListings = ({ message }) => {
   return (
     <StyledDiv>
       <NoFractFieldset>
-        <Text color={colors.secondary} text-align="center">
+        <Text color={colors.secondary} style={{ display: "inline-block" }} text-align="center">
           {message}
         </Text>
       </NoFractFieldset>
