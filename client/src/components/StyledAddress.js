@@ -2,12 +2,19 @@ import { shortenAddress } from '../utils/shortenAddress';
 import { Link } from 'react-router-dom';
 import { colors } from '../theme';
 
-const StyledAddress = ({ address }) => {
+export const StyledAddress = ({ address }) => {
   return (
-      <Link style={{ fontFamily: "Source Code Pro", color: colors.blue }} to={{ pathname: `https://ropsten.etherscan.io/tx/${address}` }} target="_blank">
+      <Link style={{ fontFamily: "Source Code Pro", color: colors.blue }} to={{ pathname: `https://ropsten.etherscan.io/address/${address}` }} target="_blank">
         {shortenAddress(address)}
       </Link>
   )
 };
 
-export default StyledAddress;
+export const StyledTxn = ({ hash }) => {
+  return (
+      <Link style={{ fontFamily: "Source Code Pro", color: colors.green }} to={{ pathname: `https://ropsten.etherscan.io/tx/${hash}` }} target="_blank">
+        {shortenAddress(hash)}
+      </Link>
+  )
+};
+
