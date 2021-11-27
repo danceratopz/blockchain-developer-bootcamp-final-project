@@ -9,6 +9,7 @@ import useTransaction from '../hooks/useTransaction';
 import { shortenAddress } from '../utils/shortenAddress';
 import { TransactionState } from '../utils/states';
 import Text from './Text';
+import StyledAddress from './StyledAddress';
 import styled from 'styled-components';
 import { FractFieldset, NoFractFieldset, Legend, ConnectBtn } from './StyledHelpers';
 import { colors } from '../theme';
@@ -50,7 +51,7 @@ const StyledItem = styled.div`
   align-items: center;
   padding: 10px;
   border-radius: 5px;
-  max-width: 175px;
+  max-width: 220px;
 `;
 
 const StyledItemTextContainer = styled.div`
@@ -88,10 +89,6 @@ const NoListings = ({ message }) => {
       </NoFractFieldset>
     </StyledDiv>
   );
-};
-
-const StyledAddress = ({ account }) => {
-  return (<span style={{ fontFamily: "Courier New" }}>{shortenAddress(account)}</span>);
 };
 
 const FilteredListing = ({ fractionalizeNftAddress, listings, action }) => {
@@ -158,9 +155,9 @@ const FilteredListing = ({ fractionalizeNftAddress, listings, action }) => {
     if (action === "buyout") {
       return (<NoListings message={"There are currently no fractionalized NFTs in the contract to buy."} />);
     } else if (action === "redeem") {
-      return (<NoListings message={["No redemptions are available for the account ", <StyledAddress key="redeem" account={account} />]} />);
+      return (<NoListings message={["No redemptions are available for the account ", <StyledAddress key="redeem" address={account} />]} />);
     } else if (action == "payout") {
-      return (<NoListings message={["No payouts are available for the account ", <StyledAddress key="payout" account={account} />]} />);
+      return (<NoListings message={["No payouts are available for the account ", <StyledAddress key="payout" address={account} />]} />);
     }
   }
 
@@ -176,7 +173,7 @@ const FilteredListing = ({ fractionalizeNftAddress, listings, action }) => {
 
 
 const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
-  const { fracNFTId, nftTokenId, erc721Address, erc20Address, erc20Name, erc20Symbol, buyoutPrice: amount, imgUrl } = item;
+  const { fracNFTId, nftTokenId, erc721Address, erc20Address, erc20Name, erc20Symbol, buyoutPrice, imgUrl } = item;
 
   const [status, setStatus] = useState(InteractionState.READY);
   const [erc20ApprovalStatus, setErc20ApprovalStatus] = useState(Erc20ApprovalState.UNKNOWN);
@@ -355,6 +352,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
     );
   }
   
+  //https://rinkeby.etherscan.io/token/0xf5de760f2e916647fd766b4ad9e85ff943ce3a2b?a=14620
   return (
     <>
       {status === InteractionState.ERROR && (
@@ -368,14 +366,10 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
         <div>
           <StyledItem>
             <StyledItemTextContainer>
-              <Text center>{erc20Name}</Text>
+              <Text center style={{ fontFamily: "Source Code Pro" }}>{erc20Name}</Text>
               <NftImage fracNftId={item.fracNftId} />
-              <Text center style={{ fontFamily: "Source Code Pro" }}>ERC721: {shortenAddress(erc721Address)}</Text>
+              <Text center>ERC721: <StyledAddress address={erc721Address}/></Text>
               <Text center>Token Id: {BigNumber.from(nftTokenId).toNumber()}</Text>
-              <Text center bold color={colors.blue}>
-                {formatEther(amount)} ETH
-              </Text>
-
               {action === "buyout" && txHash === 'undefined' && (
                 <StyledItem>
                   <ConnectBtn
@@ -383,7 +377,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     onClick={() => onBuyNftClick(item.fracNFTId, item.buyoutPrice)}
                     type="submit"
                     name="buyNft">
-                    Buy
+                    Buy for {parseFloat(formatEther(buyoutPrice)).toPrecision(3)} ETH
                   </ConnectBtn>
                 </StyledItem>)}
               {(action === "buyout" && txHash !== 'undefined') && (
@@ -393,7 +387,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     disabled="1"
                     type="submit"
                     name="buyNft">
-                    <Link to={{ pathname: `https://ropsten.etherscan.io/tx/${txHash}` }} target="_blank">{shortenAddress(txHash)}</Link>
+                     <StyledAddress address={txHash}/>
                   </ConnectBtn>
                 </StyledItem>)}
 
@@ -420,7 +414,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     style={{ width: "150px", border: "1px solid " + colors.green }}
                     disabled="1"
                     type="submit">
-                    <Link to={{ pathname: `https://ropsten.etherscan.io/tx/${txHash}` }} target="_blank">{shortenAddress(txHash)}</Link>
+                   <StyledAddress address={txHash}/>
                   </ConnectBtn>
                   <ConnectBtn
                     style={{ width: "150px" }}
@@ -444,7 +438,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     style={{ width: "150px", border: "1px solid " + colors.green }}
                     disabled="1"
                     type="submit">
-                    <Link to={{ pathname: `https://ropsten.etherscan.io/tx/${txHash}` }} target="_blank">{shortenAddress(txHash)}</Link>
+                    <StyledAddress address={txHash}/>
                   </ConnectBtn>
                 </StyledItem>)}
 
@@ -471,8 +465,8 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                   <ConnectBtn
                     style={{ width: "150px", border: "1px solid " + colors.green }}
                     disabled="1"
-                    type="submit">
-                    <Link to={{ pathname: `https://ropsten.etherscan.io/tx/${txHash}` }} target="_blank">{shortenAddress(txHash)}</Link>
+                 type="submit">
+                    <StyledAddress address={txHash}/>
                   </ConnectBtn>
                   <ConnectBtn
                     style={{ width: "150px" }}
@@ -496,7 +490,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     style={{ width: "150px", border: "1px solid " + colors.green }}
                     disabled="1"
                     type="submit">
-                    <Link to={{ pathname: `https://ropsten.etherscan.io/tx/${txHash}` }} target="_blank">{shortenAddress(txHash)}</Link>
+                    <StyledAddress address={txHash}/>
                   </ConnectBtn>
                 </StyledItem>)}
 
