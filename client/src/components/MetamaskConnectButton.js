@@ -6,6 +6,7 @@ import Text from './Text';
 import { StyledHeaderBox } from './StyledHelpers';
 import { injected } from '../connectors';
 import { shortenAddress } from '../utils/shortenAddress';
+import StyledAddress from '../components/StyledAddress';
 import { useAppContext } from '../AppContext';
 import MMLogo from '../static/metamask-logo.svg';
 import { colors } from '../theme';
@@ -74,13 +75,13 @@ const MetamaskConnectButton = () => {
     );
   }
 
+  // <MetamaskLogo />
   return (
     <StyledHeaderBox>
-      <MetamaskLogo />
       <Text
         color="white"
         style={{ marginLeft: "12px", fontFamily: "Source Code Pro"}}>
-        {shortenAddress(account)}
+        <StyledAddress address={account}/>
       </Text>
       <ConnectBtn
         style={{ fontFamily: "Source Sans Pro" }}
