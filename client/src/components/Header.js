@@ -40,7 +40,6 @@ const Header = () => {
     <>
       <GlobalError />
       <Navbar className="justify-content-between">
-        <BalancesCard />
         <Navigation />
         <MetamaskConnectButton />
       </Navbar>

@@ -22,9 +22,9 @@ const BalanceCard = () => {
   }
 
   return (
-    <StyledHeaderBox>
-        Balance: {ethBalance} ETH
-    </StyledHeaderBox>
+    <>
+      {ethBalance} ETH
+    </>
   );
 };
 

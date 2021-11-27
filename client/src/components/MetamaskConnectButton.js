@@ -8,6 +8,7 @@ import { injected } from '../connectors';
 import { shortenAddress } from '../utils/shortenAddress';
 import { StyledAddress } from '../components/StyledAddress';
 import { useAppContext } from '../AppContext';
+import BalancesCard from './BalancesCard';
 import MMLogo from '../static/metamask-logo.svg';
 import { colors } from '../theme';
 
@@ -23,6 +24,7 @@ const ConnectBtn = styled.button`
   color: white;
   border-radius: 5px;
   margin-left: 10px;
+  margin: 5px;
 `;
 
 const pageState = {
@@ -80,13 +82,13 @@ const MetamaskConnectButton = () => {
     <StyledHeaderBox>
       <Text
         color="white"
-        style={{ marginLeft: "12px", fontFamily: "Source Code Pro"}}>
-        <StyledAddress address={account}/>
+        style={{ padding: "10px", margin: "8px", marginLeft: "12px", fontFamily: "Source Code Pro"}}>
+        <StyledAddress address={account}/> <BalancesCard/>
       </Text>
       <ConnectBtn
         style={{ fontFamily: "Source Sans Pro" }}
         onClick={() => onLogOut(deactivate, () => history.push('/'))}>
-        Log Out
+        <span style={{ whiteSpace: "nowrap"}}>Log out</span>
       </ConnectBtn>
     </StyledHeaderBox>
   );
