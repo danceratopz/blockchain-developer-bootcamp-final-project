@@ -6,12 +6,11 @@ import { BigNumber, Contract } from 'ethers';
 import { formatEther } from '@ethersproject/units';
 import { useContract } from '../hooks/useContract';
 import useTransaction from '../hooks/useTransaction';
-import { shortenAddress } from '../utils/shortenAddress';
 import { TransactionState } from '../utils/states';
 import Text from './Text';
 import { StyledAddress, StyledTxn } from './StyledAddress';
 import styled from 'styled-components';
-import { FractFieldset, NoFractFieldset, Legend, ConnectBtn } from './StyledHelpers';
+import { FractFieldset, NoFractFieldset, ConnectBtn } from './StyledHelpers';
 import { colors } from '../theme';
 
 import fractionalizeNftContract from '../artifacts/contracts/FractionalizeNFT.json';
