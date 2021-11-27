@@ -7,7 +7,7 @@ import { colors } from '../theme';
 function Navigation() {
   return (
     <StyledHeaderBox>
-      <FaDiceD20 color={colors.blue}/>
+      <FaDiceD20 color={colors.blue} size="22"/>
       <div className="navigation">
         <nav className="navbar navbar-expand navbar-dark">
           <div className="container">

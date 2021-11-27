@@ -52,7 +52,7 @@ const Header = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, [])
 
-  const isMobile = windowDimension < 640;
+  const isMobile = windowDimension < 720;
 
   const handleNavToggle = () => {
     setNavToggled(!navToggled);
