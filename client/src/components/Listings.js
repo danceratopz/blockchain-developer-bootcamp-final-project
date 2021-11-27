@@ -335,13 +335,11 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
           setImageUrl(data.image)
           setImageAltText("NFT Image")
         } else {
-          console.log(data)
           setImageUrl(null)
           setImageAltText("Unable to retrieve image")
         }
       }
     });
-    console.log('nft id: ' + nftTokenId + ', imageUrl: ' + imageUrl);
   }, []);
 
   nftImage();
