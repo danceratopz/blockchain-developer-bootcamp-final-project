@@ -6,7 +6,7 @@ import Text from './Text';
 import { StyledHeaderBox } from './StyledHelpers';
 import { injected } from '../connectors';
 import { shortenAddress } from '../utils/shortenAddress';
-import StyledAddress from '../components/StyledAddress';
+import { StyledAddress } from '../components/StyledAddress';
 import { useAppContext } from '../AppContext';
 import MMLogo from '../static/metamask-logo.svg';
 import { colors } from '../theme';
