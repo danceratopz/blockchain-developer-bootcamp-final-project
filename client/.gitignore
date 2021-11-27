@@ -13,4 +13,7 @@ public/static
 .env.production.local
 .idea
 cache
-src/artifacts
+src/artifacts/ERC20Factory.json
+src/artifacts/contracts/dependencies/
+src/artifacts/deployments/
+src/artifacts/tests.json
