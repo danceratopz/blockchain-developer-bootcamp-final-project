@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Container } from 'react-bootstrap';
 import Navbar from 'react-bootstrap/Navbar';
+import Navigation from './Navigation';
 import Toggle from './Toggle';
 import Menu from './Menu';
 import { useAppContext } from '../AppContext';
@@ -37,6 +38,21 @@ const GlobalError = () => {
 
 const Header = () => {
   const [navToggled, setNavToggled] = useState(false);
+  const [windowDimension, setWindowDimension] = useState(null);
+ 
+  useEffect(() => {
+    setWindowDimension(window.innerWidth);
+  }, []);
+
+  useEffect(() => {
+    function handleResize() {
+      setWindowDimension(window.innerWidth);
+    }
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [])
+
+  const isMobile = windowDimension < 640;
 
   const handleNavToggle = () => {
     setNavToggled(!navToggled);
@@ -46,10 +62,14 @@ const Header = () => {
     <>
       <GlobalError />
       <Navbar d-flex className="justify-content-between">
-        <div>
-          <Toggle handleNavToggle={handleNavToggle} />
-          {navToggled ? <Menu handleNavToggle={handleNavToggle} /> : null}
-        </div>
+      <div>
+        { isMobile ?
+          <>
+            <Toggle handleNavToggle={handleNavToggle} />
+            {navToggled ? <Menu handleNavToggle={handleNavToggle} /> : null}
+          </>
+          : <Navigation/>}
+          </div>
         <MetamaskConnectButton />
       </Navbar>
     </>
