@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Container } from 'react-bootstrap';
 import Navbar from 'react-bootstrap/Navbar';
+import Toggle from './Toggle';
+import Menu from './Menu';
 import { useAppContext } from '../AppContext';
-import BalancesCard from './BalancesCard';
-import Navigation from './Navigation';
 import MetamaskConnectButton from './MetamaskConnectButton';
 import Text from './Text';
 
@@ -36,11 +36,20 @@ const GlobalError = () => {
 };
 
 const Header = () => {
+  const [navToggled, setNavToggled] = useState(false);
+
+  const handleNavToggle = () => {
+    setNavToggled(!navToggled);
+  }
+
   return (
     <>
       <GlobalError />
-      <Navbar className="justify-content-between">
-        <Navigation />
+      <Navbar d-flex className="justify-content-between">
+        <div>
+          <Toggle handleNavToggle={handleNavToggle} />
+          {navToggled ? <Menu handleNavToggle={handleNavToggle} /> : null}
+        </div>
         <MetamaskConnectButton />
       </Navbar>
     </>

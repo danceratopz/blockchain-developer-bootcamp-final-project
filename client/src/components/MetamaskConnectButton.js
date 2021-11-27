@@ -5,11 +5,11 @@ import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
 import Text from './Text';
 import { StyledHeaderBox } from './StyledHelpers';
 import { injected } from '../connectors';
-import { shortenAddress } from '../utils/shortenAddress';
 import { StyledAddress } from '../components/StyledAddress';
 import { useAppContext } from '../AppContext';
 import BalancesCard from './BalancesCard';
 import MMLogo from '../static/metamask-logo.svg';
+import { FaEthereum } from 'react-icons/fa';
 import { colors } from '../theme';
 
 const MetamaskLogo = styled.img.attrs({
@@ -24,7 +24,6 @@ const ConnectBtn = styled.button`
   color: white;
   border-radius: 5px;
   margin-left: 10px;
-  margin: 5px;
 `;
 
 const pageState = {
@@ -80,15 +79,16 @@ const MetamaskConnectButton = () => {
   // <MetamaskLogo />
   return (
     <StyledHeaderBox>
+      <FaEthereum />
       <Text
         color="white"
-        style={{ padding: "10px", margin: "8px", marginLeft: "12px", fontFamily: "Source Code Pro"}}>
-        <StyledAddress address={account}/> <BalancesCard/>
+        style={{ padding: "0px", margin: "8px", marginLeft: "12px", fontFamily: "Source Code Pro" }}>
+        <StyledAddress address={account} /> <BalancesCard />
       </Text>
       <ConnectBtn
         style={{ fontFamily: "Source Sans Pro" }}
         onClick={() => onLogOut(deactivate, () => history.push('/'))}>
-        <span style={{ whiteSpace: "nowrap"}}>Log out</span>
+        <span style={{ whiteSpace: "nowrap" }}>Log out</span>
       </ConnectBtn>
     </StyledHeaderBox>
   );

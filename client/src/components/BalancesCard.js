@@ -23,7 +23,7 @@ const BalanceCard = () => {
 
   return (
     <>
-      {ethBalance} ETH
+      <span style={{ whiteSpace: "nowrap"}}>{ethBalance} ETH</span>
     </>
   );
 };
