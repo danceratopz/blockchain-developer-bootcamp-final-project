@@ -8,6 +8,7 @@ import { useFractionalizeNft } from '../hooks/useFractionalizeNft';
 import useTransaction from '../hooks/useTransaction';
 import { KnownNftContracts } from '../components/KnownNftContracts'
 import Text from '../components/Text';
+import { StyledAddress, StyledTxn } from './StyledAddress';
 
 import { Contract } from '@ethersproject/contracts';
 import { ethers } from "ethers";
@@ -213,7 +214,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
                     disabled="1"
                     type="submit"
                     name="buyNft">
-                    <Link to={{ pathname: `https://ropsten.etherscan.io/tx/${txHash}` }} target="_blank">{shortenAddress(txHash)}</Link>
+                      <StyledTxn hash={txHash}/>
                   </ConnectBtn>)}
 
         </FractFieldset>
@@ -260,7 +261,8 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
                 type="text"
                 value={buyoutPrice}
                 onChange={(e) => setBuyoutPrice(e.target.value)}
-              />
+            />
+            { (status != FRACTIONALIZED) && (
             <ConnectBtn
           style={ !isPositiveInteger(nftTokenIndex) || erc20Name.length === 0 || erc20Symbol.length === 0 || !isPositiveInteger(erc20Supply) || !isPositiveFloat(buyoutPrice) ? {width: "200px", border: "1px solid white" } : {width: "200px"} }
           disabled={ !isPositiveInteger(nftTokenIndex) || erc20Name.length === 0 || erc20Symbol.length === 0 || !isPositiveInteger(erc20Supply) || !isPositiveFloat(buyoutPrice) }
@@ -268,7 +270,16 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
                 type="submit"
                 name="fractionalize">
                 Fractionalize
-              </ConnectBtn>
+              </ConnectBtn>)}
+          { (status === FRACTIONALIZED ) && txHash && (
+                <ConnectBtn
+              style={{border: "1px solid " + colors.green, width: "200px"}}
+              onClick={onFractionalizeNftClick}
+              disabled="1"
+                type="submit"
+                name="fractionalize">
+                <StyledTxn hash={txHash}/>
+              </ConnectBtn>)}          
             </div>
           </form>
         </FractFieldset>
@@ -288,14 +299,14 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
       {status === APPROVED && !!txHash && (
         <>
           <Text style={{ marginTop: '20px', marginBottom: '20px' }}>
-          NFT was successfully approved for transfer in transaction <Link to={{ pathname: `https://ropsten.etherscan.io/tx/${txHash}` }} target="_blank">{shortenAddress(txHash)}</Link>
+          NFT was successfully approved for transfer in transaction <StyledTxn hash={txHash}/>
           </Text>
           </>
       )}
       {status === FRACTIONALIZED && !!txHash && (
         <>
           <Text style={{ marginTop: '20px', marginBottom: '20px' }}>
-          NFT was successfully fractionalized in transaction <Link to={{ pathname: `https://ropsten.etherscan.io/tx/${txHash}` }} target="_blank">{shortenAddress(txHash)}</Link>
+          NFT was successfully fractionalized in transaction  <StyledTxn hash={txHash}/>
           </Text>
         </>
       )}
