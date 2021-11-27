@@ -3,11 +3,12 @@ import styled from 'styled-components';
 import { colors } from '../theme';
 
 import { FaBars } from 'react-icons/fa';
+import { FaDiceD20 } from 'react-icons/fa';
 
 const Toggle = ({ handleNavToggle }) => {
     return (
         <StyledToggle onClick={handleNavToggle}>
-            <FaBars size="24" />
+            <FaDiceD20 size="24" />
         </StyledToggle>
     )
 }

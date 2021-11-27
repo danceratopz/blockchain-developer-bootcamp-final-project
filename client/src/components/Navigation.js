@@ -1,10 +1,13 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { StyledHeaderBox } from './StyledHelpers';
+import { FaDiceD20 } from 'react-icons/fa';
+import { colors } from '../theme';
 
 function Navigation() {
   return (
     <StyledHeaderBox>
+      <FaDiceD20 color={colors.blue}/>
       <div className="navigation">
         <nav className="navbar navbar-expand navbar-dark">
           <div className="container">
