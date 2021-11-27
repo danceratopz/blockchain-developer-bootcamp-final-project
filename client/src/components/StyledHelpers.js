@@ -9,6 +9,8 @@ export const StyledHeaderBox = styled.div`
   margin-top: 0.4rem;
   border: 1px solid ${colors.blue};
   padding: 10px;
+  margin-left : 5px;
+  margin-right : 5px;
   border-radius: 5px;
   height: 50px;
 `;
