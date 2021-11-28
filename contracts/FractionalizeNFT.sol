@@ -10,7 +10,6 @@ import "./ERC20Factory.sol";
 // @author Web3Wannabe
 // @notice NFTs can be sent to the contract with a specified buyout price. The sender receives the total supply of a newly created ERC20 token.
 contract FractionalizeNFT is IERC721Receiver {
-    address public owner = msg.sender;
 
     mapping(uint256 => FractionalizedNFT) public fracNFTs; // A mapping of all fractionalized NFTs.
     uint256 public fracNFTCount = 0;
@@ -33,9 +32,7 @@ contract FractionalizeNFT is IERC721Receiver {
         BoughtOut
     }
 
-    constructor() {
-        owner = msg.sender;
-    }
+    constructor() {}
 
     /// @notice Emitted when ether is sent to the contract.
     /// @param sender The sender of the transaction/ether.
