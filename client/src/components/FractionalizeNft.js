@@ -11,7 +11,7 @@ import Text from '../components/Text';
 import { StyledAddress, StyledTxn } from './StyledAddress';
 
 import { Contract } from '@ethersproject/contracts';
-import { ethers } from "ethers";
+import { ethers, BigNumber } from "ethers";
 import { shortenAddress } from '../utils/shortenAddress';
 import { TransactionState } from  '../utils/states';
 import { colors } from '../theme';
@@ -157,6 +157,18 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
       }
     }
   };
+
+  // Respond to 'Fractionalized' event emitted from smart contract.
+  contract.on("Fractionalized", (address, fracNftId) => {
+    console.log("Got fractionalized event! ", address, " ", BigNumber.from(fracNftId).toNumber())
+    if (address != account) {
+      console.log("Event address did not match the logged in account")
+      return;
+    }
+    // setNewlyCreatedFracNftId(fracNftId);
+    // setNewlyCreatedFracNftErc20Address();
+    // setNewlyCreatedFracNftErc20Symbol(fracNftId);    
+  });
 
   if (!active) return <Redirect to="/" />;
 
