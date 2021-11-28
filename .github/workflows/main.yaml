@@ -3,7 +3,7 @@ name: Build
 # NOTE: Initially created using the brownie github-actions-mix:
 # https://github.com/brownie-mix/github-actions-mix
 
-on: ["push", "pull_request"]
+on: push
 
 env:
   # ETHERSCAN_TOKEN:
@@ -50,6 +50,8 @@ jobs:
       # Note we don't require any environment variables to run the tests with ganache, create
       # empty .env to avoid brownie errors.
       run: |
+        # Force recompile of contracts.
+        rm client/src/artifacts/contracts/{TestNFT,FractionalizeNFT}.json
         touch .env
         brownie networks add Development development_empty_dotenv cmd=ganache-cli host="http://127.0.0.1" port=8545
         brownie test --gas --coverage --network=development_empty_dotenv
