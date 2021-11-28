@@ -17,8 +17,6 @@ contract FractionalizeNFT is IERC721Receiver {
     mapping (uint => FractionalizedNFT) public fracNFTs;
     uint256 public fracNFTCount = 0;
 
-    //    mapping (address => uint256) userFracNFTs;
-
     struct FractionalizedNFT {
         uint256 fracNFTId;
         uint256 nftTokenId;
@@ -39,7 +37,7 @@ contract FractionalizeNFT is IERC721Receiver {
 
     event Received(address, uint);
     event NftReceived(address);
-    event Fractionalized(address, uint);
+    event Fractionalized(address, uint, string, address);
     event Redeemed(address, uint);
     event BoughtOut(address, uint);
     event Claimed(address, uint);
@@ -96,7 +94,7 @@ contract FractionalizeNFT is IERC721Receiver {
         idList.push(fracNFTCount);
         idListLength = idList.length;
         fracNFTCount += 1;
-        emit Fractionalized(msg.sender, fracNFTId);
+        emit Fractionalized(msg.sender, fracNFTId, erc20Symbol, address(erc20));
         return fracNFTId;
     }
 
