@@ -15,6 +15,8 @@ import { colors } from '../theme';
 
 import fractionalizeNftContract from '../artifacts/contracts/FractionalizeNFT.json';
 
+const CONFIRMATION_COUNT = 1;
+
 const listingState = {
   LOADING: 'LOADING',
   READY: 'READY',

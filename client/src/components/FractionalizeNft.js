@@ -20,7 +20,7 @@ import { ConnectBtn, FractFieldset, Legend, FractInput } from './StyledHelpers';
 import fractionalizeNftContract from '../artifacts/contracts/FractionalizeNFT.json';
 import exampleErc721Contract from '../artifacts/contracts/TestNFT.json';
 
-const CONFIRMATION_COUNT = 2;
+const CONFIRMATION_COUNT = 1;
 
 const BuyButton = styled(Button).attrs({ variant: 'outline-success' })
 
@@ -167,7 +167,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
     }
     // setNewlyCreatedFracNftId(fracNftId);
     // setNewlyCreatedFracNftErc20Address();
-    // setNewlyCreatedFracNftErc20Symbol(fracNftId);    
+    // setNewlyCreatedFracNftErc20Symbol(fracNftId);
   });
 
   if (!active) return <Redirect to="/" />;
@@ -307,7 +307,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
                 type="submit"
                 name="fractionalize">
                 <StyledTxn hash={txHash}/>
-              </ConnectBtn>)}          
+              </ConnectBtn>)}
             </div>
           </form>
         </FractFieldset>
