@@ -21,7 +21,8 @@ contract TestNFT is ERC721URIStorage, Ownable {
     /// @param tokenURI The uniform resource identifier specifying the location of the NFT's metadata.
     /// @return The ID of the newly minted NFT.
     function mintNFT(address recipient, string memory tokenURI)
-        public onlyOwner
+        public
+        onlyOwner
         returns (uint256)
     {
         _tokenIds.increment();
