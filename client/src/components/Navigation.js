@@ -19,13 +19,13 @@ function Navigation() {
                   </NavLink>
                 </li>
                 <li className="nav-item">
-                  <NavLink className="nav-link" to="/Redeem">
-                    Redeem
+                  <NavLink className="nav-link" to="/Market">
+                    Market
                   </NavLink>
                 </li>
                 <li className="nav-item">
-                  <NavLink className="nav-link" to="/Buyout">
-                    Buyout
+                  <NavLink className="nav-link" to="/Redeem">
+                    Redeem
                   </NavLink>
                 </li>
                 <li className="nav-item">

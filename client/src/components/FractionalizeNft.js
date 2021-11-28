@@ -173,7 +173,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
         status === ERROR) && (
       <FractFieldset>
         <legend style={{ float: "left" }}>
-          Fractionalize NFT
+          Fractionalize an NFT
         </legend>
         <Text style={{ display: "inline-block" }}>
           Fractionalize an ERC721 NFT into an ERC20 token - the fractionalizing account receives the total supply.
@@ -241,7 +241,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
           <Text style={{ display: "inline-block" }}>
             Specify the parameters of the ERC20 token that will represent partial ownership of the NFT.
             <br />
-            The buyout price specifies the price at which the NFT may be bought from the contract by a third party.
+            The buyout price specifies the price at which the NFT may be bought from the contract by a third party from the Market.
           </Text>
           <form>
             <div>

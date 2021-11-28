@@ -26,8 +26,8 @@ const App = () => {
         <div>
           <Header />
           <Route exact path="/" component={Home} />
+          <Route exact path="/market" component={Buyout} />
           <Route exact path="/redeem" component={Redeem} />
-          <Route exact path="/buyout" component={Buyout} />
           <Route exact path="/payout" component={Payout} />
         </div>
       </Web3ReactProvider>

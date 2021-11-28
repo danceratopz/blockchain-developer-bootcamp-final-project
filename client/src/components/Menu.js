@@ -10,8 +10,8 @@ const Menu = ({ handleNavToggle }) => {
     return (
         <StyledMenu>
             <StyledLink onClick={handleNavToggle} to="/">Fractionalize</StyledLink>
+            <StyledLink onClick={handleNavToggle} to="/Market">Market</StyledLink>
             <StyledLink onClick={handleNavToggle} to="/Redeem">Redeem</StyledLink>
-            <StyledLink onClick={handleNavToggle} to="/Buyout">Buyout</StyledLink>
             <StyledLink onClick={handleNavToggle} to="/Payout">Payout</StyledLink>
             <CloseToggle onClick={handleNavToggle}><FaTimes size="24" /></CloseToggle>
         </StyledMenu>
