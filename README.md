@@ -1,6 +1,7 @@
 # 2021 ConsenSys Blockchain Developer Bootcamp Final Project: An NFT Fractionalizer
 
 [![Build](https://github.com/web3wannabe/blockchain-developer-bootcamp-final-project/actions/workflows/main.yaml/badge.svg)](https://github.com/web3wannabe/blockchain-developer-bootcamp-final-project/actions/workflows/main.yaml)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/37e1b656-a558-49cf-8b9b-ffbe35d4a80b/deploy-status)](https://app.netlify.com/sites/frac/deploys)
 
 ## Motivation and Aim
 
