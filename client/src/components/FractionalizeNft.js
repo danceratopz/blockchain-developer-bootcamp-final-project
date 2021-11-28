@@ -61,6 +61,24 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
   const fractionalizeNftContractAddress = fractionalizeNftAddress
   const contract = useContract(fractionalizeNftAddress, fractionalizeNftContract.abi);
 
+  const [windowDimension, setWindowDimension] = useState(null);
+  useEffect(() => {
+    setWindowDimension(window.innerWidth);
+  }, []);
+
+  useEffect(() => {
+    function handleResize() {
+      setWindowDimension(window.innerWidth);
+    }
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [])
+
+  const isMobile = windowDimension < 600
+  const addressInputWidth = isMobile ? "330px" : "460px";
+  const tokenIdInputWidth = isMobile ? "120px" : "120px";
+  const miscInputWidth = isMobile ? "290px" : "290px";
+
   const onApproveNftClick = async () => {
     setTxnStatus(TransactionState.PENDING);
     setStatus(InteractionState.LOADING);
@@ -168,7 +186,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
           </Text>
           <br />
             <FractInput
-            style={ nftContractAddress.length != 42 ? {width: "340px", border: "1px solid " + colors.red} : {width: "340px"}}
+           style={ nftContractAddress.length != 42 ? {width: addressInputWidth, border: "1px solid " + colors.red} : {width: addressInputWidth}}
             name="nftContractAddress"
             placeholder="NFT contract address (string, 0x...)"
             type="text"
@@ -178,7 +196,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
             />
           <KnownNftContracts/>
           <FractInput
-            style={ !isPositiveInteger(nftTokenIndex) ? {width: "120px", border: "1px solid " + colors.red} : {width: "120px"}}
+            style={ !isPositiveInteger(nftTokenIndex) ? {width: tokenIdInputWidth, border: "1px solid " + colors.red} : {width: tokenIdInputWidth}}
             name="nftTokenIndex"
             placeholder="Token Index (int)"
             type="text"
@@ -228,7 +246,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
           <form>
             <div>
               <FractInput
-                style={ erc20Name.length === 0 ? {width: "230px", border: "1px solid " + colors.red} : {width: "230px"}}
+                style={ erc20Name.length === 0 ? {width: miscInputWidth, border: "1px solid " + colors.red} : {width: miscInputWidth}}
                 name="erc20Name"
                 placeholder="ERC Token Name (string)"
                 type="text"
@@ -236,7 +254,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
                 onChange={(e) => setErc20Name(e.target.value)}
               />
               <FractInput
-                style={ erc20Symbol.length === 0 ? {width: "230px", border: "1px solid " + colors.red} : {width: "230px"}}
+                style={ erc20Symbol.length === 0 ? {width: miscInputWidth, border: "1px solid " + colors.red} : {width: miscInputWidth}}
                 name="erc20Symbol"
                 placeholder="ERC Token Symbol (string)"
                 type="text"
@@ -245,7 +263,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
               />
               <br />
               <FractInput
-                style={ !isPositiveInteger(erc20Supply) ? {width: "230px", border: "1px solid " + colors.red} : {width: "230px"}}
+                style={ !isPositiveInteger(erc20Supply) ? {width: miscInputWidth, border: "1px solid " + colors.red} : {width: miscInputWidth}}
                 name="erc20Supply"
                 placeholder="ERC Token Supply (int)"
                 type="text"
@@ -253,7 +271,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
                 onChange={(e) => setErc20Supply(e.target.value)}
               />
             <FractInput
-                style={ !isPositiveFloat(buyoutPrice) ? {width: "230px", border: "1px solid " + colors.red} : {width: "230px"}}
+                style={ !isPositiveFloat(buyoutPrice) ? {width: miscInputWidth, border: "1px solid " + colors.red} : {width: miscInputWidth}}
                 name="buyoutPrice"
                 placeholder="Buyout Price (Ether)"
                 type="text"
