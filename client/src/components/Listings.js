@@ -62,7 +62,7 @@ const StyledItemTextContainer = styled.div`
 
 const LinkedNftTokenId = ({ contractAddress, tokenId }) => {
   return (
-    <Link style={{ color: colors.blue }} to={{ pathname: `https://ropsten.etherscan.io/token/${contractAddress}?={tokenId}` }} target="_blank">
+    <Link style={{ color: colors.blue }} to={{ pathname: `https://ropsten.etherscan.io/token/${contractAddress}?a=${tokenId}#inventory` }} target="_blank">
       Token Id {BigNumber.from(tokenId).toNumber()}
     </Link>
   )
