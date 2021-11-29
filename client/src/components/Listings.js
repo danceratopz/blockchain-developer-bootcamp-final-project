@@ -12,6 +12,7 @@ import { StyledAddress, StyledTxn } from './StyledAddress';
 import styled from 'styled-components';
 import { FractFieldset, NoFractFieldset, ConnectBtn } from './StyledHelpers';
 import { colors } from '../theme';
+import { FaCopy } from 'react-icons/fa';
 
 import fractionalizeNftContract from '../artifacts/contracts/FractionalizeNFT.json';
 
@@ -51,11 +52,11 @@ const StyledItem = styled.div`
   align-items: center;
   padding: 5px;
   border-radius: 5px;
-  max-width: 220px;
+  width: 260px;
 `;
 
 const StyledItemTextContainer = styled.div`
-  margin-top: 10px;
+  margin-top: 5px;
   display: flex;
   flex-direction: column;
 `;
@@ -65,6 +66,16 @@ const LinkedNftTokenId = ({ contractAddress, tokenId }) => {
     <Link style={{ color: colors.blue }} to={{ pathname: `https://ropsten.etherscan.io/token/${contractAddress}?a=${tokenId}#inventory` }} target="_blank">
       Token Id {BigNumber.from(tokenId).toNumber()}
     </Link>
+  )
+};
+
+const CopyButton = ({ text }) => {
+  return (
+    <ConnectBtn
+      style={{ border: "0px", width: "20px" }}
+      onClick={() => { navigator.clipboard.writeText(text) }}>
+      <FaCopy size="15" color={colors.blue} />
+    </ConnectBtn>
   )
 };
 
@@ -350,8 +361,9 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
 
     return (
       <img src={imageUrl} style={{
-        height: '150px',
-        width: '100%',
+        height: '200px',
+        width: 'auto',
+        objectFit: 'contain',
         borderRadius: '5px',
         border: "1px solid " + colors.blue,
         fontFamily: "Source Sans Pro",
@@ -375,8 +387,14 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
             <StyledItemTextContainer>
               <Text center display="block" line-height="50px" text-overflow="ellipsis " overflow="hidden" style={{ fontFamily: "Source Code Pro" }}>{erc20Name}</Text>
               <NftImage fracNftId={item.fracNftId} />
-              <Text center style={{ fontFamily: "Source Code Pro" }}>ERC721 <LinkedNftTokenId contractAddress={erc721Address} tokenId={nftTokenId} /> from <StyledAddress address={erc721Address} /></Text>
-              {action === "buyout" && txHash === 'undefined' && (
+              <Text style={{ fontFamily: "Source Code Pro" }}>
+                <span style={{ whiteSpace: "nowrap" }}>ERC721: <StyledAddress address={erc721Address} /><CopyButton text={erc721Address} /></span>
+                <br />
+                ERC721 Token: <LinkedNftTokenId contractAddress={erc721Address} tokenId={nftTokenId} />
+                <br />
+                ERC20: <StyledAddress address={erc20Address} /><CopyButton text={erc20Address} />
+              </Text>
+              {action === "buyout" && txnStatus != TransactionState.PENDING && txHash === 'undefined' && (
                 <StyledItem>
                   <ConnectBtn
                     style={{ width: "150px" }}
