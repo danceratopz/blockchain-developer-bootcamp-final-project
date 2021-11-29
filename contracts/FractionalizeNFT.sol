@@ -96,6 +96,12 @@ contract FractionalizeNFT is IERC721Receiver {
         revert();
     }
 
+    /// @notice A getter function to get the current number of fractionalized NFT entries in the contract.
+    /// @return The number of fractionalized NFT entries.
+    function getFracNftCount() public view returns (uint256) {
+        return _fracNFTCount.current();
+    }
+
     /// @notice A getter function for the contract address of a fractionalized NFT's ERC20 token.
     /// @param fracNFTId The ID of the fractionalized NFT.
     /// @return The ERC20 contract address.
