@@ -37,4 +37,11 @@ contract TestNFT is ERC721URIStorage, Ownable {
         emit Minted(recipient, newItemId);
         return newItemId;
     }
+
+    /// @notice Helper that returns the ID last minted NFT.
+    /// @return The ID of the last NFT that was minted.
+    function getLastTokenID() public view returns (uint256) {
+        require(_tokenIds.current() > 0, "Nothing minted, yet.");
+        return _tokenIds.current();
+    }
 }
