@@ -520,7 +520,7 @@ const Listings = ({ fractionalizeNftAddress, action }) => {
   const getProperties = useCallback(async (contract) => {
     try {
       // still on the lookout for optimal solidity data structures, this ain't it
-      const idListLengthBN = await contract.fracNFTCount();
+      const idListLengthBN = await contract.getFracNftCount();
       const idBNs = await Promise.all(Array.from(Array(idListLengthBN.toNumber())).map((_, i) => contract.idList(i)));
       const ids = idBNs.map((n) => n.toNumber());
       const arr = await Promise.all(ids.map((id) => contract.fracNFTs(id)));
