@@ -129,7 +129,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
         nftTokenIndex,
         erc20Name,
         erc20Symbol,
-        erc20Supply,
+        ethers.utils.parseUnits(erc20Supply, 18),  // Our ERC20Factory uses OpenZeppelin's default of 18 digits.
         ethers.utils.parseEther(buyoutPrice),
         {from: account});
       const confirmations = chainId === 1337 ? 1 : CONFIRMATION_COUNT;
