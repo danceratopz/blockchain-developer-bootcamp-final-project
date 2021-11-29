@@ -7,9 +7,9 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 import "./ERC20Factory.sol";
 
-// @title NFT Fractionalizer with Buyout Functionality
-// @author Web3Wannabe
-// @notice NFTs can be sent to the contract with a specified buyout price. The sender receives the total supply of a newly created ERC20 token.
+/// @title NFT Fractionalizer with Buyout Functionality
+/// @author Web3Wannabe
+/// @notice NFTs can be sent to the contract with a specified buyout price. The sender receives the total supply of a newly created ERC20 token.
 contract FractionalizeNFT is IERC721Receiver {
     using Counters for Counters.Counter;
     Counters.Counter private _fracNFTCount;
