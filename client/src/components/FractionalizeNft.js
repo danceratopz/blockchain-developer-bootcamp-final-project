@@ -336,6 +336,9 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
           <Text style={{ marginTop: '20px', marginBottom: '20px' }}>
           NFT was successfully fractionalized in transaction  <StyledTxn hash={txHash}/>
           </Text>
+          <Text style={{ marginTop: '20px', marginBottom: '20px' }}>
+          The fractionalized NFT (and its corresponding ERC20 address) can now be found on the <Link style={{ color: colors.blue }} to="/Market">Market</Link> and <Link style={{ color: colors.blue }} to="/Redeem">Redeem</Link> Redeem pages.
+          </Text>
         </>
       )}
       {status === ERROR && (
