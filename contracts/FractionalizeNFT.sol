@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
 
+import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
@@ -10,9 +11,10 @@ import "./ERC20Factory.sol";
 // @author Web3Wannabe
 // @notice NFTs can be sent to the contract with a specified buyout price. The sender receives the total supply of a newly created ERC20 token.
 contract FractionalizeNFT is IERC721Receiver {
+    using Counters for Counters.Counter;
+    Counters.Counter private _fracNFTCount;
 
     mapping(uint256 => FractionalizedNFT) public fracNFTs; // A mapping of all fractionalized NFTs.
-    uint256 public fracNFTCount = 0;
 
     struct FractionalizedNFT {
         uint256 fracNFTId;
@@ -136,8 +138,8 @@ contract FractionalizeNFT is IERC721Receiver {
             erc20Supply,
             msg.sender
         );
-        uint256 fracNFTId = fracNFTCount;
-        fracNFTs[fracNFTCount] = FractionalizedNFT({
+        uint256 fracNFTId = _fracNFTCount.current();
+        fracNFTs[_fracNFTCount.current()] = FractionalizedNFT({
             fracNFTId: fracNFTId,
             nftTokenId: nftTokenId,
             erc721Address: nftContractAddress,
@@ -148,9 +150,9 @@ contract FractionalizeNFT is IERC721Receiver {
             buyoutPrice: buyoutPrice,
             state: State.Fractionalized
         });
-        idList.push(fracNFTCount);
+        idList.push(_fracNFTCount.current());
         idListLength = idList.length;
-        fracNFTCount += 1;
+        _fracNFTCount.increment();
         emit Fractionalized(msg.sender, fracNFTId, erc20Symbol, address(erc20));
         return fracNFTId;
     }
