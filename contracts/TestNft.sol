@@ -16,6 +16,11 @@ contract TestNFT is ERC721URIStorage, Ownable {
 
     constructor() ERC721("WannabeNFT", "WNFT") {}
 
+    /// @notice Emitted upon a successful NFT mint.
+    /// @param recipient The address that received the NFT.
+    /// @param tokenId The index of hte minted NFT.
+    event Minted(address indexed recipient, uint256 indexed tokenId);
+
     /// @notice Mint a new NFT with metadata at the specified tokenURI and transfer it to the recipient.
     /// @param recipient The address to receive the newly minted NFT.
     /// @param tokenURI The uniform resource identifier specifying the location of the NFT's metadata.
@@ -26,11 +31,10 @@ contract TestNFT is ERC721URIStorage, Ownable {
         returns (uint256)
     {
         _tokenIds.increment();
-
         uint256 newItemId = _tokenIds.current();
         _mint(recipient, newItemId);
         _setTokenURI(newItemId, tokenURI);
-
+        emit Minted(recipient, newItemId);
         return newItemId;
     }
 }
