@@ -335,9 +335,16 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
     const abi = [
       "function tokenURI(uint256 id) view returns (string)",
     ];
-    const signerOrProvider = account ? library.getSigner(account).connectUnchecked() : library;
+    const signerOrProvider = library;
     const erc721Contract = new Contract(erc721Address, abi, signerOrProvider);
     const jsonUri = await erc721Contract.tokenURI(BigNumber.from(nftTokenId).toNumber())
+
+    if (erc721Address === "0x4C153BFaD26628BdbaFECBCD160A0790b1b8F212") {
+      // Paradigm's original multifaucet deployment set the tokenURI to the image. Only in the subsequent deployment to
+      // 0xf5d..e3a2b the tokenURI was set that to the JSON metadata file (as expected by convention).
+      setImageUrl(jsonUri);
+      return;
+    }
 
     getJSON(jsonUri, function (err, data) {
       if (err !== null) {
