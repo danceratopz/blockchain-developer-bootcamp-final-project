@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Container, Spinner } from 'react-bootstrap';
 import { useWeb3React } from '@web3-react/core';
-import { BigNumber, Contract } from 'ethers';
+import { BigNumber, Contract, utils } from 'ethers';
 import { formatEther } from '@ethersproject/units';
 import { useContract } from '../hooks/useContract';
 import useTransaction from '../hooks/useTransaction';
@@ -129,13 +129,16 @@ const FilteredListing = ({ fractionalizeNftAddress, listings, action }) => {
     ];
     const signerOrProvider = library
     const erc20 = new Contract(erc20Address, abi, signerOrProvider);
-    const balance = BigNumber.from(await erc20.balanceOf(account)).toNumber()
+    const balance = await erc20.balanceOf(account)
 
     if (action === "redeem") {
-      const totalSupply = await BigNumber.from(await erc20.totalSupply()).toNumber()
-      return balance === totalSupply;
+      // TODO: This could be sped-up in the case of originalOwner redemptions (by checking if account is originalOwner
+      // and state is Fractionalized). The contract could even maintain a list. This does not cover all cases though.
+      const totalSupply = await erc20.totalSupply()
+      console.log("totalSupply ", utils.formatUnits(totalSupply), "balance ", utils.formatUnits(balance));
+      return utils.formatUnits(balance) === utils.formatUnits(totalSupply);
     } else if (action === "payout") {
-      return balance > 0;
+      return utils.formatUnits(balance) > 0;
     } else {
       console.log("Error: unexpected action: '", action, "'")
     }
@@ -276,8 +279,8 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
       ];
       const signerOrProvider = account ? library.getSigner(account).connectUnchecked() : library;
       const erc20 = new Contract(erc20Address, abi, signerOrProvider);
-      const balance = BigNumber.from(await erc20.balanceOf(account)).toNumber()
-      console.log(balance)
+      const balance = await erc20.balanceOf(account)
+      console.log("balance:", utils.formatUnits(balance))
       const transaction = await erc20.approve(
         fractionalizeNftContractAddress,
         balance,
