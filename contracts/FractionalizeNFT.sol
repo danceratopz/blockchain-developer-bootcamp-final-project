@@ -57,6 +57,14 @@ contract FractionalizeNFT is IERC721Receiver {
         address erc20Address
     );
 
+    /// @notice List of all fractionalized NFT ids.
+    /// @dev Used as a helper when iterating over fractionalized NFTs in frontend clients.
+    uint256[] public idList;
+
+    /// @notice idList length.
+    /// @dev Used as a helper when iterating over fractionalized NFTs in frontend clients.
+    uint256 public idListLength;
+
     /// @notice Emitted when a user successfully redeems an NFT in exchange for the total ERC20 supply.
     /// @param sender The address that redeemed the NFT (i.e., the address that called redeem()).
     /// @param fracNFTId The index of the fractionalized NFT that was redeemed.
@@ -72,13 +80,13 @@ contract FractionalizeNFT is IERC721Receiver {
     /// @param fracNFTId The index of the fractionalized NFT that was bought.
     event BoughtOut(address indexed sender, uint256 indexed fracNFTId);
 
-    /// @notice List of all fractionalized NFT ids.
-    /// @dev Used as a helper when iterating over fractionalized NFTs in frontend clients.
-    uint256[] public idList;
-
-    /// @notice idList length.
-    /// @dev Used as a helper when iterating over fractionalized NFTs in frontend clients.
-    uint256 public idListLength;
+    modifier isLegalFracNftId(uint256 fracNFTId) {
+        require(
+            fracNFTId < _fracNFTCount.current(),
+            "fracNFTId does not exist in fracNFTs."
+        );
+        _;
+    }
 
     receive() external payable {
         emit Received(msg.sender, msg.value);
@@ -91,7 +99,12 @@ contract FractionalizeNFT is IERC721Receiver {
     /// @notice A getter function for the contract address of a fractionalized NFT's ERC20 token.
     /// @param fracNFTId The ID of the fractionalized NFT.
     /// @return The ERC20 contract address.
-    function getERC20Address(uint256 fracNFTId) public view returns (address) {
+    function getERC20Address(uint256 fracNFTId)
+        public
+        view
+        isLegalFracNftId(fracNFTId)
+        returns (address)
+    {
         return fracNFTs[fracNFTId].erc20Address;
     }
 
@@ -101,6 +114,7 @@ contract FractionalizeNFT is IERC721Receiver {
     function getERC20Symbol(uint256 fracNFTId)
         public
         view
+        isLegalFracNftId(fracNFTId)
         returns (string memory)
     {
         return fracNFTs[fracNFTId].erc20Symbol;
@@ -109,7 +123,12 @@ contract FractionalizeNFT is IERC721Receiver {
     /// @notice A getter function for the state of a fractionalized NFT.
     /// @param fracNFTId The ID of the fractionalized NFT.
     /// @return The fractionalized NFT's state (Fractionalized, Redeemed or BoughtOut).
-    function getState(uint256 fracNFTId) public view returns (State) {
+    function getState(uint256 fracNFTId)
+        public
+        view
+        isLegalFracNftId(fracNFTId)
+        returns (State)
+    {
         return fracNFTs[fracNFTId].state;
     }
 
