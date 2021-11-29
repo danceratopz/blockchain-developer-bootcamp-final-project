@@ -420,7 +420,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     disabled="1"
                     type="submit"
                     name="buyNft">
-                    <StyledTxn address={txHash} />
+                    <StyledTxn hash={txHash} />
                   </ConnectBtn>
                 </StyledItem>)}
 
@@ -447,7 +447,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     style={{ width: "150px", border: "1px solid " + colors.green }}
                     disabled="1"
                     type="submit">
-                    <StyledTxn address={txHash} />
+                    <StyledTxn hash={txHash} />
                   </ConnectBtn>
                   <ConnectBtn
                     style={{ width: "150px" }}
@@ -471,7 +471,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     style={{ width: "150px", border: "1px solid " + colors.green }}
                     disabled="1"
                     type="submit">
-                    <StyledTxn address={txHash} />
+                    <StyledTxn hash={txHash} />
                   </ConnectBtn>
                 </StyledItem>)}
 
@@ -499,7 +499,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     style={{ width: "150px", border: "1px solid " + colors.green }}
                     disabled="1"
                     type="submit">
-                    <StyledTxn address={txHash} />
+                    <StyledTxn hash={txHash} />
                   </ConnectBtn>
                   <ConnectBtn
                     style={{ width: "150px" }}
@@ -523,7 +523,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     style={{ width: "150px", border: "1px solid " + colors.green }}
                     disabled="1"
                     type="submit">
-                    <StyledTxn address={txHash} />
+                    <StyledTxn hash={txHash} />
                   </ConnectBtn>
                 </StyledItem>)}
 
