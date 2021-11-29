@@ -64,7 +64,7 @@ const StyledItemTextContainer = styled.div`
 const LinkedNftTokenId = ({ contractAddress, tokenId }) => {
   return (
     <Link style={{ color: colors.blue }} to={{ pathname: `https://ropsten.etherscan.io/token/${contractAddress}?a=${tokenId}#inventory` }} target="_blank">
-      Token Id {BigNumber.from(tokenId).toNumber()}
+      Id {BigNumber.from(tokenId).toNumber()}
     </Link>
   )
 };
@@ -95,6 +95,13 @@ var getJSON = function (url, callback) {
   };
   xhr.send();
 };
+
+const SkinnySpinner = () => {
+  return (
+      <Spinner animation="border" size="sm" style={{ color: colors.green, marginTop: '2px', marginBottom: '3px' }}
+      />
+  );
+}
 
 const BuyButton = styled(Button).attrs({ variant: 'outline-success' })
 
@@ -230,18 +237,21 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
     console.log("onBuyNftClick " + fracNFTId)
     try {
       setTxnStatus(TransactionState.PENDING);
+      setTxHash('waiting');
       const transaction = await contract.buyout(fracNFTId, { from: account, value: buyoutPrice });
       const confirmations = chainId === 1337 ? 1 : CONFIRMATION_COUNT;
       await transaction.wait(confirmations);
       setTxHash(transaction.hash);
       setTxnStatus(TransactionState.SUCCESS);
     } catch (e) {
+      setTxHash('undefined');
       processTxnError(e);
     }
   };
 
   const onRedeemNftClick = async (fracNFTId) => {
     console.log("onRedeemNftClick, fracNFTId " + fracNFTId)
+    setTxHash('waitingredeem')
     try {
       setTxnStatus(TransactionState.PENDING);
       const transaction = await contract.redeem(fracNFTId, { from: account });
@@ -259,6 +269,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
     console.log("onApproveErc20Click " + fracNFTId)
     try {
       setTxnStatus(TransactionState.PENDING);
+      setTxHash('waiting');
       const abi = [
         "function balanceOf(address owner) view returns (uint256)",
         "function approve(address owner, uint256 amount) returns (bool)",
@@ -273,9 +284,10 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
         { from: account });
       const confirmations = chainId === 1337 ? 1 : CONFIRMATION_COUNT;
       await transaction.wait(confirmations);
+      console.log(transaction.hash)
       setTxHash(transaction.hash);
       setTxnStatus(TransactionState.SUCCESS);
-      setErc20ApprovalStatus(Erc20ApprovalState.APPROVED);
+      setStatus(InteractionState.APPROVED);
       console.log("erc20ApprovalStatus: ", erc20ApprovalStatus, "txhash: ", txHash)
     } catch (e) {
       processTxnError(e);
@@ -284,12 +296,15 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
 
   const onPayoutClick = async (fractNFTId) => {
     console.log("onPayoutClick " + fracNFTId)
+    setTxHash('waitingpayout');
     try {
       setTxnStatus(TransactionState.PENDING);
+
       const transaction = await contract.claim(fracNFTId, { from: account });
       const confirmations = chainId === 1337 ? 1 : CONFIRMATION_COUNT;
       await transaction.wait(confirmations);
       setTxHash(transaction.hash);
+      console.log(txHash)
       setTxnStatus(TransactionState.SUCCESS);
       setStatus(InteractionState.ACTION_COMPLETE);
     } catch (e) {
@@ -368,8 +383,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
 
     return (
       <img src={imageUrl} style={{
-        height: '200px',
-        width: 'auto',
+        height: '150px',
         objectFit: 'contain',
         borderRadius: '5px',
         border: "1px solid " + colors.blue,
@@ -401,7 +415,8 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                 <br />
                 ERC20: <StyledAddress address={erc20Address} /><CopyButton text={erc20Address} />
               </Text>
-              {action === "buyout" && txnStatus != TransactionState.PENDING && txHash === 'undefined' && (
+
+              {action === "buyout" && txHash === 'undefined' && (
                 <StyledItem>
                   <ConnectBtn
                     style={{ width: "150px" }}
@@ -413,19 +428,35 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     {parseFloat(formatEther(buyoutPrice)).toPrecision(3)} ETH
                   </ConnectBtn>
                 </StyledItem>)}
-              {(action === "buyout" && txHash !== 'undefined') && (
+              {(action === "buyout" && txHash === 'waiting') && (
+                <StyledItem>
+                  <ConnectBtn
+                    style={{ width: "150px", border: "1px solid " + colors.blue }}
+                    disabled="1"
+                    type="submit"
+                    name="buyNft">
+                    <Spinner
+                      animation="border"
+                      size="sm"
+                      style={{ color: colors.green, marginTop: '15px', marginBottom: '15px' }}
+                    />
+                  </ConnectBtn>
+                </StyledItem>)}
+              {(action === "buyout" && (txHash != 'waiting') && (txHash != 'undefined')) && (
                 <StyledItem>
                   <ConnectBtn
                     style={{ width: "150px", border: "1px solid " + colors.green }}
                     disabled="1"
                     type="submit"
                     name="buyNft">
+                    <span style={{ whiteSpace: "nowrap" }}>Bought in</span>
+                    <br />
                     <StyledTxn hash={txHash} />
                   </ConnectBtn>
                 </StyledItem>)}
 
-              {(action === "redeem" && txHash === 'undefined') && (
-                <StyledItem>
+               {((action === "redeem" && txHash === 'undefined' ) || status === InteractionState.ERROR) && (
+                 <StyledItem>
                   <ConnectBtn
                     style={{ width: "150px" }}
                     onClick={() => onApproveErc20Click(item.fracNFTId)}
@@ -441,7 +472,44 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     Redeem
                   </ConnectBtn>
                 </StyledItem>)}
-              {(action === "redeem" && status != InteractionState.ACTION_COMPLETE && erc20ApprovalStatus === Erc20ApprovalState.APPROVED) && (
+               {(action === "redeem" && txHash === 'waiting'  && status != InteractionState.APPROVED && status != InteractionState.ERROR) && (
+                <StyledItem>
+                  <ConnectBtn
+                    style={{ width: "150px" }}
+                    disabled="1"
+                    onClick={() => onApproveErc20Click(item.fracNFTId)}
+                    type="submit"
+                    name="onApproveErc20Click">
+                   <SkinnySpinner />
+                  </ConnectBtn>
+                  <ConnectBtn
+                    style={{ width: "150px" }}
+                    onClick={() => onRedeemNftClick(item.fracNFTId)}
+                    type="submit"
+                    name="reddemNft">
+                    Redeem
+                  </ConnectBtn>
+                  </StyledItem>)}
+              {(action === "redeem" && txHash === 'waitingredeem') && (
+                <StyledItem>
+                  <ConnectBtn
+                    style={{ border: "1px solid white", width: "150px" }}
+                    disabled="1"
+                    onClick={() => onApproveErc20Click(item.fracNFTId)}
+                    type="submit"
+                    name="onApproveErc20Click">
+                    Approved
+                  </ConnectBtn>
+                  <ConnectBtn
+                   style={{ width: "150px" }}
+                    disabled="1"
+                    onClick={() => onRedeemNftClick(item.fracNFTId)}
+                    type="submit"
+                    name="reddemNft">
+                   <SkinnySpinner />
+                  </ConnectBtn>
+                </StyledItem>)}
+              {(action === "redeem" && txHash != 'undefined' && txHash != 'waiting' && txHash != 'waitingredeem' && status === InteractionState.APPROVED  && status != InteractionState.ERROR) && (
                 <StyledItem>
                   <ConnectBtn
                     style={{ width: "150px", border: "1px solid " + colors.green }}
@@ -457,7 +525,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     Redeem
                   </ConnectBtn>
                 </StyledItem>)}
-              {(action === "redeem" && status === InteractionState.ACTION_COMPLETE && txHash != 'undefined') && (
+              {(action === "redeem" && txHash != 'undefined' && txHash != 'waiting' && txHash != 'waitingredeem' && status === InteractionState.ACTION_COMPLETE  && status != InteractionState.ERROR) && (
                 <StyledItem>
                   <ConnectBtn
                     style={{ border: "1px solid white", width: "150px" }}
@@ -475,9 +543,8 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                   </ConnectBtn>
                 </StyledItem>)}
 
-
-              {(action === "payout" && txHash === 'undefined') && (
-                <StyledItem>
+               {((action === "payout" && txHash === 'undefined' ) || status === InteractionState.ERROR) && (
+                 <StyledItem>
                   <ConnectBtn
                     style={{ width: "150px" }}
                     onClick={() => onApproveErc20Click(item.fracNFTId)}
@@ -493,7 +560,44 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     Payout
                   </ConnectBtn>
                 </StyledItem>)}
-              {(action === "payout" && status != InteractionState.ACTION_COMPLETE && erc20ApprovalStatus === Erc20ApprovalState.APPROVED) && (
+               {(action === "payout" && txHash === 'waiting'  && status != InteractionState.APPROVED && status != InteractionState.ERROR) && (
+                <StyledItem>
+                  <ConnectBtn
+                    style={{ width: "150px" }}
+                    disabled="1"
+                    onClick={() => onApproveErc20Click(item.fracNFTId)}
+                    type="submit"
+                    name="onApproveErc20Click">
+                   <SkinnySpinner />
+                  </ConnectBtn>
+                  <ConnectBtn
+                    style={{ width: "150px" }}
+                    onClick={() => onPayoutClick(item.fracNFTId)}
+                    type="submit"
+                    name="reddemNft">
+                    Payout
+                  </ConnectBtn>
+                  </StyledItem>)}
+              {(action === "payout" && txHash === 'waitingpayout') && (
+                <StyledItem>
+                  <ConnectBtn
+                    style={{ border: "1px solid white", width: "150px" }}
+                    disabled="1"
+                    onClick={() => onApproveErc20Click(item.fracNFTId)}
+                    type="submit"
+                    name="onApproveErc20Click">
+                    Approved
+                  </ConnectBtn>
+                  <ConnectBtn
+                   style={{ width: "150px" }}
+                    disabled="1"
+                    onClick={() => onPayoutClick(item.fracNFTId)}
+                    type="submit"
+                    name="reddemNft">
+                   <SkinnySpinner />
+                  </ConnectBtn>
+                </StyledItem>)}
+              {(action === "payout" && txHash != 'undefined' && txHash != 'waiting' && txHash != 'waitingpayout' && status === InteractionState.APPROVED  && status != InteractionState.ERROR) && (
                 <StyledItem>
                   <ConnectBtn
                     style={{ width: "150px", border: "1px solid " + colors.green }}
@@ -509,7 +613,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     Payout
                   </ConnectBtn>
                 </StyledItem>)}
-              {(action === "payout" && status === InteractionState.ACTION_COMPLETE && txHash != 'undefined') && (
+              {(action === "payout" && txHash != 'undefined' && txHash != 'waiting' && txHash != 'waitingpayout' && status === InteractionState.ACTION_COMPLETE  && status != InteractionState.ERROR) && (
                 <StyledItem>
                   <ConnectBtn
                     style={{ border: "1px solid white", width: "150px" }}
