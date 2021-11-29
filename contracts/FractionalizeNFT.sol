@@ -166,6 +166,7 @@ contract FractionalizeNFT is IERC721Receiver {
             redeemerBalance == erc20Supply,
             "Redeemeer does not hold the entire supply."
         );
+        fracNFTs[fracNFTId].state = State.Redeemed;
         erc20.transferFrom(msg.sender, address(this), redeemerBalance);
         ERC721 erc721 = ERC721(fracNFTs[fracNFTId].erc721Address);
         erc721.safeTransferFrom(
