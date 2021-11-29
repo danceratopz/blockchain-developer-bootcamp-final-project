@@ -155,8 +155,6 @@ contract FractionalizeNFT is IERC721Receiver {
         uint256 erc20Supply,
         uint256 buyoutPrice
     ) public returns (uint256) {
-        ERC721 nft = ERC721(nftContractAddress);
-        nft.safeTransferFrom(msg.sender, address(this), nftTokenId);
         ERC20 erc20 = (new ERC20Factory)(
             erc20Name,
             erc20Symbol,
@@ -178,6 +176,8 @@ contract FractionalizeNFT is IERC721Receiver {
         idList.push(_fracNFTCount.current());
         idListLength = idList.length;
         _fracNFTCount.increment();
+        ERC721 nft = ERC721(nftContractAddress);
+        nft.safeTransferFrom(msg.sender, address(this), nftTokenId);
         emit Fractionalized(msg.sender, fracNFTId, erc20Symbol, address(erc20));
         return fracNFTId;
     }
