@@ -13,8 +13,6 @@ export function useFractionalizeNft() {
       setFractionalizeNftAddress("0x60942c0623CCdAd1441aCe477c21E5fFb93A4D38");
     } else if (chainId === 3) {
       setFractionalizeNftAddress("0xB782c58a2C277b75F1B8466FEDAF51B17298dD43");
-    } else {
-      console.log("ERROR: Unexpected chainId ", chainId);
     }
   }, [chainId]);
 
