@@ -50,26 +50,69 @@ As a side effect, the above functionality also allows the dapp to act as a simpl
 * `.github/workflows`: For github actions (currently the contracts are compiled and unit-tested automatically).
 * `client`: Frontend for the FractionalizeNFT contract.
 * `docs`: Additional documentation.
-* contracts: FractionalizeNFT and helper smart contracts.
-* tests: Python unit tests (excecuted via brownie).
+* `contracts`: FractionalizeNFT and helper smart contracts.
+* `tests`: Python unit tests (excecuted via brownie).
 
 ### Compile, Deploy and Test the Contracts Locally
 
 #### Requirements
-* Install NodeJS
-* Install truffle
-* Install and run ganache-cli or ganache
-* Run `npm install` in project root to install dependencies.
-* Run ganache on port: `8545`
-* Run truffle `truffle test`
-* Code coverage can be tested with `truffle run coverage`
+
+* Node.js >= v14.
+* gananche-cli.
+* Python >= 3.6 (during development mainly 3.8 and 3.9 were used).
+* brownie and the Python package dependencies given in [requirements.txt](./requirements.txt).
+
+#### Brownie Installation
+
+```
+python3 -m venv venv  # Create a local virtual environment to install packages in.
+source venv/bin/activate  # Bash, activate for other shells available in same folder.
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+#### Compile, Deploy and Test
+
+* Run `brownie test` (this will start ganache-cli for you):
+  ```
+  source venv/bin/activate  # If virtual environment not already activated
+  brownie test
+  ```
+  Or, with gas profiling and coverage enabled (slower)
+  ```
+  brownie test --gas --coverage
+  ```
+#### Configuring Local Accounts (Optional)
+
+A mnemonic may be added to `.env` in the form
+```
+MNEMONIC=YOUR MNEMONIC ... PHRASE HERE
+```
+This will be used in the brownie config.
+
+### Running the Frontend Locally
+
+1. Run:
+   ```
+   yarn install 
+   yarn start
+   ```
+2. Open [http://localhost:3000](http://localhost:3000).
+
+
 
 ### Deploy the Contracts to the Ropsten Test Network
 
-Deploy to Ropsten:
+Deploy to Ropsten (and verify source code via Etherscan):
 ```
 brownie run deploy.py --network ropsten
 ```
+Souce code verification additionaly requires:
+* A Etherscan API token `.env` entry in the form:
+  ```
+  ETHERSCAN_TOKEN=<TOKEN>
+  ```
+* Brownie >= 1.17.0.
 
 ### Ethereum Address for NFT Certification
 
