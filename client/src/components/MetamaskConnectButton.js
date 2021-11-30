@@ -58,7 +58,9 @@ const MetamaskConnectButton = () => {
 
   if (status === pageState.READY && !active) {
     return (
-      <ConnectBtn
+       <StyledHeaderBox>
+       <Text><FaEthereum color={colors.blue} size="22"/> </Text>
+        <ConnectBtn style={{ background: "#1f1f1f"}}
         onClick={() => {
           if (!window.ethereum) {
             setContentError(["Failed to detect Metamask - please install it from ", <a href="https://metamask.io/download.html">https://metamask.io/download.html</a>]);
@@ -72,7 +74,8 @@ const MetamaskConnectButton = () => {
         }}
       >
         Connect
-      </ConnectBtn>
+          </ConnectBtn>
+            </StyledHeaderBox>
     );
   }
 
