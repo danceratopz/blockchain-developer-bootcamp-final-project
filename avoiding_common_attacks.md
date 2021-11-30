@@ -10,6 +10,6 @@ The contract always reads and write to persistent state following external calls
 
 Only one call is ever made in a single transaction and users must `claim()` their ether upon a `buyout()` of a fractionalized NFT; the funds are not pushed (avoids DoS with Unexpected revert).
 
-## [SWC-103]((https://swcregistry.io/docs/SWC-103)) Floating Pragma
+## [SWC-103](https://swcregistry.io/docs/SWC-103) Floating Pragma
 
 No floating pragmas are set; the solc version is fixed. This ensures that the byteocde does not vary between builds in different environments that may use different solc versions. 
