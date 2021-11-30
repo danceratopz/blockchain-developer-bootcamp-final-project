@@ -15,8 +15,6 @@ fractionalize their [ERC721](https://ethereum.org/en/developers/docs/standards/t
 [ERC20](https://ethereum.org/en/developers/docs/standards/tokens/erc-20/) tokens. The most popular example of a dapp
 that implements this functionality is [fractional.art](https://fractional.art/).
 
-This project seemed to to be a good choice for a first Solidity project in order to gain experience with and learn the workings of ERC20 and ERC721 contracts.
-
 ## Workflow: Contract Actions and Participants
 
 Actions:
@@ -35,9 +33,10 @@ Actions:
 
 As a side effect, the above functionality also allows the dapp to act as a simple marketplace (or escrow) for accounts to sell NFTs in exchange for ether.
 
-## Link to Public Interface
 
-[frac.netlify.app](https://frac.netlify.app/Market)
+## Bootcamp Requirements
+
+### Link to Public Interface: [frac.netlify.app](https://frac.netlify.app/Market)
 
 ### [Design Patterns Decisions](design_pattern_decisions.md)
 
@@ -66,39 +65,42 @@ As a side effect, the above functionality also allows the dapp to act as a simpl
 
 ```
 python3 -m venv venv  # Create a local virtual environment to install packages in.
-source venv/bin/activate  # Bash, activate for other shells available in same folder.
+source venv/bin/activate  # Bash, activate scripts for other shells available in same folder.
 pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
 #### Compile, Deploy and Test
 
-* Run `brownie test` (this will start ganache-cli for you):
-  ```
-  source venv/bin/activate  # If virtual environment not already activated
-  brownie test
-  ```
-  Or, with gas profiling and coverage enabled (slower)
-  ```
-  brownie test --gas --coverage
-  ```
+The contracts are compiled and tested upon push in Github CI, the results can be seen here:
+
+To run the tests locally run `brownie test` (this will start ganache-cli for you):
+```
+source venv/bin/activate  # If virtual environment not already activated
+brownie test
+```
+Or, with gas profiling and coverage enabled (slower):
+```
+brownie test --gas --coverage
+```
+
 #### Configuring Local Accounts (Optional)
 
 A mnemonic may be added to `.env` in the form
 ```
 MNEMONIC=YOUR MNEMONIC ... PHRASE HERE
 ```
-This will be used in the brownie config.
+This mnemonic value will be used in the brownie config and applied when starting ganache-cli.
 
 ### Running the Frontend Locally
 
 1. Run:
    ```
+   cd client
    yarn install 
    yarn start
    ```
 2. Open [http://localhost:3000](http://localhost:3000).
-
 
 
 ### Deploy the Contracts to the Ropsten Test Network
