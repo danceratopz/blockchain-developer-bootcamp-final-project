@@ -458,7 +458,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                   </ConnectBtn>
                 </StyledItem>)}
 
-               {((action === "redeem" && txHash === 'undefined' ) || status === InteractionState.ERROR) && (
+              {(action === "redeem" && (txHash === 'undefined' || status === InteractionState.ERROR)) && (
                  <StyledItem>
                   <ConnectBtn
                     style={{ width: "150px" }}
@@ -546,7 +546,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                   </ConnectBtn>
                 </StyledItem>)}
 
-               {((action === "payout" && txHash === 'undefined' ) || status === InteractionState.ERROR) && (
+               {(action === "payout" && (txHash === 'undefined'  || status === InteractionState.ERROR)) && (
                  <StyledItem>
                   <ConnectBtn
                     style={{ width: "150px" }}
