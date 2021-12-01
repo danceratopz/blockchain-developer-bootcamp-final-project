@@ -33,10 +33,11 @@ Actions:
 
 As a side effect, the above functionality also allows the dapp to act as a simple marketplace (or escrow) for accounts to sell NFTs in exchange for ether.
 
-
 ## Bootcamp Requirements
 
 ### Link to Public Interface: [frac.netlify.app](https://frac.netlify.app/Market)
+
+https://raw.githubusercontent.com/web3wannabe/blockchain-developer-bootcamp-final-project/main/FractionalizeNFTScreencast4.mp4
 
 ### [Design Patterns Decisions](design_pattern_decisions.md)
 
@@ -50,7 +51,7 @@ As a side effect, the above functionality also allows the dapp to act as a simpl
 * `client`: Frontend for the FractionalizeNFT contract.
 * `docs`: Additional documentation.
 * `contracts`: FractionalizeNFT and helper smart contracts.
-* `tests`: Python unit tests (excecuted via brownie).
+* `tests`: Python unit tests (executed via brownie).
 
 ### Compile, Deploy and Test the Contracts Locally
 
@@ -65,7 +66,7 @@ As a side effect, the above functionality also allows the dapp to act as a simpl
 
 ```
 python3 -m venv venv  # Create a local virtual environment to install packages in.
-source venv/bin/activate  # Bash, activate scripts for other shells available in same folder.
+source venv/bin/activate  # Bash, activate scripts for shells available in same folder.
 pip install --upgrade pip
 pip install -r requirements.txt
 ```
@@ -109,8 +110,8 @@ Deploy to Ropsten (and verify source code via Etherscan):
 ```
 brownie run deploy.py --network ropsten
 ```
-Souce code verification additionaly requires:
-* A Etherscan API token `.env` entry in the form:
+Source code verification additionally requires:
+* An Etherscan API token `.env` entry in the form:
   ```
   ETHERSCAN_TOKEN=<TOKEN>
   ```
@@ -130,7 +131,7 @@ Possible improvements:
 Fronted:
 * Allow a user to open a detailed view of a fractionalized NFT to display its full and account-specific information
   (e.g., percentage of ERC20 tokens held).
-* Remove the Redeem page (it can be incorporated in the Market (or Detailed view) )as a "redeem" button or "cancel".
+* Remove the Redeem page (it can be incorporated in the Market, or potential "Detail" view)as a "redeem" button or "cancel".
 * Add a pager for Market and Payout Listings.
 * Refactor state logic for Listings.
 * Refactor react code
