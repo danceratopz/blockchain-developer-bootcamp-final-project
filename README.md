@@ -75,7 +75,9 @@ pip install -r requirements.txt
 
 #### Compile, Deploy and Test
 
-The contracts are compiled and tested upon push in Github CI, the results can be seen here:
+The contracts are compiled and tested upon push in Github CI, the
+results can be seen [in Github Actions
+here](https://github.com/web3wannabe/blockchain-developer-bootcamp-final-project/actions/workflows/main.yaml).
 
 To run the tests locally run `brownie test` (this will start ganache-cli for you):
 ```
