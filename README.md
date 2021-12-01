@@ -39,7 +39,7 @@ As a side effect, the above functionality also allows the dapp to act as a simpl
 
 ### Screencast on [YouTube](https://youtu.be/clPS-XMnfc4) (also checked in at ./FractionalizeNFTScreencast.mp4)
 [![Screencast on YouTube](https://img.youtube.com/vi/clPS-XMnfc4/maxresdefault.jpg)](https://youtu.be/clPS-XMnfc4) 
-(also checked in at (./FractionalizeNFTScreencast.mp4)).
+(also checked in at [./FractionalizeNFTScreencast.mp4](FractionalizeNFTScreencast.mp4).
 
 ### [Design Patterns Decisions](design_pattern_decisions.md)
 
