@@ -76,8 +76,7 @@ pip install -r requirements.txt
 #### Compile, Deploy and Test
 
 The contracts are compiled and tested upon push in Github CI, the
-results can be seen [in Github Actions
-here](https://github.com/web3wannabe/blockchain-developer-bootcamp-final-project/actions/workflows/main.yaml).
+results can be seen under [Github Actions](https://github.com/web3wannabe/blockchain-developer-bootcamp-final-project/actions/workflows/main.yaml).
 
 To run the tests locally run `brownie test` (this will start ganache-cli for you):
 ```
@@ -132,7 +131,7 @@ Possible improvements:
 * __Update buyout price__: Allow an **ERC20 token holder** can __update the buyout price__ weighted by the proportion
   of the ERC20 token supply that they hold.
 
-Fronted:
+Frontend:
 * Allow a user to open a detailed view of a fractionalized NFT to display its full and account-specific information
   (e.g., percentage of ERC20 tokens held).
 * Remove the Redeem page (it can be incorporated in the Market, or potential "Detail" view)as a "redeem" button or "cancel".
