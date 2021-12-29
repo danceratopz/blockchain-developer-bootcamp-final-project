@@ -16,7 +16,7 @@ export const KnownNftContracts = () => {
         <datalist id="knownNftContracts">
         <option value="0xf5de760f2e916647fd766b4ad9e85ff943ce3a2b">Paradigm Faucet (>2021-11-18)- 0xf5de760f2e916647fd766b4ad9e85ff943ce3a2b</option>
         <option value="0x4c153bfad26628bdbafecbcd160a0790b1b8f212">Paradigm Faucet (>2021-11-08)- 0x4c153bfad26628bdbafecbcd160a0790b1b8f212</option>
-        <option value="0x7Ee4B89669fA602d059C9A9B1bED45bEf94acf75">TestNFT - 0x7Ee4B89669fA602d059C9A9B1bED45bEf94acf75</option>
+        <option value="0x7Ee4B89669fA602d059C9A9B1bED45bEf94acf75">WannabeNFT - 0x7Ee4B89669fA602d059C9A9B1bED45bEf94acf75</option>
         </datalist>
     )
   }
