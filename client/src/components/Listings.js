@@ -98,8 +98,8 @@ var getJSON = function (url, callback) {
 
 const SkinnySpinner = () => {
   return (
-      <Spinner animation="border" size="sm" style={{ color: colors.green, marginTop: '2px', marginBottom: '3px' }}
-      />
+    <Spinner animation="border" size="sm" style={{ color: colors.green, marginTop: '2px', marginBottom: '3px' }}
+    />
   );
 }
 
@@ -207,7 +207,6 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
   const [status, setStatus] = useState(InteractionState.READY);
   const [erc20ApprovalStatus, setErc20ApprovalStatus] = useState(Erc20ApprovalState.UNKNOWN);
   const [mmError, setMmError] = useState(null);
-  const [pageError, setPageError] = useState(null);
   const [txHash, setTxHash] = useState('undefined');
   const { txnStatus, setTxnStatus } = useTransaction();
   const { active, library, account, chainId } = useWeb3React();
@@ -459,7 +458,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                 </StyledItem>)}
 
               {(action === "redeem" && (txHash === 'undefined' || status === InteractionState.ERROR)) && (
-                 <StyledItem>
+                <StyledItem>
                   <ConnectBtn
                     style={{ width: "150px" }}
                     onClick={() => onApproveErc20Click(item.fracNFTId)}
@@ -475,7 +474,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     Redeem
                   </ConnectBtn>
                 </StyledItem>)}
-               {(action === "redeem" && txHash === 'waiting'  && status != InteractionState.APPROVED && status != InteractionState.ERROR) && (
+              {(action === "redeem" && txHash === 'waiting' && status != InteractionState.APPROVED && status != InteractionState.ERROR) && (
                 <StyledItem>
                   <ConnectBtn
                     style={{ width: "150px" }}
@@ -483,7 +482,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     onClick={() => onApproveErc20Click(item.fracNFTId)}
                     type="submit"
                     name="onApproveErc20Click">
-                   <SkinnySpinner />
+                    <SkinnySpinner />
                   </ConnectBtn>
                   <ConnectBtn
                     style={{ width: "150px" }}
@@ -492,7 +491,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     name="reddemNft">
                     Redeem
                   </ConnectBtn>
-                  </StyledItem>)}
+                </StyledItem>)}
               {(action === "redeem" && txHash === 'waitingredeem') && (
                 <StyledItem>
                   <ConnectBtn
@@ -504,15 +503,15 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     Approved
                   </ConnectBtn>
                   <ConnectBtn
-                   style={{ width: "150px" }}
+                    style={{ width: "150px" }}
                     disabled="1"
                     onClick={() => onRedeemNftClick(item.fracNFTId)}
                     type="submit"
                     name="reddemNft">
-                   <SkinnySpinner />
+                    <SkinnySpinner />
                   </ConnectBtn>
                 </StyledItem>)}
-              {(action === "redeem" && txHash != 'undefined' && txHash != 'waiting' && txHash != 'waitingredeem' && status === InteractionState.APPROVED  && status != InteractionState.ERROR) && (
+              {(action === "redeem" && txHash != 'undefined' && txHash != 'waiting' && txHash != 'waitingredeem' && status === InteractionState.APPROVED && status != InteractionState.ERROR) && (
                 <StyledItem>
                   <ConnectBtn
                     style={{ width: "150px", border: "1px solid " + colors.green }}
@@ -528,7 +527,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     Redeem
                   </ConnectBtn>
                 </StyledItem>)}
-              {(action === "redeem" && txHash != 'undefined' && txHash != 'waiting' && txHash != 'waitingredeem' && status === InteractionState.ACTION_COMPLETE  && status != InteractionState.ERROR) && (
+              {(action === "redeem" && txHash != 'undefined' && txHash != 'waiting' && txHash != 'waitingredeem' && status === InteractionState.ACTION_COMPLETE && status != InteractionState.ERROR) && (
                 <StyledItem>
                   <ConnectBtn
                     style={{ border: "1px solid white", width: "150px" }}
@@ -546,8 +545,8 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                   </ConnectBtn>
                 </StyledItem>)}
 
-               {(action === "payout" && (txHash === 'undefined'  || status === InteractionState.ERROR)) && (
-                 <StyledItem>
+              {(action === "payout" && (txHash === 'undefined' || status === InteractionState.ERROR)) && (
+                <StyledItem>
                   <ConnectBtn
                     style={{ width: "150px" }}
                     onClick={() => onApproveErc20Click(item.fracNFTId)}
@@ -563,7 +562,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     Payout
                   </ConnectBtn>
                 </StyledItem>)}
-               {(action === "payout" && txHash === 'waiting'  && status != InteractionState.APPROVED && status != InteractionState.ERROR) && (
+              {(action === "payout" && txHash === 'waiting' && status != InteractionState.APPROVED && status != InteractionState.ERROR) && (
                 <StyledItem>
                   <ConnectBtn
                     style={{ width: "150px" }}
@@ -571,7 +570,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     onClick={() => onApproveErc20Click(item.fracNFTId)}
                     type="submit"
                     name="onApproveErc20Click">
-                   <SkinnySpinner />
+                    <SkinnySpinner />
                   </ConnectBtn>
                   <ConnectBtn
                     style={{ width: "150px" }}
@@ -580,7 +579,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     name="reddemNft">
                     Payout
                   </ConnectBtn>
-                  </StyledItem>)}
+                </StyledItem>)}
               {(action === "payout" && txHash === 'waitingpayout') && (
                 <StyledItem>
                   <ConnectBtn
@@ -592,15 +591,15 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     Approved
                   </ConnectBtn>
                   <ConnectBtn
-                   style={{ width: "150px" }}
+                    style={{ width: "150px" }}
                     disabled="1"
                     onClick={() => onPayoutClick(item.fracNFTId)}
                     type="submit"
                     name="reddemNft">
-                   <SkinnySpinner />
+                    <SkinnySpinner />
                   </ConnectBtn>
                 </StyledItem>)}
-              {(action === "payout" && txHash != 'undefined' && txHash != 'waiting' && txHash != 'waitingpayout' && status === InteractionState.APPROVED  && status != InteractionState.ERROR) && (
+              {(action === "payout" && txHash != 'undefined' && txHash != 'waiting' && txHash != 'waitingpayout' && status === InteractionState.APPROVED && status != InteractionState.ERROR) && (
                 <StyledItem>
                   <ConnectBtn
                     style={{ width: "150px", border: "1px solid " + colors.green }}
@@ -616,7 +615,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     Payout
                   </ConnectBtn>
                 </StyledItem>)}
-              {(action === "payout" && txHash != 'undefined' && txHash != 'waiting' && txHash != 'waitingpayout' && status === InteractionState.ACTION_COMPLETE  && status != InteractionState.ERROR) && (
+              {(action === "payout" && txHash != 'undefined' && txHash != 'waiting' && txHash != 'waitingpayout' && status === InteractionState.ACTION_COMPLETE && status != InteractionState.ERROR) && (
                 <StyledItem>
                   <ConnectBtn
                     style={{ border: "1px solid white", width: "150px" }}
@@ -643,30 +642,27 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
 };
 
 const Listings = ({ fractionalizeNftAddress, action }) => {
-  const [listings, setListings] = useState([]);
   const [status, setStatus] = useState(listingState.LOADING);
+  const [listings, setListings] = useState([]);
   const { active } = useWeb3React();
-  const fractionalizeNftContractAddress = fractionalizeNftAddress
   const contract = useContract(fractionalizeNftAddress, fractionalizeNftContract.abi);
 
-  const getProperties = useCallback(async (contract) => {
+  const getFracNfts = async (contract) => {
     try {
-      // still on the lookout for optimal solidity data structures, this ain't it
-      const idListLengthBN = await contract.getFracNftCount();
-      const idBNs = await Promise.all(Array.from(Array(idListLengthBN.toNumber())).map((_, i) => contract.idList(i)));
-      const ids = idBNs.map((n) => n.toNumber());
-      const arr = await Promise.all(ids.map((id) => contract.fracNFTs(id)));
-      setListings(arr);
+      const fracNftCount = (await contract.getFracNftCount()).toNumber();
+      const fracNftIds = Array.from(Array(fracNftCount).keys())  // create an array [0, 1, 2, ..., N]
+      const fracNfts = await Promise.all(fracNftIds.map((id) => contract.fracNFTs(id)));
+      setListings(fracNfts);
       setStatus(listingState.READY);
     } catch (e) {
       console.log('error:', e);
       setStatus(listingState.ERROR);
     }
-  }, []);
+  }
 
   useEffect(() => {
     if (active) {
-      getProperties(contract);
+      getFracNfts(contract);
     }
   }, [active]);
 
@@ -675,13 +671,15 @@ const Listings = ({ fractionalizeNftAddress, action }) => {
   }
 
   if (status === listingState.LOADING) {
-    return <Spinner animation="border" size="sm" style={{ color: colors.green, marginTop: '20px' }} />;
+    return (
+      <StyledDiv>
+        <Spinner animation="border" size="sm" style={{ color: colors.green, marginTop: '20px' }} />
+      </StyledDiv>
+    );
   }
 
   return (
-    <>
-      <FilteredListing fractionalizeNftAddress={fractionalizeNftAddress} listings={listings} action={action} />
-    </>
+    <FilteredListing fractionalizeNftAddress={fractionalizeNftAddress} listings={listings} action={action} />
   );
 };
 

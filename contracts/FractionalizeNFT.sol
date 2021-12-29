@@ -57,14 +57,6 @@ contract FractionalizeNFT is IERC721Receiver {
         address erc20Address
     );
 
-    /// @notice List of all fractionalized NFT ids.
-    /// @dev Used as a helper when iterating over fractionalized NFTs in frontend clients.
-    uint256[] public idList;
-
-    /// @notice idList length.
-    /// @dev Used as a helper when iterating over fractionalized NFTs in frontend clients.
-    uint256 public idListLength;
-
     /// @notice Emitted when a user successfully redeems an NFT in exchange for the total ERC20 supply.
     /// @param sender The address that redeemed the NFT (i.e., the address that called redeem()).
     /// @param fracNFTId The index of the fractionalized NFT that was redeemed.
@@ -173,8 +165,6 @@ contract FractionalizeNFT is IERC721Receiver {
             buyoutPrice: buyoutPrice,
             state: State.Fractionalized
         });
-        idList.push(_fracNFTCount.current());
-        idListLength = idList.length;
         _fracNFTCount.increment();
         ERC721 nft = ERC721(nftContractAddress);
         nft.safeTransferFrom(msg.sender, address(this), nftTokenId);
