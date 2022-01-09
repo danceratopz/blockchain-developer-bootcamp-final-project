@@ -4,18 +4,18 @@ import Text from './Text';
 import { StyledHeaderBox } from './StyledHelpers';
 import { colors } from '../theme';
 import useEth from '../hooks/useEth';
-import useTransaction from '../hooks/useTransaction';
+import useAccountLastTxnHash from '../hooks/useAccountLastTxnHash';
 
 const BalanceCard = () => {
   const { active, account } = useWeb3React();
   const { fetchEthBalance, ethBalance } = useEth();
-  const { txnStatus, setTxnStatus } = useTransaction();
+  const { accountLastTxnHash } = useAccountLastTxnHash();
 
   useEffect(() => {
     if (account) {
       fetchEthBalance();
     }
-  }, [account, txnStatus]);
+  }, [account, accountLastTxnHash]);
 
   if (!active) {
     return <Text>{''}</Text>;
@@ -23,7 +23,7 @@ const BalanceCard = () => {
 
   return (
     <>
-      <span style={{ whiteSpace: "nowrap"}}>{ethBalance} ETH</span>
+      <span style={{ whiteSpace: "nowrap" }}>{ethBalance} ETH</span>
     </>
   );
 };
