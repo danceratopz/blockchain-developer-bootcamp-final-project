@@ -39,7 +39,7 @@ const GlobalError = () => {
 const Header = () => {
   const [navToggled, setNavToggled] = useState(false);
   const [windowDimension, setWindowDimension] = useState(null);
- 
+
   useEffect(() => {
     setWindowDimension(window.innerWidth);
   }, []);
@@ -61,15 +61,15 @@ const Header = () => {
   return (
     <>
       <GlobalError />
-      <Navbar d-flex className="justify-content-between">
-      <div>
-        { isMobile ?
-          <>
-            <Toggle handleNavToggle={handleNavToggle} />
-            {navToggled ? <Menu handleNavToggle={handleNavToggle} /> : null}
-          </>
-          : <Navigation/>}
-          </div>
+      <Navbar className="d-flex justify-content-between">
+        <div>
+          {isMobile ?
+            <>
+              <Toggle handleNavToggle={handleNavToggle} />
+              {navToggled ? <Menu handleNavToggle={handleNavToggle} /> : null}
+            </>
+            : <Navigation />}
+        </div>
         <MetamaskConnectButton />
       </Navbar>
     </>
