@@ -123,21 +123,22 @@ Source code verification additionally requires:
 
 ### Ethereum Address for NFT Certification
 
-`0x7b13c2F7AaA8C772Bd0a13A86B0CF633fAf790B0`
+`0x7b13c2F7AaA8C772Bd0a13A86B0CF633fAf790B0` (danceratopz.eth)
 
 ### Possible Improvements and Known Issues
 
 Solidity:
-Possible improvements:
-* __Update buyout price__: Allow an **ERC20 token holder** can __update the buyout price__ weighted by the proportion
-  of the ERC20 token supply that they hold.
+* __Update buyout price__: Allow an **ERC20 token holder** to __update the buyout price__ weighted by the proportion of the ERC20 token supply that they hold.
+* Delete an entry from `fracNFTs` if it is no longer in use, i.e., when:
+  * An NFT has been redeemed, or
+  * An NFT has been bought and there are no pending payouts (the contract holds the entire supply of the corresponding ERC20 token).
+* Implement as an upgradeable contract.
 
 Frontend:
+* Optimize image loading.
 * Allow a user to open a detailed view of a fractionalized NFT to display its full and account-specific information
   (e.g., percentage of ERC20 tokens held).
-* Remove the Redeem page (it can be incorporated in the Market, or potential "Detail" view)as a "redeem" button or "cancel".
+* Remove the Redeem page (it can be incorporated in the Market, or potential "Detail" view) as a "redeem" button or "cancel".
 * Add a pager for Market and Payout Listings.
-* Refactor state logic for Listings.
-* Refactor react code
 * Load Listings on the page asynchronously.
 * Make use of emitted events from smart contract.
