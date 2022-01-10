@@ -5,6 +5,7 @@ import { ethers } from 'ethers';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles/App.css';
 import Header from './components/Header';
+import Footer from './components/Footer';
 import Home from './pages/Home';
 import Redeem from './pages/Redeem';
 import Buyout from './pages/Buyout';
@@ -23,15 +24,16 @@ const App = () => {
   return (
     <AppContextProvider>
       <Web3ReactProvider getLibrary={getLibrary}>
-        <div>
+        <div style={{ position: "relative", minHeight: "100vh", paddingBottom: "60px" }}>
           <Header />
           <Route exact path="/" component={Home} />
           <Route exact path="/market" component={Buyout} />
           <Route exact path="/redeem" component={Redeem} />
           <Route exact path="/payout" component={Payout} />
+          <Footer />
         </div>
       </Web3ReactProvider>
-    </AppContextProvider>
+    </AppContextProvider >
   );
 };
 
