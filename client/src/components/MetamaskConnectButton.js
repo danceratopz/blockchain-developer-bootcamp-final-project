@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
 import Text from './Text';
-import { StyledHeaderBox } from './StyledHelpers';
+import { StyledHeaderBox, StyledAnchor } from './StyledHelpers';
 import { injected } from '../connectors';
 import { StyledAddress } from '../components/StyledAddress';
 import { useAppContext } from '../AppContext';
@@ -58,31 +58,31 @@ const MetamaskConnectButton = () => {
 
   if (status === pageState.READY && !active) {
     return (
-       <StyledHeaderBox>
-       <Text><FaEthereum color={colors.blue} size="22"/> </Text>
-        <ConnectBtn style={{ background: "#1f1f1f"}}
-        onClick={() => {
-          if (!window.ethereum) {
-            setContentError(["Failed to detect Metamask - please install it from ", <a href="https://metamask.io/download.html">https://metamask.io/download.html</a>]);
-            return;
-          }
-          activate(injected, (e) => {
-            if (e instanceof UnsupportedChainIdError) {
-              setContentError('Only Ropsten supported - please change to the Ropsten Test Network in Metamask.');
+      <StyledHeaderBox>
+        <Text><FaEthereum color={colors.blue} size="22" /> </Text>
+        <ConnectBtn style={{ background: "#1f1f1f" }}
+          onClick={() => {
+            if (!window.ethereum) {
+              setContentError(["Failed to detect Metamask - please install it from ", <StyledAnchor key="mm" href="https://metamask.io/download.html">https://metamask.io/download.html</StyledAnchor>]);
+              return;
             }
-          });
-        }}
-      >
-        Connect
-          </ConnectBtn>
-            </StyledHeaderBox>
+            activate(injected, (e) => {
+              if (e instanceof UnsupportedChainIdError) {
+                setContentError('Only Ropsten is supported - please change to the Ropsten Test Network in Metamask.');
+              }
+            });
+          }}
+        >
+          Connect
+        </ConnectBtn>
+      </StyledHeaderBox>
     );
   }
 
   // <MetamaskLogo />
   return (
     <StyledHeaderBox>
-      <FaEthereum color={colors.blue} size="22"/>
+      <FaEthereum color={colors.blue} size="22" />
       <Text
         style={{ margin: "8px", marginLeft: "12px", marginRight: "12px", fontFamily: "Source Code Pro" }}>
         <StyledAddress address={account} />  <BalancesCard />

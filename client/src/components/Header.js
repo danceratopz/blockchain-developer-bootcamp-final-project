@@ -8,11 +8,14 @@ import Menu from './Menu';
 import { useAppContext } from '../AppContext';
 import MetamaskConnectButton from './MetamaskConnectButton';
 import Text from './Text';
+import { colors } from '../theme';
 
 const StyledContainer = styled(Container)`
-  background-color: tomato;
+  background-color: #1f1f1f;
   text-align: center;
   justify-content: center;
+  position: absolute;
+  z-index: 1;
 `;
 
 const GlobalError = () => {
@@ -29,9 +32,10 @@ const GlobalError = () => {
   if (!contentError) {
     return null;
   }
+
   return (
     <StyledContainer fluid>
-      <Text>{contentError}</Text>
+      <Text t4>{contentError}</Text>
     </StyledContainer>
   );
 };
