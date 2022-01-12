@@ -1,6 +1,7 @@
 import { FaRegCopyright } from 'react-icons/fa';
 import { colors } from '../theme';
 import { StyledAddress } from './StyledAddress';
+import { StyledAnchor } from './StyledHelpers';
 import Text from './Text';
 
 const Footer = () => {
