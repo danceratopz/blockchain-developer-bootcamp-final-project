@@ -13,6 +13,7 @@ const Menu = ({ handleNavToggle }) => {
             <StyledLink onClick={handleNavToggle} to="/Market">Market</StyledLink>
             <StyledLink onClick={handleNavToggle} to="/Redeem">Redeem</StyledLink>
             <StyledLink onClick={handleNavToggle} to="/Payout">Payout</StyledLink>
+            <StyledLink onClick={handleNavToggle} to="/About">About</StyledLink>
             <CloseToggle onClick={handleNavToggle}><FaTimes size="24" /></CloseToggle>
         </StyledMenu>
     )

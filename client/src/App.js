@@ -10,6 +10,7 @@ import Home from './pages/Home';
 import Redeem from './pages/Redeem';
 import Buyout from './pages/Buyout';
 import Payout from './pages/Payout';
+import About from './pages/About';
 import { AppContextProvider } from './AppContext';
 
 function getLibrary(provider) {
@@ -30,6 +31,7 @@ const App = () => {
           <Route exact path="/market" component={Buyout} />
           <Route exact path="/redeem" component={Redeem} />
           <Route exact path="/payout" component={Payout} />
+          <Route exact path="/about" component={About} />
           <Footer />
         </div>
       </Web3ReactProvider>
