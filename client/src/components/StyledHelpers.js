@@ -54,3 +54,29 @@ export const ConnectBtn = styled.button`
   border-radius: 5px;
   margin: 5px;
 `;
+
+export const StyledDiv = styled.div`
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+`;
+
+export const StyledItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5px;
+  border-radius: 5px;
+  width: 260px;
+`;
+
+export const StyledItemTextContainer = styled.div`
+  margin-top: 5px;
+  display: flex;
+  flex-direction: column;
+`;
+
+export const StyledAnchor = styled.a`
+  color: ${colors.blue};
+  font-weight: bold; 
+`
