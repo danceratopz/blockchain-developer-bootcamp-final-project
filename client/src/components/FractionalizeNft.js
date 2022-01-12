@@ -116,7 +116,6 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
         fractionalizeNftContractAddress,
         nftTokenIndex,
         { from: account });
-      console.log("sent")
       const confirmations = chainId === 1337 ? 1 : CONFIRMATION_COUNT;
       await transaction.wait(confirmations);
       setApprovalTxnStatus(TransactionState.SUCCESS);
