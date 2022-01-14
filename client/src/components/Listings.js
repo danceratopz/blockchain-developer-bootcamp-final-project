@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Container, Spinner } from 'react-bootstrap';
+import { Container, Spinner } from 'react-bootstrap';
 import { useWeb3React } from '@web3-react/core';
 import { BigNumber, Contract, utils } from 'ethers';
 import { formatEther } from '@ethersproject/units';
@@ -9,10 +9,9 @@ import useAccountLastTxnHash from '../hooks/useAccountLastTxnHash';
 import { TransactionState } from '../utils/states';
 import Text from './Text';
 import { StyledAddress, StyledTxn } from './StyledAddress';
-import styled from 'styled-components';
-import { FractFieldset, NoFractFieldset, ConnectBtn } from './StyledHelpers';
+import { FractFieldset, NoFractFieldset, ConnectBtn, StyledDiv, StyledItem, StyledItemTextContainer } from './StyledHelpers';
+import { CopyButton, PendingButton, DisabledButton, SuccessButton } from './ButtonHelpers';
 import { colors } from '../theme';
-import { FaCopy } from 'react-icons/fa';
 
 import fractionalizeNftContract from '../artifacts/contracts/FractionalizeNFT.json';
 
@@ -23,46 +22,6 @@ const listingState = {
   READY: 'READY',
   ERROR: 'ERROR',
 };
-
-const StyledDiv = styled.div`
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-`;
-
-const StyledItem = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 5px;
-  border-radius: 5px;
-  width: 260px;
-`;
-
-const StyledItemTextContainer = styled.div`
-  margin-top: 5px;
-  display: flex;
-  flex-direction: column;
-`;
-
-const LinkedNftTokenId = ({ contractAddress, tokenId }) => {
-  return (
-    <Link style={{ color: colors.blue }} to={{ pathname: `https://ropsten.etherscan.io/token/${contractAddress}?a=${tokenId}#inventory` }} target="_blank">
-      Id {BigNumber.from(tokenId).toNumber()}
-    </Link>
-  )
-};
-
-const CopyButton = ({ text }) => {
-  return (
-    <ConnectBtn
-      style={{ border: "0px", width: "20px" }}
-      onClick={() => { navigator.clipboard.writeText(text) }}>
-      <FaCopy size="15" color={colors.blue} />
-    </ConnectBtn>
-  )
-};
-
 
 var getJSON = function (url, callback) {
   // https://stackoverflow.com/a/35970894
@@ -80,14 +39,13 @@ var getJSON = function (url, callback) {
   xhr.send();
 };
 
-const SkinnySpinner = () => {
+const LinkedNftTokenId = ({ contractAddress, tokenId }) => {
   return (
-    <Spinner animation="border" size="sm" style={{ color: colors.green, marginTop: '2px', marginBottom: '3px' }}
-    />
-  );
-}
-
-const BuyButton = styled(Button).attrs({ variant: 'outline-success' })
+    <Link style={{ color: colors.blue }} to={{ pathname: `https://ropsten.etherscan.io/token/${contractAddress}?a=${tokenId}#inventory` }} target="_blank">
+      Id {BigNumber.from(tokenId).toNumber()}
+    </Link>
+  )
+};
 
 const NoListings = ({ message }) => {
   return (
@@ -352,12 +310,13 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
             <Text style={{ marginTop: '20px', marginBottom: '20px' }} color={colors.red}>
               {mmError || 'Unknown error encountered! Please reload.'}
             </Text>
-          </Container>
-        )}
+          </Container>)}
+
       <FractFieldset>
         <div>
           <StyledItem>
             <StyledItemTextContainer>
+
               <Text center display="block" line-height="50px" text-overflow="ellipsis " overflow="hidden" style={{ fontFamily: "Source Code Pro" }}>{erc20Name}</Text>
               <NftImage fracNftId={item.fracNftId} />
               <Text style={{ fontFamily: "Source Code Pro" }}>
@@ -369,32 +328,20 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
               </Text>
 
               {action === "buyout" &&
-                (actionTxnStatus === TransactionState.NOT_SUBMITTED || actionTxnStatus === TransactionState.ERROR || actionTxnStatus === TransactionState.FAIL) &&
-                (<StyledItem>
-                  <ConnectBtn
-                    style={{ width: "150px" }}
-                    onClick={() => onBuyNftClick(item.fracNFTId, item.buyoutPrice)}
-                    type="submit"
-                    name="buyNft">
-                    Buy for
-                    <br />
-                    {parseFloat(formatEther(buyoutPrice)).toPrecision(3)} ETH
-                  </ConnectBtn>
-                </StyledItem>)}
+                (actionTxnStatus === TransactionState.NOT_SUBMITTED || actionTxnStatus === TransactionState.ERROR || actionTxnStatus === TransactionState.FAIL) && (
+                  < StyledItem >
+                    <ConnectBtn
+                      style={{ width: "150px" }}
+                      onClick={() => onBuyNftClick(item.fracNFTId, item.buyoutPrice)}
+                      type="submit"
+                      name="buyNft">
+                      Buy for
+                      <br />
+                      {parseFloat(formatEther(buyoutPrice)).toPrecision(3)} ETH
+                    </ConnectBtn>
+                  </StyledItem>)}
               {(action === "buyout" && actionTxnStatus === TransactionState.PENDING) && (
-                <StyledItem>
-                  <ConnectBtn
-                    style={{ width: "150px", border: "1px solid " + colors.blue }}
-                    disabled="1"
-                    type="submit"
-                    name="buyNft">
-                    <Spinner
-                      animation="border"
-                      size="sm"
-                      style={{ color: colors.green, marginTop: '15px', marginBottom: '15px' }}
-                    />
-                  </ConnectBtn>
-                </StyledItem>)}
+                <PendingButton />)}
               {(action === "buyout" && actionTxnStatus === TransactionState.SUCCESS) && (
                 <StyledItem>
                   <ConnectBtn
@@ -410,7 +357,6 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
 
               {((action === "redeem" || action === "payout") &&
                 (approvalTxnStatus === TransactionState.NOT_SUBMITTED || approvalTxnStatus === TransactionState.FAIL || approvalTxnStatus === TransactionState.ERROR) && (
-                  // Click to approve
                   <StyledItem>
                     <ConnectBtn
                       style={{ width: "150px" }}
@@ -419,40 +365,16 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                       name="onApproveErc20Click">
                       Approve
                     </ConnectBtn>
-                  </StyledItem>
-                ))}
+                  </StyledItem>))}
               {((action === "redeem" || action === "payout") && approvalTxnStatus === TransactionState.PENDING) && (
-                // Transaction pending; disabled with spinner
-                <StyledItem>
-                  <ConnectBtn
-                    style={{ width: "150px" }}
-                    disabled="1">
-                    <SkinnySpinner />
-                  </ConnectBtn>
-                </StyledItem>
-              )}
+                <PendingButton />)}
               {((action === "redeem" || action === "payout") && approvalTxnStatus === TransactionState.SUCCESS) && (
-                //
-                <StyledItem>
-                  <ConnectBtn
-                    style={{ width: "150px", border: "1px solid " + colors.green }}
-                    disabled="1"
-                    type="submit">
-                    <StyledTxn hash={approvalTxnHash} />
-                  </ConnectBtn>
-                </StyledItem>
-              )}
+                <SuccessButton txnHash={approvalTxnHash} />)}
 
               {(action === "redeem" &&
                 approvalTxnStatus != TransactionState.SUCCESS &&
                 (actionTxnStatus === TransactionState.NOT_SUBMITTED || actionTxnStatus === TransactionState.ERROR || actionTxnStatus === TransactionState.FAIL) &&
-                (<StyledItem>
-                  <ConnectBtn
-                    style={{ width: "150px", border: "1px solid white" }}
-                    disabled="1">
-                    Redeem
-                  </ConnectBtn>
-                </StyledItem>))}
+                (<DisabledButton text="Redeem" />))}
               {(action === "redeem" && approvalTxnStatus === TransactionState.SUCCESS &&
                 (actionTxnStatus === TransactionState.NOT_SUBMITTED || actionTxnStatus === TransactionState.ERROR || actionTxnStatus === TransactionState.FAIL) &&
                 (<StyledItem>
@@ -465,35 +387,14 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                   </ConnectBtn>
                 </StyledItem>))}
               {(action === "redeem" && actionTxnStatus === TransactionState.PENDING) &&
-                (<StyledItem>
-                  <ConnectBtn
-                    style={{ width: "150px" }}
-                    disabled="1">
-                    <SkinnySpinner />
-                  </ConnectBtn>
-                </StyledItem>
-                )}
+                (<PendingButton />)}
               {(action === "redeem" && actionTxnStatus === TransactionState.SUCCESS) &&
-                (<StyledItem>
-                  <ConnectBtn
-                    style={{ width: "150px", border: "1px solid " + colors.green }}
-                    disabled="1"
-                    type="submit">
-                    <StyledTxn hash={actionTxnHash} />
-                  </ConnectBtn>
-                </StyledItem>
-                )}
+                (<SuccessButton txnHash={actionTxnHash} />)}
 
               {(action === "payout" &&
                 approvalTxnStatus != TransactionState.SUCCESS &&
                 (actionTxnStatus === TransactionState.NOT_SUBMITTED || actionTxnStatus === TransactionState.ERROR || actionTxnStatus === TransactionState.FAIL) &&
-                (<StyledItem>
-                  <ConnectBtn
-                    style={{ width: "150px", border: "1px solid white" }}
-                    disabled="1">
-                    Redeem
-                  </ConnectBtn>
-                </StyledItem>))}
+                (<DisabledButton text="Claim" />))}
               {(action === "payout" && approvalTxnStatus === TransactionState.SUCCESS &&
                 (actionTxnStatus === TransactionState.NOT_SUBMITTED || actionTxnStatus === TransactionState.ERROR || actionTxnStatus === TransactionState.FAIL) &&
                 (<StyledItem>
@@ -502,28 +403,13 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     onClick={() => onPayoutClick(item.fracNFTId)}
                     type="submit"
                     name="payout">
-                    Payout
+                    Claim
                   </ConnectBtn>
                 </StyledItem>))}
               {(action === "payout" && actionTxnStatus === TransactionState.PENDING) &&
-                (<StyledItem>
-                  <ConnectBtn
-                    style={{ width: "150px" }}
-                    disabled="1">
-                    <SkinnySpinner />
-                  </ConnectBtn>
-                </StyledItem>
-                )}
+                (<PendingButton />)}
               {(action === "payout" && actionTxnStatus === TransactionState.SUCCESS) &&
-                (<StyledItem>
-                  <ConnectBtn
-                    style={{ width: "150px", border: "1px solid " + colors.green }}
-                    disabled="1"
-                    type="submit">
-                    <StyledTxn hash={actionTxnHash} />
-                  </ConnectBtn>
-                </StyledItem>
-                )}
+                (<SuccessButton txnHash={actionTxnHash} />)}
             </StyledItemTextContainer>
           </StyledItem>
         </div>
@@ -540,6 +426,7 @@ const Listings = ({ fractionalizeNftAddress, action }) => {
 
   const getFracNfts = async (contract) => {
     try {
+      // TODO: Make asynchronous.
       const fracNftCount = (await contract.getFracNftCount()).toNumber();
       const fracNftIds = Array.from(Array(fracNftCount).keys())  // create an array [0, 1, 2, ..., N]
       const fracNfts = await Promise.all(fracNftIds.map((id) => contract.fracNFTs(id)));
