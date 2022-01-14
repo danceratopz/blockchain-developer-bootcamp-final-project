@@ -273,15 +273,26 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
 
     getJSON(jsonUri, function (err, data) {
       if (err !== null) {
-        setImageUrl(null)
-        setImageAltText("Error retrieving image")
+        setImageUrl(null);
+        setImageAltText("Error retrieving image");
       } else {
         if (data !== null) {
-          setImageUrl(data.image)
-          setImageAltText("NFT Image")
+          // TODO: Hack. Don't use pinata's IPFS gateway for the NFT images:
+          // https://gateway.pinata.cloud/ipfs -> https://gateway.ipfs.io/ipfs/ 
+          // The image URL in NFTs minted from my test contract point to https://gateway.pinata.cloud/ipfs but Pinata
+          // appears to throttle even small amounts of image requests made within a small time window. This would be 
+          // better solved by asynchronously loading the listing items and adding a retry mechanism for the images 
+          // with exponential backoff.
+          let image_url = data.image.replace("pinata.cloud", "ipfs.io");
+          setImageUrl(image_url);
+          if (data.hasOwnProperty('description')) {
+            setImageAltText(data.description);
+          } else {
+            setImageAltText("NFT Image");
+          }
         } else {
-          setImageUrl(null)
-          setImageAltText("Unable to retrieve image")
+          setImageUrl(null);
+          setImageAltText("Unable to retrieve image");
         }
       }
     });
