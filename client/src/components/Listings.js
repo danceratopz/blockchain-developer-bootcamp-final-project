@@ -9,7 +9,7 @@ import useAccountLastTxnHash from '../hooks/useAccountLastTxnHash';
 import { TransactionState } from '../utils/states';
 import Text from './Text';
 import { StyledAddress, StyledTxn } from './StyledAddress';
-import { FractFieldset, NoFractFieldset, ConnectBtn, StyledDiv, StyledItem, StyledItemTextContainer } from './StyledHelpers';
+import { FractFieldset, NoFractFieldset, FractButton, StyledDiv, StyledItem, StyledItemTextContainer } from './StyledHelpers';
 import { CopyButton, PendingButton, DisabledButton, SuccessButton } from './ButtonHelpers';
 import { colors } from '../theme';
 
@@ -330,7 +330,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
               {action === "buyout" &&
                 (actionTxnStatus === TransactionState.NOT_SUBMITTED || actionTxnStatus === TransactionState.ERROR || actionTxnStatus === TransactionState.FAIL) && (
                   < StyledItem >
-                    <ConnectBtn
+                    <FractButton
                       style={{ width: "150px" }}
                       onClick={() => onBuyNftClick(item.fracNFTId, item.buyoutPrice)}
                       type="submit"
@@ -338,13 +338,13 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                       Buy for
                       <br />
                       {parseFloat(formatEther(buyoutPrice)).toPrecision(3)} ETH
-                    </ConnectBtn>
+                    </FractButton>
                   </StyledItem>)}
               {(action === "buyout" && actionTxnStatus === TransactionState.PENDING) && (
                 <PendingButton />)}
               {(action === "buyout" && actionTxnStatus === TransactionState.SUCCESS) && (
                 <StyledItem>
-                  <ConnectBtn
+                  <FractButton
                     style={{ width: "150px", border: "1px solid " + colors.green }}
                     disabled="1"
                     type="submit"
@@ -352,19 +352,19 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     <span style={{ color: colors.green, whiteSpace: "nowrap" }}>Bought in</span>
                     <br />
                     <StyledTxn hash={actionTxnHash} />
-                  </ConnectBtn>
+                  </FractButton>
                 </StyledItem>)}
 
               {((action === "redeem" || action === "payout") &&
                 (approvalTxnStatus === TransactionState.NOT_SUBMITTED || approvalTxnStatus === TransactionState.FAIL || approvalTxnStatus === TransactionState.ERROR) && (
                   <StyledItem>
-                    <ConnectBtn
+                    <FractButton
                       style={{ width: "150px" }}
                       onClick={() => onApproveErc20Click(item.fracNFTId)}
                       type="submit"
                       name="onApproveErc20Click">
                       Approve
-                    </ConnectBtn>
+                    </FractButton>
                   </StyledItem>))}
               {((action === "redeem" || action === "payout") && approvalTxnStatus === TransactionState.PENDING) && (
                 <PendingButton />)}
@@ -378,13 +378,13 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
               {(action === "redeem" && approvalTxnStatus === TransactionState.SUCCESS &&
                 (actionTxnStatus === TransactionState.NOT_SUBMITTED || actionTxnStatus === TransactionState.ERROR || actionTxnStatus === TransactionState.FAIL) &&
                 (<StyledItem>
-                  <ConnectBtn
+                  <FractButton
                     style={{ width: "150px" }}
                     onClick={() => onRedeemNftClick(item.fracNFTId)}
                     type="submit"
                     name="redeemNft">
                     Redeem
-                  </ConnectBtn>
+                  </FractButton>
                 </StyledItem>))}
               {(action === "redeem" && actionTxnStatus === TransactionState.PENDING) &&
                 (<PendingButton />)}
@@ -398,13 +398,13 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
               {(action === "payout" && approvalTxnStatus === TransactionState.SUCCESS &&
                 (actionTxnStatus === TransactionState.NOT_SUBMITTED || actionTxnStatus === TransactionState.ERROR || actionTxnStatus === TransactionState.FAIL) &&
                 (<StyledItem>
-                  <ConnectBtn
+                  <FractButton
                     style={{ width: "150px" }}
                     onClick={() => onPayoutClick(item.fracNFTId)}
                     type="submit"
                     name="payout">
                     Claim
-                  </ConnectBtn>
+                  </FractButton>
                 </StyledItem>))}
               {(action === "payout" && actionTxnStatus === TransactionState.PENDING) &&
                 (<PendingButton />)}

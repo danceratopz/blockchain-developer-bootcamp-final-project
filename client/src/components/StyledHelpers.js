@@ -47,7 +47,7 @@ export const FractInput = styled.input`
   margin: 5px;
 `;
 
-export const ConnectBtn = styled.button`
+export const FractButton = styled.button`
   border: 1px solid ${colors.blue};
   background: transparent;
   color: white;

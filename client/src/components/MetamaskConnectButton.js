@@ -18,7 +18,7 @@ const MetamaskLogo = styled.img.attrs({
   height: 25px;
 `;
 
-const ConnectBtn = styled.button`
+const FractButton = styled.button`
   border: 1px solid ${colors.blue};
   background: transparent;
   color: white;
@@ -60,7 +60,7 @@ const MetamaskConnectButton = () => {
     return (
       <StyledHeaderBox>
         <Text><FaEthereum color={colors.blue} size="22" /> </Text>
-        <ConnectBtn style={{ background: "#1f1f1f" }}
+        <FractButton style={{ background: "#1f1f1f" }}
           onClick={() => {
             if (!window.ethereum) {
               setContentError(["Failed to detect Metamask - please install it from ", <StyledAnchor key="mm" href="https://metamask.io/download.html">https://metamask.io/download.html</StyledAnchor>]);
@@ -74,7 +74,7 @@ const MetamaskConnectButton = () => {
           }}
         >
           Connect
-        </ConnectBtn>
+        </FractButton>
       </StyledHeaderBox>
     );
   }
@@ -87,11 +87,11 @@ const MetamaskConnectButton = () => {
         style={{ margin: "8px", marginLeft: "12px", marginRight: "12px", fontFamily: "Source Code Pro" }}>
         <StyledAddress address={account} />  <BalancesCard />
       </Text>
-      <ConnectBtn
+      <FractButton
         style={{ fontFamily: "Source Sans Pro" }}
         onClick={() => onLogOut(deactivate, () => history.push('/'))}>
         <span style={{ whiteSpace: "nowrap" }}>Log out</span>
-      </ConnectBtn>
+      </FractButton>
     </StyledHeaderBox>
   );
 };

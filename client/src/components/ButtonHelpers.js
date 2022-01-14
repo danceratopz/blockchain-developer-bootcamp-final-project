@@ -1,7 +1,7 @@
 import { colors } from '../theme';
 import { Spinner } from 'react-bootstrap';
 import { StyledTxn } from './StyledAddress';
-import { ConnectBtn, StyledItem } from './StyledHelpers';
+import { FractButton, StyledItem } from './StyledHelpers';
 import { FaCopy } from 'react-icons/fa';
 
 
@@ -14,21 +14,21 @@ const SkinnySpinner = () => {
 
 export const CopyButton = ({ textToCopy }) => {
     return (
-        <ConnectBtn
+        <FractButton
             style={{ border: "0px", width: "20px" }}
             onClick={() => { navigator.clipboard.writeText(textToCopy) }}>
             <FaCopy size="15" color={colors.blue} />
-        </ConnectBtn>
+        </FractButton>
     );
 }
 
 export const DisabledButton = ({ text }) => {
     return (<StyledItem>
-        <ConnectBtn
+        <FractButton
             style={{ width: "150px", border: "1px solid white" }}
             disabled="1">
             {text}
-        </ConnectBtn>
+        </FractButton>
     </StyledItem>
     );
 }
@@ -36,11 +36,11 @@ export const DisabledButton = ({ text }) => {
 export const PendingButton = () => {
     return (
         <StyledItem>
-            <ConnectBtn
+            <FractButton
                 style={{ width: "150px" }}
                 disabled="1">
                 <SkinnySpinner />
-            </ConnectBtn>
+            </FractButton>
         </StyledItem>
     );
 }
@@ -48,12 +48,12 @@ export const PendingButton = () => {
 export const SuccessButton = ({ txnHash }) => {
     return (
         <StyledItem>
-            <ConnectBtn
+            <FractButton
                 style={{ width: "150px", border: "1px solid " + colors.green }}
                 disabled="1"
                 type="submit">
                 <StyledTxn hash={txnHash} />
-            </ConnectBtn>
+            </FractButton>
         </StyledItem>
     );
 }

@@ -12,7 +12,7 @@ import { Contract } from '@ethersproject/contracts';
 import { ethers } from "ethers";
 import { TransactionState } from '../utils/states';
 import { colors } from '../theme';
-import { ConnectBtn, FractFieldset, FractInput } from './StyledHelpers';
+import { FractButton, FractFieldset, FractInput } from './StyledHelpers';
 
 import fractionalizeNftContract from '../artifacts/contracts/FractionalizeNFT.json';
 import exampleErc721Contract from '../artifacts/contracts/TestNFT.json';
@@ -184,39 +184,39 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
             onChange={(e) => setNftTokenIndex(e.target.value)}
           />
           {(approvalTxnStatus === TransactionState.NOT_SUBMITTED) && (
-            <ConnectBtn
+            <FractButton
               style={!isPositiveInteger(nftTokenIndex) ? { border: "1px solid white", width: "200px" } : { width: "200px" }}
               disabled={!isPositiveInteger(nftTokenIndex)}
               onClick={onApproveNftClick}
               type="submit"
               name="approveNft">
               Approve
-            </ConnectBtn>)}
+            </FractButton>)}
           {(approvalTxnStatus === TransactionState.FAIL || approvalTxnStatus === TransactionState.ERROR) && (
             <>
-              <ConnectBtn
+              <FractButton
                 style={!isPositiveInteger(nftTokenIndex) ? { border: "1px solid white", width: "200px" } : { border: "1px solid " + colors.red, width: "200px" }}
                 disabled={!isPositiveInteger(nftTokenIndex)}
                 onClick={onApproveNftClick}
                 type="submit"
                 name="approveNft">
                 Approve
-              </ConnectBtn>
+              </FractButton>
               <Text>(see error below)</Text>
             </>)}
           {(approvalTxnStatus === TransactionState.PENDING) && (
-            <ConnectBtn
+            <FractButton
               style={{ width: "200px" }}
               disabled="1">
               <SkinnySpinner />
-            </ConnectBtn>
+            </FractButton>
           )}
           {(approvalTxnStatus === TransactionState.SUCCESS) && (
-            <ConnectBtn
+            <FractButton
               style={{ border: "1px solid " + colors.green, width: "200px" }}
               disabled="1">
               <StyledTxn hash={approvalTxnHash} />
-            </ConnectBtn>)}
+            </FractButton>)}
 
         </FractFieldset>
         <FractFieldset>
@@ -264,41 +264,41 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
                 onChange={(e) => setBuyoutPrice(e.target.value)}
               />
               {(actionTxnStatus === TransactionState.NOT_SUBMITTED) && (
-                <ConnectBtn
+                <FractButton
                   style={!isPositiveInteger(nftTokenIndex) || erc20Name.length === 0 || erc20Symbol.length === 0 || !isPositiveInteger(erc20Supply) || !isPositiveFloat(buyoutPrice) ? { width: "200px", border: "1px solid white" } : { width: "200px" }}
                   disabled={!isPositiveInteger(nftTokenIndex) || erc20Name.length === 0 || erc20Symbol.length === 0 || !isPositiveInteger(erc20Supply) || !isPositiveFloat(buyoutPrice)}
                   onClick={onFractionalizeNftClick}
                   type="submit"
                   name="fractionalize">
                   Fractionalize
-                </ConnectBtn>)}
+                </FractButton>)}
               {(actionTxnStatus === TransactionState.FAIL || actionTxnStatus === TransactionState.ERROR) && (
                 <>
-                  <ConnectBtn
+                  <FractButton
                     style={!isPositiveInteger(nftTokenIndex) || erc20Name.length === 0 || erc20Symbol.length === 0 || !isPositiveInteger(erc20Supply) || !isPositiveFloat(buyoutPrice) ? { width: "200px", border: "1px solid white" } : { width: "200px" }}
                     disabled={!isPositiveInteger(nftTokenIndex) || erc20Name.length === 0 || erc20Symbol.length === 0 || !isPositiveInteger(erc20Supply) || !isPositiveFloat(buyoutPrice)}
                     onClick={onFractionalizeNftClick}
                     type="submit"
                     name="fractionalize">
                     Fractionalize
-                  </ConnectBtn>
+                  </FractButton>
                   <Text>(see error below)</Text>
                 </>)}
               {(actionTxnStatus === TransactionState.SUCCESS) && (
-                <ConnectBtn
+                <FractButton
                   style={{ border: "1px solid " + colors.green, width: "200px" }}
                   onClick={onFractionalizeNftClick}
                   disabled="1"
                   type="submit"
                   name="fractionalize">
                   <StyledTxn hash={actionTxnHash} />
-                </ConnectBtn>)}
+                </FractButton>)}
               {(actionTxnStatus === TransactionState.PENDING) && (
-                <ConnectBtn
+                <FractButton
                   style={{ width: "200px" }}
                   disabled="1">
                   <SkinnySpinner />
-                </ConnectBtn>)}
+                </FractButton>)}
             </div>
           </form>
         </FractFieldset>
