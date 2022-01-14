@@ -3,7 +3,7 @@ import { colors } from '../theme';
 
 export const StyledHeaderBox = styled.div`
   display: flex;
-  background: #1f1f1f;
+  background: ${colors.componentBackground};
   justify-content: center;
   align-items: center;
   margin-top: 0.4rem;
@@ -17,7 +17,7 @@ export const StyledHeaderBox = styled.div`
 
 export const FractFieldset = styled.fieldset`
   border: 1px solid ${colors.blue};
-  background: #1f1f1f;
+  background: ${colors.componentBackground};
   color: white;
   border-radius: 10px;
   padding: 10px;
@@ -26,7 +26,7 @@ export const FractFieldset = styled.fieldset`
 
 export const NoFractFieldset = styled.fieldset`
   border: 1px solid ${colors.secondary};
-  background: #1f1f1f;
+  background: ${colors.componentBackground};
   color: white;
   border-radius: 10px;
   padding: 10px;

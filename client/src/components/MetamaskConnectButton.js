@@ -60,7 +60,7 @@ const MetamaskConnectButton = () => {
     return (
       <StyledHeaderBox>
         <Text><FaEthereum color={colors.blue} size="22" /> </Text>
-        <FractButton style={{ background: "#1f1f1f" }}
+        <FractButton style={{ background: colors.componentBackground }}
           onClick={() => {
             if (!window.ethereum) {
               setContentError(["Failed to detect Metamask - please install it from ", <StyledAnchor key="mm" href="https://metamask.io/download.html">https://metamask.io/download.html</StyledAnchor>]);

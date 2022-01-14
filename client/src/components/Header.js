@@ -11,7 +11,7 @@ import Text from './Text';
 import { colors } from '../theme';
 
 const StyledContainer = styled(Container)`
-  background-color: #1f1f1f;
+  background-color: ${colors.componentBackground};
   text-align: center;
   justify-content: center;
   position: absolute;
