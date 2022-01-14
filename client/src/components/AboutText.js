@@ -22,7 +22,7 @@ const AboutText = () => {
               <Text t4 center>
                 Failed to detect Metamask. To explore the UI and interact with the contract please install{' '}
                 <StyledAnchor href="https://metamask.io/download.html">Metamask</StyledAnchor> and
-                change to the <b>Ropsten Test Network</b>.
+                change to <span style={{ whiteSpace: "nowrap" }}>the <b>Ropsten Test Network</b></span>.
               </Text>
             </StyledDiv>}
           {window.ethereum &&
@@ -34,9 +34,9 @@ const AboutText = () => {
         </NoFractFieldset>)}
       <p>
         This is a frontend to an NFT fractionalizer running on the Ethereum Ropsten Testnet. Upon fractionalization
-        a user sends an NFT to the contract in return for ERC20 tokens which may then be distributed among multiple accounts to
-        represent shared ownership of the NFT. If the NFT gets bought from the contract, holders of the corresponding ERC20 token
-        may claim their share of the sales proceedings.
+        a user sends an NFT to the contract and in return receives newly created ERC20 tokens. The ERC20 tokens may be
+        distributed among multiple accounts to represent shared ownership of the NFT. If the NFT gets bought from the
+        contract, holders of the corresponding ERC20 token may claim their share of the sales proceedings.
       </p>
       <p>
         In order to interact with the contract you'll need some Ropsten Test Ether (to buy an NFT) or a Ropsten NFT (to fractionalize):
