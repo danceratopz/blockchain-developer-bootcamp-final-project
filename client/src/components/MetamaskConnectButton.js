@@ -78,6 +78,7 @@ const MetamaskConnectButton = () => {
       </StyledHeaderBox>
     );
   }
+  var noop = function () { };
 
   // <MetamaskLogo />
   return (
@@ -89,7 +90,7 @@ const MetamaskConnectButton = () => {
       </Text>
       <FractButton
         style={{ fontFamily: "Source Sans Pro" }}
-        onClick={() => onLogOut(deactivate, () => history.push('/'))}>
+        onClick={() => onLogOut(deactivate, () => noop())}>
         <span style={{ whiteSpace: "nowrap" }}>Log out</span>
       </FractButton>
     </StyledHeaderBox>
