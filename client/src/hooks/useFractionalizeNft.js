@@ -10,10 +10,10 @@ export function useFractionalizeNft() {
       // setFractionalizeNftAddress(fractionalizeNftContract.networks[chainId]?.address);
       // TODO: Contract address generation is deterministic; this is the address corresponding to the first deployment
       // of the contract. But can we automate it, as indicated above?
-      setFractionalizeNftAddress("0x60942c0623CCdAd1441aCe477c21E5fFb93A4D38");
+      setFractionalizeNftAddress('0x60942c0623CCdAd1441aCe477c21E5fFb93A4D38');
     } else if (chainId === 3) {
       // TODO: This is also set in ../components/AboutText.js and ../components/Footer.js
-      setFractionalizeNftAddress("0xEBd4F1bB0C736f98FF6ED83007AF089f2f2b2517");
+      setFractionalizeNftAddress('0xEBd4F1bB0C736f98FF6ED83007AF089f2f2b2517');
     }
   }, [chainId]);
 

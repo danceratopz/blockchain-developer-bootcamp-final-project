@@ -5,10 +5,10 @@ import { StyledAnchor } from './StyledHelpers';
 import Text from './Text';
 
 const Footer = () => {
-  const ropstenAddress = "0xEBd4F1bB0C736f98FF6ED83007AF089f2f2b2517";
+  const ropstenAddress = '0xEBd4F1bB0C736f98FF6ED83007AF089f2f2b2517';
 
   return (
-    <div style={{ position: "absolute", bottom: "0", right: "0", margin: "10px", marginTop: "20px" }}>
+    <div style={{ position: 'absolute', bottom: '0', right: '0', margin: '10px', marginTop: '20px' }}>
       <Text block center>
         <FaRegCopyright color={colors.blue} />
         <StyledAnchor href="https://github.com/danceratopz/blockchain-developer-bootcamp-final-project">
@@ -17,8 +17,8 @@ const Footer = () => {
         {' - '}
         <StyledAddress address={ropstenAddress} />
       </Text>
-    </div >
+    </div>
   );
-}
+};
 
 export default Footer;

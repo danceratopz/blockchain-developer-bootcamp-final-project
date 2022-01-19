@@ -25,7 +25,7 @@ const App = () => {
   return (
     <AppContextProvider>
       <Web3ReactProvider getLibrary={getLibrary}>
-        <div style={{ position: "relative", minHeight: "100vh", paddingBottom: "60px" }}>
+        <div style={{ position: 'relative', minHeight: '100vh', paddingBottom: '60px' }}>
           <Header />
           <Route exact path="/" component={Home} />
           <Route exact path="/market" component={Buyout} />
@@ -35,7 +35,7 @@ const App = () => {
           <Footer />
         </div>
       </Web3ReactProvider>
-    </AppContextProvider >
+    </AppContextProvider>
   );
 };
 

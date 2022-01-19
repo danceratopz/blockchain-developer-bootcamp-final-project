@@ -11,6 +11,6 @@ const About = () => {
       <AboutText />
     </Container>
   );
-}
+};
 
 export default About;

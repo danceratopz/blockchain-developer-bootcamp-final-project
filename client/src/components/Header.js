@@ -52,27 +52,29 @@ const Header = () => {
     function handleResize() {
       setWindowDimension(window.innerWidth);
     }
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [])
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const isMobile = windowDimension < 720;
 
   const handleNavToggle = () => {
     setNavToggled(!navToggled);
-  }
+  };
 
   return (
     <>
       <GlobalError />
       <Navbar className="d-flex justify-content-between">
         <div>
-          {isMobile ?
+          {isMobile ? (
             <>
               <Toggle handleNavToggle={handleNavToggle} />
               {navToggled ? <Menu handleNavToggle={handleNavToggle} /> : null}
             </>
-            : <Navigation />}
+          ) : (
+            <Navigation />
+          )}
         </div>
         <MetamaskConnectButton />
       </Navbar>

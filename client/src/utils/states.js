@@ -3,4 +3,4 @@ export const TransactionState = {
   PENDING: 'PENDING',
   SUCCESS: 'SUCCESS',
   FAIL: 'FAIL',
-}
+};

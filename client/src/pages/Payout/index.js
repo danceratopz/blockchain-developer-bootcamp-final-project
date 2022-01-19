@@ -16,15 +16,14 @@ const Payout = () => {
       {!active && <AboutText />}
       {active && (
         <FractFieldset>
-          <Legend>
-            Claim a Payout
-          </Legend>
+          <Legend>Claim a Payout</Legend>
           <Text display="block">
-            Following a buyout of a fractionalized NFT, an account that holds corresponding ERC20 tokens can
-            claim their payout from the sale proceedings.
+            Following a buyout of a fractionalized NFT, an account that holds corresponding ERC20 tokens can claim their
+            payout from the sale proceedings.
           </Text>
           {fractionalizeNftAddress && <Listings fractionalizeNftAddress={fractionalizeNftAddress} action="payout" />}
-        </FractFieldset>)}
+        </FractFieldset>
+      )}
     </Container>
   );
 };

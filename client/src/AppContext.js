@@ -2,13 +2,13 @@ import React, { createContext, useReducer } from 'react';
 
 const initialContext = {
   ethBalance: '--',
-  setEthBalance: () => { },
+  setEthBalance: () => {},
   isWalletConnectionModalOpen: false,
-  setWalletConnectModal: () => { },
+  setWalletConnectModal: () => {},
   accountLastTxnHash: undefined,
-  setAccountLastTxnHash: () => { },
+  setAccountLastTxnHash: () => {},
   contentError: undefined,
-  setContentError: () => { },
+  setContentError: () => {},
 };
 
 const appReducer = (state, { type, payload }) => {

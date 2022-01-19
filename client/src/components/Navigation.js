@@ -1,7 +1,7 @@
-import React from "react";
-import { NavLink } from "react-router-dom";
-import { StyledHeaderBox } from './StyledHelpers';
+import React from 'react';
+import { NavLink } from 'react-router-dom';
 import { FaDiceD20 } from 'react-icons/fa';
+import { StyledHeaderBox } from './StyledHelpers';
 import { colors } from '../theme';
 
 function Navigation() {
@@ -14,7 +14,7 @@ function Navigation() {
             <div>
               <ul className="navbar-nav ml-auto">
                 <li key="fractionalize" className="nav-item">
-                  <NavLink className="nav-link" exact={true} to="/">
+                  <NavLink className="nav-link" exact to="/">
                     Fractionalize
                   </NavLink>
                 </li>

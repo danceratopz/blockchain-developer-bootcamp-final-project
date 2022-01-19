@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
+import { FaEthereum } from 'react-icons/fa';
 import Text from './Text';
 import { StyledHeaderBox, StyledAnchor } from './StyledHelpers';
 import { injected } from '../connectors';
-import { StyledAddress } from '../components/StyledAddress';
+import { StyledAddress } from './StyledAddress';
 import { useAppContext } from '../AppContext';
 import BalancesCard from './BalancesCard';
 import MMLogo from '../static/metamask-logo.svg';
-import { FaEthereum } from 'react-icons/fa';
 import { colors } from '../theme';
 
 const MetamaskLogo = styled.img.attrs({
@@ -59,11 +59,19 @@ const MetamaskConnectButton = () => {
   if (status === pageState.READY && !active) {
     return (
       <StyledHeaderBox>
-        <Text><FaEthereum color={colors.blue} size="22" /> </Text>
-        <FractButton style={{ background: colors.componentBackground }}
+        <Text>
+          <FaEthereum color={colors.blue} size="22" />{' '}
+        </Text>
+        <FractButton
+          style={{ background: colors.componentBackground }}
           onClick={() => {
             if (!window.ethereum) {
-              setContentError(["Failed to detect Metamask - please install it from ", <StyledAnchor key="mm" href="https://metamask.io/download.html">https://metamask.io/download.html</StyledAnchor>]);
+              setContentError([
+                'Failed to detect Metamask - please install it from ',
+                <StyledAnchor key="mm" href="https://metamask.io/download.html">
+                  https://metamask.io/download.html
+                </StyledAnchor>,
+              ]);
               return;
             }
             activate(injected, (e) => {
@@ -78,20 +86,17 @@ const MetamaskConnectButton = () => {
       </StyledHeaderBox>
     );
   }
-  var noop = function () { };
+  const noop = function () {};
 
   // <MetamaskLogo />
   return (
     <StyledHeaderBox>
       <FaEthereum color={colors.blue} size="22" />
-      <Text
-        style={{ margin: "8px", marginLeft: "12px", marginRight: "12px", fontFamily: "Source Code Pro" }}>
-        <StyledAddress address={account} />  <BalancesCard />
+      <Text style={{ margin: '8px', marginLeft: '12px', marginRight: '12px', fontFamily: 'Source Code Pro' }}>
+        <StyledAddress address={account} /> <BalancesCard />
       </Text>
-      <FractButton
-        style={{ fontFamily: "Source Sans Pro" }}
-        onClick={() => onLogOut(deactivate, () => noop())}>
-        <span style={{ whiteSpace: "nowrap" }}>Log out</span>
+      <FractButton style={{ fontFamily: 'Source Sans Pro' }} onClick={() => onLogOut(deactivate, () => noop())}>
+        <span style={{ whiteSpace: 'nowrap' }}>Log out</span>
       </FractButton>
     </StyledHeaderBox>
   );
