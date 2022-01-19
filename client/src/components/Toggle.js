@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { FaBars, FaDiceD20 } from 'react-icons/fa';
+import { FaDiceD20 } from 'react-icons/fa';
 
 import { colors } from '../theme';
 

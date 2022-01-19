@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { shortenAddress } from '../utils/shortenAddress';
 import { colors } from '../theme';

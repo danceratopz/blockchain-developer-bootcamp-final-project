@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import Text from './Text';
-import { StyledHeaderBox } from './StyledHelpers';
-import { colors } from '../theme';
 import useEth from '../hooks/useEth';
 import useAccountLastTxnHash from '../hooks/useAccountLastTxnHash';
 

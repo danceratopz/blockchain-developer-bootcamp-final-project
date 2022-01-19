@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
 import { FaEthereum } from 'react-icons/fa';
@@ -9,14 +8,7 @@ import { injected } from '../connectors';
 import { StyledAddress } from './StyledAddress';
 import { useAppContext } from '../AppContext';
 import BalancesCard from './BalancesCard';
-import MMLogo from '../static/metamask-logo.svg';
 import { colors } from '../theme';
-
-const MetamaskLogo = styled.img.attrs({
-  src: MMLogo,
-})`
-  height: 25px;
-`;
 
 const FractButton = styled.button`
   border: 1px solid ${colors.blue};
@@ -37,7 +29,6 @@ const onLogOut = (deactivate, cb) => {
 };
 
 const MetamaskConnectButton = () => {
-  const history = useHistory();
   const { setContentError } = useAppContext();
   const { activate, active, account, deactivate } = useWeb3React();
   const [status, setStatus] = useState(pageState.LOADING);
@@ -86,7 +77,8 @@ const MetamaskConnectButton = () => {
       </StyledHeaderBox>
     );
   }
-  const noop = function () {};
+
+  function noop() {}
 
   // <MetamaskLogo />
   return (

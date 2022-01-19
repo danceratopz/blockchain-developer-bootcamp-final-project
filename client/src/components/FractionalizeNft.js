@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { Button, Container, Spinner } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import { useWeb3React } from '@web3-react/core';
 import { Link, Redirect } from 'react-router-dom';
 import { Contract } from '@ethersproject/contracts';
@@ -13,13 +12,12 @@ import { StyledTxn } from './StyledAddress';
 import { TransactionState } from '../utils/states';
 import { colors } from '../theme';
 import { FractButton, FractFieldset, FractInput } from './StyledHelpers';
+import { SkinnySpinner } from './ButtonHelpers';
 
 import fractionalizeNftContract from '../artifacts/contracts/FractionalizeNFT.json';
 import exampleErc721Contract from '../artifacts/contracts/TestNFT.json';
 
 const CONFIRMATION_COUNT = 1;
-
-const BuyButton = styled(Button).attrs({ variant: 'outline-success' });
 
 function isPositiveFloat(str) {
   // see https://stackoverflow.com/a/10834843
@@ -32,10 +30,6 @@ function isPositiveInteger(str) {
   const n = Math.floor(Number(str));
   return n !== Infinity && String(n) === str && n >= 0;
 }
-
-const SkinnySpinner = () => (
-  <Spinner animation="border" size="sm" style={{ color: colors.green, marginTop: '2px', marginBottom: '3px' }} />
-);
 
 const FractionalizeNft = ({ fractionalizeNftAddress }) => {
   // Hold the state and hash of the ERC721 approve() transaction.
@@ -77,30 +71,32 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
   const tokenIdInputWidth = isMobile ? '120px' : '120px';
   const miscInputWidth = isMobile ? '290px' : '290px';
 
-  const processTxnError = (e, action_or_approval) => {
+  const processTxnError = (e, actionOrApproval) => {
+    // eslint-disable-next-line no-console
     console.log(e);
     let txnStatus;
     if (e.code && typeof e.code === 'number') {
       let message;
-      if (e.hasOwnProperty('data') && e.data.hasOwnProperty('message')) {
+      if (Object.prototype.hasOwnProperty.call(e, 'data') && Object.prototype.hasOwnProperty.call(e.data, 'message')) {
         message = `Error - ${e.message}: ${e.data.message}`;
       } else {
         message = `Error - ${e.message}`;
       }
       txnStatus = TransactionState.FAIL;
       setMmError(message);
-    } else if (e.hasOwnProperty('message')) {
+    } else if (Object.prototype.hasOwnProperty.call(e, 'message')) {
       txnStatus = TransactionState.FAIL;
       setMmError(e.message);
     } else {
       txnStatus = TransactionState.ERROR;
     }
-    if (action_or_approval === 'action') {
+    if (actionOrApproval === 'action') {
       setActionTxnStatus(txnStatus);
-    } else if (action_or_approval === 'approval') {
+    } else if (actionOrApproval === 'approval') {
       setApprovalTxnStatus(txnStatus);
     } else {
-      console.log('Error: Unexpcted transaction type ', action_or_approval);
+      // eslint-disable-next-line no-console
+      console.log('Error: Unexpcted transaction type ', actionOrApproval);
     }
   };
 
@@ -142,7 +138,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
 
   if (!active) return <Redirect to="/" />;
 
-  if (!active) return;
+  if (!active) return null;
 
   return (
     <Container className="mt-5 d-flex flex-column justify-content-center align-items-center">
@@ -159,7 +155,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
           <br />
           <FractInput
             style={
-              nftContractAddress.length != 42
+              nftContractAddress.length !== 42
                 ? { width: addressInputWidth, border: `1px solid ${colors.red}` }
                 : { width: addressInputWidth }
             }

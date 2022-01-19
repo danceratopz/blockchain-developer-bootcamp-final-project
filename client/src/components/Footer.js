@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { FaRegCopyright } from 'react-icons/fa';
 import { colors } from '../theme';
 import { StyledAddress } from './StyledAddress';

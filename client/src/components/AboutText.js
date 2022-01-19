@@ -1,3 +1,4 @@
+import React from 'react';
 import { useWeb3React } from '@web3-react/core';
 import Text from './Text';
 import { FractFieldset, NoFractFieldset, StyledDiv, StyledAnchor } from './StyledHelpers';
@@ -7,7 +8,6 @@ const AboutText = () => {
   const { active } = useWeb3React();
 
   const ropstenAddress = '0xEBd4F1bB0C736f98FF6ED83007AF089f2f2b2517';
-  const contractLink = `https://ropsten.etherscan.io/address/${ropstenAddress}`;
 
   return (
     <FractFieldset>
@@ -44,8 +44,8 @@ const AboutText = () => {
         contract, holders of the corresponding ERC20 token may claim their share of the sales proceedings.
       </p>
       <p>
-        In order to interact with the contract you'll need some Ropsten Test Ether (to buy an NFT) or a Ropsten NFT (to
-        fractionalize):
+        In order to interact with the contract you&apos;ll need some Ropsten Test Ether (to buy an NFT) or a Ropsten NFT
+        (to fractionalize):
       </p>
       <ul>
         <li key="paradigm">
@@ -64,7 +64,7 @@ const AboutText = () => {
       <p>
         Otherwise, feel free to contact me{' '}
         <StyledAnchor href="https://github.com/danceratopz">(Github profile)</StyledAnchor> with your Ropsten address
-        and I'll send you some test Ether or NFTs.
+        and I&apos;ll send you some test Ether or NFTs.
       </p>
       <p>
         This dapp was created as the Final Project for the{' '}

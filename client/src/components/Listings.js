@@ -30,12 +30,12 @@ const listingState = {
   ERROR: 'ERROR',
 };
 
-const getJSON = function (url, callback) {
+function getJSON(url, callback) {
   // https://stackoverflow.com/a/35970894
   const xhr = new XMLHttpRequest();
   xhr.open('GET', url, true);
   xhr.responseType = 'json';
-  xhr.onload = function () {
+  xhr.onload = function onload() {
     const { status } = xhr;
     if (status === 200) {
       callback(null, xhr.response);
@@ -44,7 +44,7 @@ const getJSON = function (url, callback) {
     }
   };
   xhr.send();
-};
+}
 
 const LinkedNftTokenId = ({ contractAddress, tokenId }) => (
   <Link
@@ -69,7 +69,6 @@ const NoListings = ({ message }) => (
 const FilteredListing = ({ fractionalizeNftAddress, listings, action }) => {
   const { active, account, library } = useWeb3React();
   const [filteredByHolder, setFilteredByHolder] = useState([]);
-  const accountHoldsEnoughErc20Tokens = new Array(listings.length);
 
   const holdsEnoughErc20TokensForAction = useCallback(async (account, action, library, erc20Address) => {
     const abi = [
@@ -90,7 +89,9 @@ const FilteredListing = ({ fractionalizeNftAddress, listings, action }) => {
     if (action === 'payout') {
       return utils.formatUnits(balance) > 0;
     }
+    // eslint-disable-next-line no-console
     console.log("Error: unexpected action: '", action, "'");
+    return `error in holdsEnoughErc20TokensForAction(): recieved unexpected action ${action}`;
   }, []);
 
   const filterListings = useCallback(async (action, listings) => {
@@ -100,6 +101,7 @@ const FilteredListing = ({ fractionalizeNftAddress, listings, action }) => {
     } else if (action === 'payout') {
       requiredState = 2; // boughtout
     } else {
+      // eslint-disable-next-line no-console
       console.log("Error: unexpected action: '", action, "'");
     }
     let filtered = listings.filter((l) => l.state === requiredState);
@@ -110,7 +112,9 @@ const FilteredListing = ({ fractionalizeNftAddress, listings, action }) => {
     //  filtered = listings.filter((l) => l.originalOwner != account);
     if (action === 'redeem' || action === 'payout') {
       const accountHoldsEnoughErc20TokensForAction = new Array(listings.length);
-      for (let i = 0; i < listings.length; i++) {
+      for (let i = 0; i < listings.length; i += 1) {
+        // TODO: make async - but check getFracNfts() in Listings :)
+        // eslint-disable-next-line no-await-in-loop
         accountHoldsEnoughErc20TokensForAction[i] = await holdsEnoughErc20TokensForAction(
           account,
           action,
@@ -123,6 +127,7 @@ const FilteredListing = ({ fractionalizeNftAddress, listings, action }) => {
     } else if (action === 'buyout') {
       setFilteredByHolder(filtered);
     } else {
+      // eslint-disable-next-line no-console
       console.log("Error: unexpected action: '", action, "'");
     }
   }, []);
@@ -144,7 +149,7 @@ const FilteredListing = ({ fractionalizeNftAddress, listings, action }) => {
         />
       );
     }
-    if (action == 'payout') {
+    if (action === 'payout') {
       return (
         <NoListings
           message={['No payouts are available for the account ', <StyledAddress key="payout" address={account} />]}
@@ -164,7 +169,7 @@ const FilteredListing = ({ fractionalizeNftAddress, listings, action }) => {
 };
 
 const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
-  const { fracNFTId, nftTokenId, erc721Address, erc20Address, erc20Name, erc20Symbol, buyoutPrice, imgUrl } = item;
+  const { nftTokenId, erc721Address, erc20Address, erc20Name, buyoutPrice } = item;
 
   const [mmError, setMmError] = useState(null);
   // Hold the state and hash of the ERC20 approve() transaction.
@@ -182,30 +187,32 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
   const [imageUrl, setImageUrl] = useState(null);
   const [imageAltText, setImageAltText] = useState('');
 
-  const processTxnError = (e, action_or_approval) => {
+  const processTxnError = (e, actionOrApproval) => {
+    // eslint-disable-next-line no-console
     console.log(e);
     let txnStatus;
     if (e.code && typeof e.code === 'number') {
       let message;
-      if (e.hasOwnProperty('data') && e.data.hasOwnProperty('message')) {
+      if (Object.prototype.hasOwnProperty.call(e, 'data') && Object.prototype.hasOwnProperty.call(e.data, 'message')) {
         message = `Error - ${e.message}: ${e.data.message}`;
       } else {
         message = `Error - ${e.message}`;
       }
       txnStatus = TransactionState.FAIL;
       setMmError(message);
-    } else if (e.hasOwnProperty('message')) {
+    } else if (Object.prototype.hasOwnProperty.call(e, 'message')) {
       txnStatus = TransactionState.FAIL;
       setMmError(e.message);
     } else {
       txnStatus = TransactionState.ERROR;
     }
-    if (action_or_approval === 'action') {
+    if (actionOrApproval === 'action') {
       setActionTxnStatus(txnStatus);
-    } else if (action_or_approval === 'approval') {
+    } else if (actionOrApproval === 'approval') {
       setApprovalTxnStatus(txnStatus);
     } else {
-      console.log('Error: Unexpcted transaction type ', action_or_approval);
+      // eslint-disable-next-line no-console
+      console.log('Error: Unexpcted transaction type ', actionOrApproval);
     }
   };
 
@@ -223,7 +230,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
     }
   };
 
-  const onApproveErc20Click = async (fractNFTId) => {
+  const onApproveErc20Click = async () => {
     try {
       setApprovalTxnStatus(TransactionState.PENDING);
       const abi = [
@@ -258,7 +265,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
     }
   };
 
-  const onPayoutClick = async (fractNFTId) => {
+  const onPayoutClick = async (fracNFTId) => {
     setActionTxnHash('waitingpayout');
     try {
       setActionTxnStatus(TransactionState.PENDING);
@@ -298,9 +305,9 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
         // appears to throttle even small amounts of image requests made within a small time window. This would be
         // better solved by asynchronously loading the listing items and adding a retry mechanism for the images
         // with exponential backoff.
-        const image_url = data.image.replace('pinata.cloud', 'ipfs.io');
-        setImageUrl(image_url);
-        if (data.hasOwnProperty('description')) {
+        const imageUrl = data.image.replace('pinata.cloud', 'ipfs.io');
+        setImageUrl(imageUrl);
+        if (Object.prototype.hasOwnProperty.call(data, 'description')) {
           setImageAltText(data.description);
         } else {
           setImageAltText('NFT Image');
@@ -425,7 +432,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
               )}
 
               {action === 'redeem' &&
-                approvalTxnStatus != TransactionState.SUCCESS &&
+                approvalTxnStatus !== TransactionState.SUCCESS &&
                 (actionTxnStatus === TransactionState.NOT_SUBMITTED ||
                   actionTxnStatus === TransactionState.ERROR ||
                   actionTxnStatus === TransactionState.FAIL) && <DisabledButton text="Redeem" />}
@@ -451,7 +458,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
               )}
 
               {action === 'payout' &&
-                approvalTxnStatus != TransactionState.SUCCESS &&
+                approvalTxnStatus !== TransactionState.SUCCESS &&
                 (actionTxnStatus === TransactionState.NOT_SUBMITTED ||
                   actionTxnStatus === TransactionState.ERROR ||
                   actionTxnStatus === TransactionState.FAIL) && <DisabledButton text="Claim" />}
@@ -498,6 +505,7 @@ const Listings = ({ fractionalizeNftAddress, action }) => {
       setListings(fracNfts);
       setStatus(listingState.READY);
     } catch (e) {
+      // eslint-disable-next-line no-console
       console.log('error:', e);
       setStatus(listingState.ERROR);
     }

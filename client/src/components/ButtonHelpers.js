@@ -1,10 +1,11 @@
+import React from 'react';
 import { Spinner } from 'react-bootstrap';
 import { FaCopy } from 'react-icons/fa';
 import { colors } from '../theme';
 import { StyledTxn } from './StyledAddress';
 import { FractButton, StyledItem } from './StyledHelpers';
 
-const SkinnySpinner = () => (
+export const SkinnySpinner = () => (
   <Spinner animation="border" size="sm" style={{ color: colors.green, marginTop: '2px', marginBottom: '3px' }} />
 );
 
