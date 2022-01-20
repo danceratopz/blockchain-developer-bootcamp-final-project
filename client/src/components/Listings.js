@@ -11,7 +11,7 @@ import Text from './Text';
 import { StyledAddress, StyledTxn } from './StyledAddress';
 import {
   FractFieldset,
-  NoFractFieldset,
+  InfoFieldset,
   FractButton,
   StyledDiv,
   StyledItem,
@@ -58,11 +58,11 @@ const LinkedNftTokenId = ({ contractAddress, tokenId }) => (
 
 const NoListings = ({ message }) => (
   <StyledDiv>
-    <NoFractFieldset>
+    <InfoFieldset>
       <Text color={colors.secondary} style={{ display: 'inline-block' }} text-align="center">
         {message}
       </Text>
-    </NoFractFieldset>
+    </InfoFieldset>
   </StyledDiv>
 );
 

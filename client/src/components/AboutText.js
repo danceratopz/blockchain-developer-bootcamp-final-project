@@ -1,7 +1,7 @@
 import React from 'react';
 import { useWeb3React } from '@web3-react/core';
 import Text from './Text';
-import { FractFieldset, NoFractFieldset, StyledDiv, StyledAnchor } from './StyledHelpers';
+import { FractFieldset, InfoFieldset, StyledDiv, StyledAnchor } from './StyledHelpers';
 import { StyledAddress } from './StyledAddress';
 
 const AboutText = () => {
@@ -14,7 +14,7 @@ const AboutText = () => {
       <legend style={{ float: 'left' }}>About - NFT Fractionalizer and Market</legend>
 
       {!active && (
-        <NoFractFieldset>
+        <InfoFieldset>
           {!window.ethereum && (
             <StyledDiv>
               <Text t4 center>
@@ -35,7 +35,7 @@ const AboutText = () => {
               </Text>
             </StyledDiv>
           )}
-        </NoFractFieldset>
+        </InfoFieldset>
       )}
       <p>
         This is a frontend to an NFT fractionalizer running on the Ethereum Ropsten Testnet. Upon fractionalization a

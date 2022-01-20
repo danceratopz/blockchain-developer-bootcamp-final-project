@@ -24,7 +24,7 @@ export const FractFieldset = styled.fieldset`
   margin: 5px;
 `;
 
-export const NoFractFieldset = styled.fieldset`
+export const InfoFieldset = styled.fieldset`
   border: 1px solid ${colors.secondary};
   background: ${colors.componentBackground};
   color: white;
