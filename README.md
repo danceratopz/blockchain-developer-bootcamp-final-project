@@ -132,6 +132,7 @@ Solidity:
 * Feature: Delete an entry from `fracNFTs` if it is no longer in use, i.e., when:
   * An NFT has been redeemed, or
   * An NFT has been bought and there are no pending payouts (the contract holds the entire supply of the corresponding ERC20 token).
+* Chore: Improve unit test coverage.
 * Chore: Implement as an upgradable contract.
 
 Frontend:
@@ -143,4 +144,5 @@ Frontend:
 * Feature: Add a pager for the Listings on the Market, Redeem and Payout.
 * Feature: Make use of emitted events from the smart contract.
 * Feature/Clean-up: Remove the Redeem page (it can be incorporated in the Market, or the potential "Detail" view) as a "Redeem" or "Cancel" button.
+* Chore: Add unit tests.
 * Chore: Upgrade packages.
