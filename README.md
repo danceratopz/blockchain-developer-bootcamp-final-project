@@ -125,20 +125,22 @@ Source code verification additionally requires:
 
 `0x7b13c2F7AaA8C772Bd0a13A86B0CF633fAf790B0` (danceratopz.eth)
 
-### Possible Improvements and Known Issues
+### Possible Improvements
 
 Solidity:
-* __Update buyout price__: Allow an **ERC20 token holder** to __update the buyout price__ weighted by the proportion of the ERC20 token supply that they hold.
-* Delete an entry from `fracNFTs` if it is no longer in use, i.e., when:
+* Feature: Allow an ERC20 token holder to update the buyout price weighted by the proportion of the ERC20 token supply that they hold.
+* Feature: Delete an entry from `fracNFTs` if it is no longer in use, i.e., when:
   * An NFT has been redeemed, or
   * An NFT has been bought and there are no pending payouts (the contract holds the entire supply of the corresponding ERC20 token).
-* Implement as an upgradeable contract.
+* Chore: Implement as an upgradable contract.
 
 Frontend:
-* Optimize image loading.
-* Allow a user to open a detailed view of a fractionalized NFT to display its full and account-specific information
+* Feature: Render Listings on the Market, Redeem and Payout pages asynchronously.
+* Fix: Improve/optimise image loading.
+* Refactor: Remove inline styling (to CSS).
+* Feature: Allow a user to open a detailed view of a fractionalized NFT to display its full and account-specific information
   (e.g., percentage of ERC20 tokens held).
-* Remove the Redeem page (it can be incorporated in the Market, or potential "Detail" view) as a "redeem" button or "cancel".
-* Add a pager for Market and Payout Listings.
-* Load Listings on the page asynchronously.
-* Make use of emitted events from smart contract.
+* Feature: Add a pager for the Listings on the Market, Redeem and Payout.
+* Feature: Make use of emitted events from the smart contract.
+* Feature/Clean-up: Remove the Redeem page (it can be incorporated in the Market, or the potential "Detail" view) as a "Redeem" or "Cancel" button.
+* Chore: Upgrade packages.
