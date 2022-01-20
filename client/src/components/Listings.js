@@ -67,6 +67,7 @@ const NoListings = ({ message }) => (
 );
 
 const FilteredListing = ({ fractionalizeNftAddress, listings, action }) => {
+  const [status, setStatus] = useState(listingState.LOADING);
   const { active, account, library } = useWeb3React();
   const [filteredByHolder, setFilteredByHolder] = useState([]);
 
@@ -130,6 +131,7 @@ const FilteredListing = ({ fractionalizeNftAddress, listings, action }) => {
       // eslint-disable-next-line no-console
       console.log("Error: unexpected action: '", action, "'");
     }
+    setStatus(listingState.READY);
   }, []);
 
   useEffect(() => {
@@ -138,23 +140,36 @@ const FilteredListing = ({ fractionalizeNftAddress, listings, action }) => {
     }
   }, [active]);
 
-  if (filteredByHolder.length < 1) {
-    if (action === 'buyout') {
-      return <NoListings message={'There are currently no fractionalized NFTs in the contract to buy.'} />;
-    }
-    if (action === 'redeem') {
-      return (
-        <NoListings
-          message={['No redemptions are available for the account ', <StyledAddress key="redeem" address={account} />]}
-        />
-      );
-    }
-    if (action === 'payout') {
-      return (
-        <NoListings
-          message={['No payouts are available for the account ', <StyledAddress key="payout" address={account} />]}
-        />
-      );
+  if (status === listingState.LOADING) {
+    return (
+      <StyledDiv>
+        <Spinner animation="border" size="sm" style={{ color: colors.red, marginTop: '20px' }} />
+      </StyledDiv>
+    );
+  }
+
+  if (status === listingState.READY) {
+    if (filteredByHolder.length === 0) {
+      if (action === 'buyout') {
+        return <NoListings message={'There are currently no fractionalized NFTs in the contract to buy.'} />;
+      }
+      if (action === 'redeem') {
+        return (
+          <NoListings
+            message={[
+              'No redemptions are available for the account ',
+              <StyledAddress key="redeem" address={account} />,
+            ]}
+          />
+        );
+      }
+      if (action === 'payout') {
+        return (
+          <NoListings
+            message={['No payouts are available for the account ', <StyledAddress key="payout" address={account} />]}
+          />
+        );
+      }
     }
   }
 
@@ -340,8 +355,8 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
     <>
       {(actionTxnStatus === TransactionState.ERROR ||
         actionTxnStatus === TransactionState.FAIL ||
-        approvalTxnStatus === TransactionState.FAIL ||
-        approvalTxnStatus === TransactionState.ERROR) && (
+        approvalTxnStatus === TransactionState.ERROR ||
+        approvalTxnStatus === TransactionState.FAIL) && (
         <Container className="mt-5 d-flex flex-column justify-content-center align-items-center">
           <Text style={{ marginTop: '20px', marginBottom: '20px' }} color={colors.red}>
             {mmError || 'Unknown error encountered! Please reload.'}
