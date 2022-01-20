@@ -72,4 +72,4 @@ jobs:
       - name: Install modules
         run: cd client && yarn install --production=false
       - name: Run eslint
-        run: yarn eslint client/src --ext .js,.jsx,.ts,.tsx
+        run: cd client && yarn eslint src/ --ext .js,.jsx,.ts,.tsx
