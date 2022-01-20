@@ -15,6 +15,15 @@ env:
   NODE_OPTIONS: --max_old_space_size=4096
 
 jobs:
+  lint_frontend:
+    runs-on: ubuntu-latest
+    name: Lint Frontend
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install modules
+        run: cd client && yarn install --production=false
+      - name: Run eslint
+        run: cd client && yarn eslint src/ --ext .js,.jsx,.ts,.tsx
   tests:
     runs-on: ubuntu-latest
 
@@ -64,12 +73,3 @@ jobs:
           path: reports/*.xml # Path to test results
           reporter: java-junit # Format of test results
           # fail-on-error: false                  # Set action to pass even if test report contains a failed test
-  lint_frontend:
-    runs-on: ubuntu-latest
-    name: Lint Frontend
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install modules
-        run: cd client && yarn install --production=false
-      - name: Run eslint
-        run: cd client && yarn eslint src/ --ext .js,.jsx,.ts,.tsx
