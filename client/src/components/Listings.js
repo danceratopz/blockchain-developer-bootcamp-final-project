@@ -474,7 +474,6 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                 </Text>
               </Container>
             )}
-
           </StyledItem>
         </div>
       </FractFieldset>
