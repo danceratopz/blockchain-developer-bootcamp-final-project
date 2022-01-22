@@ -7,7 +7,7 @@ import { formatEther } from '@ethersproject/units';
 import { useContract } from '../hooks/useContract';
 import useAccountLastTxnHash from '../hooks/useAccountLastTxnHash';
 import { processTxnError } from '../utils/processTxnError';
-import { TransactionState } from '../utils/states';
+import { TxnState } from '../utils/states';
 import Text from './Text';
 import { StyledAddress, StyledTxn } from './StyledAddress';
 import {
@@ -189,11 +189,11 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
 
   const [mmError, setMmError] = useState(null);
   // Hold the state and hash of the ERC20 approve() transaction.
-  const [approvalTxnStatus, setApprovalTxnStatus] = useState(TransactionState.NOT_SUBMITTED);
+  const [approvalTxnStatus, setApprovalTxnStatus] = useState(TxnState.NOT_SUBMITTED);
   const [approvalTxnHash, setApprovalTxnHash] = useState(null);
   // Hold the state and hash of the fractionalizeNFT() transaction.
 
-  const [actionTxnStatus, setActionTxnStatus] = useState(TransactionState.NOT_SUBMITTED);
+  const [actionTxnStatus, setActionTxnStatus] = useState(TxnState.NOT_SUBMITTED);
   const [actionTxnHash, setActionTxnHash] = useState(null);
   const { setAccountLastTxnHash } = useAccountLastTxnHash(); // This is used by the global AppContext to update the account balance.
 
@@ -205,13 +205,13 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
 
   const onBuyNftClick = async (fracNFTId, buyoutPrice) => {
     try {
-      setActionTxnStatus(TransactionState.PENDING);
+      setActionTxnStatus(TxnState.PENDING);
       const transaction = await contract.buyout(fracNFTId, { from: account, value: buyoutPrice });
       const confirmations = chainId === 1337 ? 1 : CONFIRMATION_COUNT;
       await transaction.wait(confirmations);
       setActionTxnHash(transaction.hash); // local state
       setAccountLastTxnHash(transaction.hash); // global state
-      setActionTxnStatus(TransactionState.SUCCESS);
+      setActionTxnStatus(TxnState.SUCCESS);
     } catch (e) {
       const [txnStatus, message] = await processTxnError(e);
       setActionTxnStatus(txnStatus);
@@ -221,7 +221,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
 
   const onApproveErc20Click = async () => {
     try {
-      setApprovalTxnStatus(TransactionState.PENDING);
+      setApprovalTxnStatus(TxnState.PENDING);
       const abi = [
         'function balanceOf(address owner) view returns (uint256)',
         'function approve(address owner, uint256 amount) returns (bool)',
@@ -233,7 +233,7 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
       const confirmations = chainId === 1337 ? 1 : CONFIRMATION_COUNT;
       await transaction.wait(confirmations);
       setApprovalTxnHash(transaction.hash);
-      setApprovalTxnStatus(TransactionState.SUCCESS);
+      setApprovalTxnStatus(TxnState.SUCCESS);
       setAccountLastTxnHash(transaction.hash); // global state
     } catch (e) {
       const [txnStatus, message] = await processTxnError(e);
@@ -244,12 +244,12 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
 
   const onRedeemNftClick = async (fracNFTId) => {
     try {
-      setActionTxnStatus(TransactionState.PENDING);
+      setActionTxnStatus(TxnState.PENDING);
       const transaction = await contract.redeem(fracNFTId, { from: account });
       const confirmations = chainId === 1337 ? 1 : CONFIRMATION_COUNT;
       await transaction.wait(confirmations);
       setActionTxnHash(transaction.hash);
-      setActionTxnStatus(TransactionState.SUCCESS);
+      setActionTxnStatus(TxnState.SUCCESS);
       setAccountLastTxnHash(transaction.hash); // global state
     } catch (e) {
       const [txnStatus, message] = await processTxnError(e);
@@ -261,12 +261,12 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
   const onPayoutClick = async (fracNFTId) => {
     setActionTxnHash('waitingpayout');
     try {
-      setActionTxnStatus(TransactionState.PENDING);
+      setActionTxnStatus(TxnState.PENDING);
       const transaction = await contract.claim(fracNFTId, { from: account });
       const confirmations = chainId === 1337 ? 1 : CONFIRMATION_COUNT;
       await transaction.wait(confirmations);
       setActionTxnHash(transaction.hash);
-      setActionTxnStatus(TransactionState.SUCCESS);
+      setActionTxnStatus(TxnState.SUCCESS);
       setAccountLastTxnHash(transaction.hash); // global state
     } catch (e) {
       const [txnStatus, message] = await processTxnError(e);
@@ -333,10 +333,10 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
 
   return (
     <>
-      {(actionTxnStatus === TransactionState.ERROR ||
-        actionTxnStatus === TransactionState.FAIL ||
-        approvalTxnStatus === TransactionState.ERROR ||
-        approvalTxnStatus === TransactionState.FAIL) && (
+      {(actionTxnStatus === TxnState.ERROR ||
+        actionTxnStatus === TxnState.FAIL ||
+        approvalTxnStatus === TxnState.ERROR ||
+        approvalTxnStatus === TxnState.FAIL) && (
         <Container className="mt-5 d-flex flex-column justify-content-center align-items-center">
           <Text style={{ marginTop: '20px', marginBottom: '20px' }} color={colors.red}>
             {mmError || 'Unknown error encountered! Please reload.'}
@@ -372,9 +372,9 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
               </Text>
 
               {action === 'buyout' &&
-                (actionTxnStatus === TransactionState.NOT_SUBMITTED ||
-                  actionTxnStatus === TransactionState.ERROR ||
-                  actionTxnStatus === TransactionState.FAIL) && (
+                (actionTxnStatus === TxnState.NOT_SUBMITTED ||
+                  actionTxnStatus === TxnState.ERROR ||
+                  actionTxnStatus === TxnState.FAIL) && (
                   <StyledItem>
                     <FractButton
                       style={{ width: '150px' }}
@@ -388,8 +388,8 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     </FractButton>
                   </StyledItem>
                 )}
-              {action === 'buyout' && actionTxnStatus === TransactionState.PENDING && <PendingButton />}
-              {action === 'buyout' && actionTxnStatus === TransactionState.SUCCESS && (
+              {action === 'buyout' && actionTxnStatus === TxnState.PENDING && <PendingButton />}
+              {action === 'buyout' && actionTxnStatus === TxnState.SUCCESS && (
                 <StyledItem>
                   <FractButton
                     style={{ width: '150px', border: `1px solid ${colors.green}` }}
@@ -405,9 +405,9 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
               )}
 
               {(action === 'redeem' || action === 'payout') &&
-                (approvalTxnStatus === TransactionState.NOT_SUBMITTED ||
-                  approvalTxnStatus === TransactionState.FAIL ||
-                  approvalTxnStatus === TransactionState.ERROR) && (
+                (approvalTxnStatus === TxnState.NOT_SUBMITTED ||
+                  approvalTxnStatus === TxnState.FAIL ||
+                  approvalTxnStatus === TxnState.ERROR) && (
                   <StyledItem>
                     <FractButton
                       style={{ width: '150px' }}
@@ -419,23 +419,23 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     </FractButton>
                   </StyledItem>
                 )}
-              {(action === 'redeem' || action === 'payout') && approvalTxnStatus === TransactionState.PENDING && (
+              {(action === 'redeem' || action === 'payout') && approvalTxnStatus === TxnState.PENDING && (
                 <PendingButton />
               )}
-              {(action === 'redeem' || action === 'payout') && approvalTxnStatus === TransactionState.SUCCESS && (
+              {(action === 'redeem' || action === 'payout') && approvalTxnStatus === TxnState.SUCCESS && (
                 <SuccessButton txnHash={approvalTxnHash} />
               )}
 
               {action === 'redeem' &&
-                approvalTxnStatus !== TransactionState.SUCCESS &&
-                (actionTxnStatus === TransactionState.NOT_SUBMITTED ||
-                  actionTxnStatus === TransactionState.ERROR ||
-                  actionTxnStatus === TransactionState.FAIL) && <DisabledButton text="Redeem" />}
+                approvalTxnStatus !== TxnState.SUCCESS &&
+                (actionTxnStatus === TxnState.NOT_SUBMITTED ||
+                  actionTxnStatus === TxnState.ERROR ||
+                  actionTxnStatus === TxnState.FAIL) && <DisabledButton text="Redeem" />}
               {action === 'redeem' &&
-                approvalTxnStatus === TransactionState.SUCCESS &&
-                (actionTxnStatus === TransactionState.NOT_SUBMITTED ||
-                  actionTxnStatus === TransactionState.ERROR ||
-                  actionTxnStatus === TransactionState.FAIL) && (
+                approvalTxnStatus === TxnState.SUCCESS &&
+                (actionTxnStatus === TxnState.NOT_SUBMITTED ||
+                  actionTxnStatus === TxnState.ERROR ||
+                  actionTxnStatus === TxnState.FAIL) && (
                   <StyledItem>
                     <FractButton
                       style={{ width: '150px' }}
@@ -447,21 +447,19 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     </FractButton>
                   </StyledItem>
                 )}
-              {action === 'redeem' && actionTxnStatus === TransactionState.PENDING && <PendingButton />}
-              {action === 'redeem' && actionTxnStatus === TransactionState.SUCCESS && (
-                <SuccessButton txnHash={actionTxnHash} />
-              )}
+              {action === 'redeem' && actionTxnStatus === TxnState.PENDING && <PendingButton />}
+              {action === 'redeem' && actionTxnStatus === TxnState.SUCCESS && <SuccessButton txnHash={actionTxnHash} />}
 
               {action === 'payout' &&
-                approvalTxnStatus !== TransactionState.SUCCESS &&
-                (actionTxnStatus === TransactionState.NOT_SUBMITTED ||
-                  actionTxnStatus === TransactionState.ERROR ||
-                  actionTxnStatus === TransactionState.FAIL) && <DisabledButton text="Claim" />}
+                approvalTxnStatus !== TxnState.SUCCESS &&
+                (actionTxnStatus === TxnState.NOT_SUBMITTED ||
+                  actionTxnStatus === TxnState.ERROR ||
+                  actionTxnStatus === TxnState.FAIL) && <DisabledButton text="Claim" />}
               {action === 'payout' &&
-                approvalTxnStatus === TransactionState.SUCCESS &&
-                (actionTxnStatus === TransactionState.NOT_SUBMITTED ||
-                  actionTxnStatus === TransactionState.ERROR ||
-                  actionTxnStatus === TransactionState.FAIL) && (
+                approvalTxnStatus === TxnState.SUCCESS &&
+                (actionTxnStatus === TxnState.NOT_SUBMITTED ||
+                  actionTxnStatus === TxnState.ERROR ||
+                  actionTxnStatus === TxnState.FAIL) && (
                   <StyledItem>
                     <FractButton
                       style={{ width: '150px' }}
@@ -473,10 +471,8 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
                     </FractButton>
                   </StyledItem>
                 )}
-              {action === 'payout' && actionTxnStatus === TransactionState.PENDING && <PendingButton />}
-              {action === 'payout' && actionTxnStatus === TransactionState.SUCCESS && (
-                <SuccessButton txnHash={actionTxnHash} />
-              )}
+              {action === 'payout' && actionTxnStatus === TxnState.PENDING && <PendingButton />}
+              {action === 'payout' && actionTxnStatus === TxnState.SUCCESS && <SuccessButton txnHash={actionTxnHash} />}
             </StyledItemTextContainer>
           </StyledItem>
         </div>

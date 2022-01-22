@@ -1,4 +1,4 @@
-export const TransactionState = {
+export const TxnState = {
   NOT_SUBMITTED: 'NOT_SUBMITTED',
   PENDING: 'PENDING',
   SUCCESS: 'SUCCESS',

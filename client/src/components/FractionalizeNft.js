@@ -9,7 +9,7 @@ import { KnownNftContracts } from './KnownNftContracts';
 import Text from './Text';
 import { StyledTxn } from './StyledAddress';
 
-import { TransactionState } from '../utils/states';
+import { TxnState } from '../utils/states';
 import { processTxnError } from '../utils/processTxnError';
 import { colors } from '../theme';
 import { FractButton, FractFieldset, FractInput } from './StyledHelpers';
@@ -34,10 +34,10 @@ function isPositiveInteger(str) {
 
 const FractionalizeNft = ({ fractionalizeNftAddress }) => {
   // Hold the state and hash of the ERC721 approve() transaction.
-  const [approvalTxnStatus, setApprovalTxnStatus] = useState(TransactionState.NOT_SUBMITTED);
+  const [approvalTxnStatus, setApprovalTxnStatus] = useState(TxnState.NOT_SUBMITTED);
   const [approvalTxnHash, setApprovalTxnHash] = useState(null);
   // Hold the state and hash of the fractionalizeNFT() transaction.
-  const [actionTxnStatus, setActionTxnStatus] = useState(TransactionState.NOT_SUBMITTED);
+  const [actionTxnStatus, setActionTxnStatus] = useState(TxnState.NOT_SUBMITTED);
   const [actionTxnHash, setActionTxnHash] = useState(null);
 
   const [mmError, setMmError] = useState(null);
@@ -74,13 +74,13 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
 
   const onApproveNftClick = async () => {
     try {
-      setApprovalTxnStatus(TransactionState.PENDING);
+      setApprovalTxnStatus(TxnState.PENDING);
       const signerOrProvider = account ? library.getSigner(account).connectUnchecked() : library;
       const nftContract = new Contract(nftContractAddress, exampleErc721Contract.abi, signerOrProvider);
       const transaction = await nftContract.approve(fractionalizeNftContractAddress, nftTokenIndex, { from: account });
       const confirmations = chainId === 1337 ? 1 : CONFIRMATION_COUNT;
       await transaction.wait(confirmations);
-      setApprovalTxnStatus(TransactionState.SUCCESS);
+      setApprovalTxnStatus(TxnState.SUCCESS);
       setApprovalTxnHash(transaction.hash);
     } catch (e) {
       const [txnStatus, message] = await processTxnError(e);
@@ -91,7 +91,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
 
   const onFractionalizeNftClick = async () => {
     try {
-      setActionTxnStatus(TransactionState.PENDING);
+      setActionTxnStatus(TxnState.PENDING);
       const transaction = await contract.fractionalizeNft(
         nftContractAddress,
         nftTokenIndex,
@@ -103,7 +103,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
       );
       const confirmations = chainId === 1337 ? 1 : CONFIRMATION_COUNT;
       await transaction.wait(confirmations);
-      setActionTxnStatus(TransactionState.SUCCESS);
+      setActionTxnStatus(TxnState.SUCCESS);
       setActionTxnHash(transaction.hash);
     } catch (e) {
       const [txnStatus, message] = await processTxnError(e);
@@ -155,7 +155,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
             value={nftTokenIndex}
             onChange={(e) => setNftTokenIndex(e.target.value)}
           />
-          {approvalTxnStatus === TransactionState.NOT_SUBMITTED && (
+          {approvalTxnStatus === TxnState.NOT_SUBMITTED && (
             <FractButton
               style={
                 !isPositiveInteger(nftTokenIndex) ? { border: '1px solid white', width: '200px' } : { width: '200px' }
@@ -168,7 +168,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
               Approve
             </FractButton>
           )}
-          {(approvalTxnStatus === TransactionState.FAIL || approvalTxnStatus === TransactionState.ERROR) && (
+          {(approvalTxnStatus === TxnState.FAIL || approvalTxnStatus === TxnState.ERROR) && (
             <>
               <FractButton
                 style={
@@ -186,12 +186,12 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
               <Text>(see error below)</Text>
             </>
           )}
-          {approvalTxnStatus === TransactionState.PENDING && (
+          {approvalTxnStatus === TxnState.PENDING && (
             <FractButton style={{ width: '200px' }} disabled="1">
               <SkinnySpinner />
             </FractButton>
           )}
-          {approvalTxnStatus === TransactionState.SUCCESS && (
+          {approvalTxnStatus === TxnState.SUCCESS && (
             <FractButton style={{ border: `1px solid ${colors.green}`, width: '200px' }} disabled="1">
               <StyledTxn hash={approvalTxnHash} />
             </FractButton>
@@ -256,7 +256,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
                 value={buyoutPrice}
                 onChange={(e) => setBuyoutPrice(e.target.value)}
               />
-              {actionTxnStatus === TransactionState.NOT_SUBMITTED && (
+              {actionTxnStatus === TxnState.NOT_SUBMITTED && (
                 <FractButton
                   style={
                     !isPositiveInteger(nftTokenIndex) ||
@@ -281,7 +281,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
                   Fractionalize
                 </FractButton>
               )}
-              {(actionTxnStatus === TransactionState.FAIL || actionTxnStatus === TransactionState.ERROR) && (
+              {(actionTxnStatus === TxnState.FAIL || actionTxnStatus === TxnState.ERROR) && (
                 <>
                   <FractButton
                     style={
@@ -309,7 +309,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
                   <Text>(see error below)</Text>
                 </>
               )}
-              {actionTxnStatus === TransactionState.SUCCESS && (
+              {actionTxnStatus === TxnState.SUCCESS && (
                 <FractButton
                   style={{ border: `1px solid ${colors.green}`, width: '200px' }}
                   onClick={onFractionalizeNftClick}
@@ -320,7 +320,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
                   <StyledTxn hash={actionTxnHash} />
                 </FractButton>
               )}
-              {actionTxnStatus === TransactionState.PENDING && (
+              {actionTxnStatus === TxnState.PENDING && (
                 <FractButton style={{ width: '200px' }} disabled="1">
                   <SkinnySpinner />
                 </FractButton>
@@ -329,14 +329,14 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
           </form>
         </FractFieldset>
       </FractFieldset>
-      {approvalTxnStatus === TransactionState.SUCCESS && (
+      {approvalTxnStatus === TxnState.SUCCESS && (
         <>
           <Text style={{ marginTop: '20px', marginBottom: '10px' }}>
             NFT was successfully approved for transfer in transaction <StyledTxn hash={approvalTxnHash} />
           </Text>
         </>
       )}
-      {actionTxnStatus === TransactionState.SUCCESS && (
+      {actionTxnStatus === TxnState.SUCCESS && (
         <>
           <Text style={{ marginTop: '10px', marginBottom: '10px' }}>
             NFT was successfully fractionalized in transaction <StyledTxn hash={actionTxnHash} />
@@ -354,10 +354,10 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
           </Text>
         </>
       )}
-      {(approvalTxnStatus === TransactionState.FAIL ||
-        approvalTxnStatus === TransactionState.ERROR ||
-        actionTxnStatus === TransactionState.FAIL ||
-        actionTxnStatus === TransactionState.ERROR) && (
+      {(approvalTxnStatus === TxnState.FAIL ||
+        approvalTxnStatus === TxnState.ERROR ||
+        actionTxnStatus === TxnState.FAIL ||
+        actionTxnStatus === TxnState.ERROR) && (
         <>
           <Text style={{ marginTop: '20px', marginBottom: '20px' }} color={colors.red}>
             {mmError || 'Unknown error encountered! Please reload.'}
