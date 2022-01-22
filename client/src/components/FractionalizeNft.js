@@ -10,6 +10,7 @@ import Text from './Text';
 import { StyledTxn } from './StyledAddress';
 
 import { TransactionState } from '../utils/states';
+import { processTxnError } from '../utils/processTxnError';
 import { colors } from '../theme';
 import { FractButton, FractFieldset, FractInput } from './StyledHelpers';
 import { SkinnySpinner } from './ButtonHelpers';
@@ -71,35 +72,6 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
   const tokenIdInputWidth = isMobile ? '120px' : '120px';
   const miscInputWidth = isMobile ? '290px' : '290px';
 
-  const processTxnError = (e, actionOrApproval) => {
-    // eslint-disable-next-line no-console
-    console.log(e);
-    let txnStatus;
-    if (e.code && typeof e.code === 'number') {
-      let message;
-      if (Object.prototype.hasOwnProperty.call(e, 'data') && Object.prototype.hasOwnProperty.call(e.data, 'message')) {
-        message = `Error - ${e.message}: ${e.data.message}`;
-      } else {
-        message = `Error - ${e.message}`;
-      }
-      txnStatus = TransactionState.FAIL;
-      setMmError(message);
-    } else if (Object.prototype.hasOwnProperty.call(e, 'message')) {
-      txnStatus = TransactionState.FAIL;
-      setMmError(e.message);
-    } else {
-      txnStatus = TransactionState.ERROR;
-    }
-    if (actionOrApproval === 'action') {
-      setActionTxnStatus(txnStatus);
-    } else if (actionOrApproval === 'approval') {
-      setApprovalTxnStatus(txnStatus);
-    } else {
-      // eslint-disable-next-line no-console
-      console.log('Error: Unexpcted transaction type ', actionOrApproval);
-    }
-  };
-
   const onApproveNftClick = async () => {
     try {
       setApprovalTxnStatus(TransactionState.PENDING);
@@ -111,7 +83,9 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
       setApprovalTxnStatus(TransactionState.SUCCESS);
       setApprovalTxnHash(transaction.hash);
     } catch (e) {
-      processTxnError(e, 'approval');
+      const [txnStatus, message] = await processTxnError(e);
+      setApprovalTxnStatus(txnStatus);
+      setMmError(message);
     }
   };
 
@@ -132,7 +106,9 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
       setActionTxnStatus(TransactionState.SUCCESS);
       setActionTxnHash(transaction.hash);
     } catch (e) {
-      processTxnError(e, 'action');
+      const [txnStatus, message] = await processTxnError(e);
+      setActionTxnStatus(txnStatus);
+      setMmError(message);
     }
   };
 

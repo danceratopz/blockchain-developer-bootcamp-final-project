@@ -6,6 +6,7 @@ import { BigNumber, Contract, utils } from 'ethers';
 import { formatEther } from '@ethersproject/units';
 import { useContract } from '../hooks/useContract';
 import useAccountLastTxnHash from '../hooks/useAccountLastTxnHash';
+import { processTxnError } from '../utils/processTxnError';
 import { TransactionState } from '../utils/states';
 import Text from './Text';
 import { StyledAddress, StyledTxn } from './StyledAddress';
@@ -202,35 +203,6 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
   const [imageUrl, setImageUrl] = useState(null);
   const [imageAltText, setImageAltText] = useState('');
 
-  const processTxnError = (e, actionOrApproval) => {
-    // eslint-disable-next-line no-console
-    console.log(e);
-    let txnStatus;
-    if (e.code && typeof e.code === 'number') {
-      let message;
-      if (Object.prototype.hasOwnProperty.call(e, 'data') && Object.prototype.hasOwnProperty.call(e.data, 'message')) {
-        message = `Error - ${e.message}: ${e.data.message}`;
-      } else {
-        message = `Error - ${e.message}`;
-      }
-      txnStatus = TransactionState.FAIL;
-      setMmError(message);
-    } else if (Object.prototype.hasOwnProperty.call(e, 'message')) {
-      txnStatus = TransactionState.FAIL;
-      setMmError(e.message);
-    } else {
-      txnStatus = TransactionState.ERROR;
-    }
-    if (actionOrApproval === 'action') {
-      setActionTxnStatus(txnStatus);
-    } else if (actionOrApproval === 'approval') {
-      setApprovalTxnStatus(txnStatus);
-    } else {
-      // eslint-disable-next-line no-console
-      console.log('Error: Unexpcted transaction type ', actionOrApproval);
-    }
-  };
-
   const onBuyNftClick = async (fracNFTId, buyoutPrice) => {
     try {
       setActionTxnStatus(TransactionState.PENDING);
@@ -241,7 +213,9 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
       setAccountLastTxnHash(transaction.hash); // global state
       setActionTxnStatus(TransactionState.SUCCESS);
     } catch (e) {
-      processTxnError(e, 'action');
+      const [txnStatus, message] = await processTxnError(e);
+      setActionTxnStatus(txnStatus);
+      setMmError(message);
     }
   };
 
@@ -262,7 +236,9 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
       setApprovalTxnStatus(TransactionState.SUCCESS);
       setAccountLastTxnHash(transaction.hash); // global state
     } catch (e) {
-      processTxnError(e, 'approval');
+      const [txnStatus, message] = await processTxnError(e);
+      setApprovalTxnStatus(txnStatus);
+      setMmError(message);
     }
   };
 
@@ -276,7 +252,9 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
       setActionTxnStatus(TransactionState.SUCCESS);
       setAccountLastTxnHash(transaction.hash); // global state
     } catch (e) {
-      processTxnError(e, 'action');
+      const [txnStatus, message] = await processTxnError(e);
+      setActionTxnStatus(txnStatus);
+      setMmError(message);
     }
   };
 
@@ -291,7 +269,9 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
       setActionTxnStatus(TransactionState.SUCCESS);
       setAccountLastTxnHash(transaction.hash); // global state
     } catch (e) {
-      processTxnError(e, 'action');
+      const [txnStatus, message] = await processTxnError(e);
+      setActionTxnStatus(txnStatus);
+      setMmError(message);
     }
   };
 
