@@ -38,8 +38,8 @@ const AboutText = () => {
         </InfoFieldset>
       )}
       <p>
-        This is a frontend to an NFT fractionalizer running on the Ethereum Ropsten Testnet. Upon fractionalization a
-        user sends an NFT to the contract and in return receives newly created ERC20 tokens. The ERC20 tokens may be
+        This is a frontend for an NFT fractionalizer running on the Ethereum Ropsten Testnet. Upon fractionalization a
+        user sends an NFT to the contract and receives newly created ERC20 tokens in return. The ERC20 tokens may be
         distributed among multiple accounts to represent shared ownership of the NFT. If the NFT gets bought from the
         contract, holders of the corresponding ERC20 token may claim their share of the sales proceedings.
       </p>
