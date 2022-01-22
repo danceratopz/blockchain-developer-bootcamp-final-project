@@ -1,24 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 import { useWeb3React, UnsupportedChainIdError } from '@web3-react/core';
+import { FaEthereum } from 'react-icons/fa';
 import Text from './Text';
-import { StyledHeaderBox } from './StyledHelpers';
+import { StyledHeaderBox, StyledAnchor } from './StyledHelpers';
 import { injected } from '../connectors';
-import { StyledAddress } from '../components/StyledAddress';
+import { StyledAddress } from './StyledAddress';
 import { useAppContext } from '../AppContext';
 import BalancesCard from './BalancesCard';
-import MMLogo from '../static/metamask-logo.svg';
-import { FaEthereum } from 'react-icons/fa';
 import { colors } from '../theme';
 
-const MetamaskLogo = styled.img.attrs({
-  src: MMLogo,
-})`
-  height: 25px;
-`;
-
-const ConnectBtn = styled.button`
+const FractButton = styled.button`
   border: 1px solid ${colors.blue};
   background: transparent;
   color: white;
@@ -37,7 +29,6 @@ const onLogOut = (deactivate, cb) => {
 };
 
 const MetamaskConnectButton = () => {
-  const history = useHistory();
   const { setContentError } = useAppContext();
   const { activate, active, account, deactivate } = useWeb3React();
   const [status, setStatus] = useState(pageState.LOADING);
@@ -58,40 +49,47 @@ const MetamaskConnectButton = () => {
 
   if (status === pageState.READY && !active) {
     return (
-       <StyledHeaderBox>
-       <Text><FaEthereum color={colors.blue} size="22"/> </Text>
-        <ConnectBtn style={{ background: "#1f1f1f"}}
-        onClick={() => {
-          if (!window.ethereum) {
-            setContentError(["Failed to detect Metamask - please install it from ", <a href="https://metamask.io/download.html">https://metamask.io/download.html</a>]);
-            return;
-          }
-          activate(injected, (e) => {
-            if (e instanceof UnsupportedChainIdError) {
-              setContentError('Only Ropsten supported - please change to the Ropsten Test Network in Metamask.');
+      <StyledHeaderBox>
+        <Text>
+          <FaEthereum color={colors.blue} size="22" />{' '}
+        </Text>
+        <FractButton
+          style={{ background: colors.componentBackground }}
+          onClick={() => {
+            if (!window.ethereum) {
+              setContentError([
+                'Failed to detect Metamask - please install it from ',
+                <StyledAnchor key="mm" href="https://metamask.io/download.html">
+                  https://metamask.io/download.html
+                </StyledAnchor>,
+              ]);
+              return;
             }
-          });
-        }}
-      >
-        Connect
-          </ConnectBtn>
-            </StyledHeaderBox>
+            activate(injected, (e) => {
+              if (e instanceof UnsupportedChainIdError) {
+                setContentError('Only Ropsten is supported - please change to the Ropsten Test Network in Metamask.');
+              }
+            });
+          }}
+        >
+          Connect
+        </FractButton>
+      </StyledHeaderBox>
     );
   }
+
+  function noop() {}
 
   // <MetamaskLogo />
   return (
     <StyledHeaderBox>
-      <FaEthereum color={colors.blue} size="22"/>
-      <Text
-        style={{ margin: "8px", marginLeft: "12px", marginRight: "12px", fontFamily: "Source Code Pro" }}>
-        <StyledAddress address={account} />  <BalancesCard />
+      <FaEthereum color={colors.blue} size="22" />
+      <Text style={{ margin: '8px', marginLeft: '12px', marginRight: '12px', fontFamily: 'Source Code Pro' }}>
+        <StyledAddress address={account} /> <BalancesCard />
       </Text>
-      <ConnectBtn
-        style={{ fontFamily: "Source Sans Pro" }}
-        onClick={() => onLogOut(deactivate, () => history.push('/'))}>
-        <span style={{ whiteSpace: "nowrap" }}>Log out</span>
-      </ConnectBtn>
+      <FractButton style={{ fontFamily: 'Source Sans Pro' }} onClick={() => onLogOut(deactivate, () => noop())}>
+        <span style={{ whiteSpace: 'nowrap' }}>Log out</span>
+      </FractButton>
     </StyledHeaderBox>
   );
 };

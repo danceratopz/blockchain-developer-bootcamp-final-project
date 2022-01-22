@@ -6,7 +6,6 @@ public
 .idea
 cache
 */**/server.tsx
-src/client.js
 */**/setupTests.ts
 src/index.ts
 .prettierignore

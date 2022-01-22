@@ -5,13 +5,11 @@ import App from './App';
 
 const renderMethod = module.hot ? render : hydrate;
 
-export const Client = () => {
-  return (
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  );
-};
+export const Client = () => (
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+);
 
 renderMethod(<Client />, document.getElementById('root'));
 

@@ -5,8 +5,8 @@ const initialContext = {
   setEthBalance: () => {},
   isWalletConnectionModalOpen: false,
   setWalletConnectModal: () => {},
-  txnStatus: 'NOT_SUBMITTED',
-  setTxnStatus: () => {},
+  accountLastTxnHash: undefined,
+  setAccountLastTxnHash: () => {},
   contentError: undefined,
   setContentError: () => {},
 };
@@ -25,10 +25,10 @@ const appReducer = (state, { type, payload }) => {
         isWalletConnectModalOpen: payload,
       };
 
-    case 'SET_TXN_STATUS':
+    case 'SET_ACCOUNT_LAST_TXN_HASH':
       return {
         ...state,
-        txnStatus: payload,
+        accountLastTxnHash: payload,
       };
 
     case 'SET_CONTENT_ERROR':
@@ -58,9 +58,9 @@ export const AppContextProvider = ({ children }) => {
     setWalletConnectModal: (open) => {
       dispatch({ type: 'SET_WALLET_MODAL', payload: open });
     },
-    txnStatus: store.txnStatus,
-    setTxnStatus: (status) => {
-      dispatch({ type: 'SET_TXN_STATUS', payload: status });
+    accountLastTxnHash: store.accountLastTxnHash,
+    setAccountLastTxnHash: (status) => {
+      dispatch({ type: 'SET_ACCOUNT_LAST_TXN_HASH', payload: status });
     },
     contentError: store.contentError,
     setContentError: (str) => {

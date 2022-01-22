@@ -10,6 +10,7 @@ export const colors = {
   lightGray: '#F3F5F7',
   green: '#7DDE92',
   secondary: '#6c757d',
+  componentBackground: '#1f1f1f',
 };
 
 export const textSizes = {

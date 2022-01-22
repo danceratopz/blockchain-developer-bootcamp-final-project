@@ -15,7 +15,5 @@ export function useContract(contractAddress, ABI) {
 
   const signerOrProvider = account ? library.getSigner(account).connectUnchecked() : library;
 
-  return useMemo(() => {
-    return new Contract(contractAddress, ABI, signerOrProvider);
-  }, [contractAddress, ABI, signerOrProvider]);
+  return useMemo(() => new Contract(contractAddress, ABI, signerOrProvider), [contractAddress, ABI, signerOrProvider]);
 }

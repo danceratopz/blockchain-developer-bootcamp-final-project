@@ -73,7 +73,7 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-#### Compile, Deploy and Test
+#### Compile, Deploy and Unit Test
 
 The contracts are compiled and tested upon push in Github CI, the
 results can be seen under [Github Actions](https://github.com/web3wannabe/blockchain-developer-bootcamp-final-project/actions/workflows/main.yaml).
@@ -88,6 +88,19 @@ Or, with gas profiling and coverage enabled (slower):
 brownie test --gas --coverage
 ```
 
+#### Deploying for Manual Testing
+
+The `scripts/deploy.py` script can be used to deploy the contracts locally and populate the FractionalizeNFT contract with some NFTs
+ready for manual testing:
+1. Start the console:
+  ```
+  source venv/bin/activate  # If virtual environment not already activated
+  brownie console
+  ```
+2. From within the console, run:
+  ```python
+  nft_contract, frac_contract = run("deploy", "main_dev")
+  ```
 #### Configuring Local Accounts (Optional)
 
 A mnemonic may be added to `.env` in the form
@@ -97,6 +110,9 @@ MNEMONIC=YOUR MNEMONIC ... PHRASE HERE
 This mnemonic value will be used in the brownie config and applied when starting ganache-cli.
 
 ### Running the Frontend Locally
+
+Note: See "Deploying for Manual Testing" for how to deploy the contract and populate it with fractionalized NFTs ready
+for use with the frontend.
 
 1. Run:
    ```
@@ -122,21 +138,26 @@ Source code verification additionally requires:
 
 ### Ethereum Address for NFT Certification
 
-`0x7b13c2F7AaA8C772Bd0a13A86B0CF633fAf790B0`
+`0x7b13c2F7AaA8C772Bd0a13A86B0CF633fAf790B0` (danceratopz.eth)
 
-### Possible Improvements and Known Issues
+### Possible Improvements
 
 Solidity:
-Possible improvements:
-* __Update buyout price__: Allow an **ERC20 token holder** can __update the buyout price__ weighted by the proportion
-  of the ERC20 token supply that they hold.
+* Feature: Allow an ERC20 token holder to update the buyout price weighted by the proportion of the ERC20 token supply that they hold.
+* Feature: Delete an entry from `fracNFTs` if it is no longer in use, i.e., when:
+  * An NFT has been redeemed, or
+  * An NFT has been bought and there are no pending payouts (the contract holds the entire supply of the corresponding ERC20 token).
+* Chore: Improve unit test coverage.
+* Chore: Implement as an upgradable contract.
 
 Frontend:
-* Allow a user to open a detailed view of a fractionalized NFT to display its full and account-specific information
+* Feature: Render Listings on the Market, Redeem and Payout pages asynchronously; the Redeem and Payout are particularly slow.
+* Fix: Improve/optimise image loading.
+* Refactor: Remove inline styling (to CSS).
+* Feature: Allow a user to open a detailed view of a fractionalized NFT to display its full and account-specific information
   (e.g., percentage of ERC20 tokens held).
-* Remove the Redeem page (it can be incorporated in the Market, or potential "Detail" view)as a "redeem" button or "cancel".
-* Add a pager for Market and Payout Listings.
-* Refactor state logic for Listings.
-* Refactor react code
-* Load Listings on the page asynchronously.
-* Make use of emitted events from smart contract.
+* Feature: Add a pager for the Listings on the Market, Redeem and Payout.
+* Feature: Make use of emitted events from the smart contract.
+* Feature/Clean-up: Remove the Redeem page. It can be incorporated in the Market, or the potential "Detail" view as a "Redeem" or "Cancel" button.
+* Chore: Add unit tests.
+* Chore: Upgrade packages.

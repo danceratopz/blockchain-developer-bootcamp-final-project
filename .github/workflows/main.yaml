@@ -15,53 +15,61 @@ env:
   NODE_OPTIONS: --max_old_space_size=4096
 
 jobs:
-
+  lint_frontend:
+    runs-on: ubuntu-latest
+    name: Lint Frontend
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install modules
+        run: cd client && yarn install --production=false
+      - name: Run eslint
+        run: cd client && yarn eslint src/ --ext .js,.jsx,.ts,.tsx
   tests:
     runs-on: ubuntu-latest
 
     name: Compile and Test Solidity Contracts
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Cache Compiler Installations
-      uses: actions/cache@v2
-      with:
-        path: |
-          ~/.solcx
-          ~/.vvm
-        key: compiler-cache
+      - name: Cache Compiler Installations
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.solcx
+            ~/.vvm
+          key: compiler-cache
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v1
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
 
-    - name: Install Ganache
-      run: npm install -g ganache-cli@6.10.2
+      - name: Install Ganache
+        run: npm install -g ganache-cli@6.10.2
 
-    - name: Setup Python 3.8
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
+      - name: Setup Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
 
-    - name: Install Python Requirements
-      run: pip install -r requirements.txt
+      - name: Install Python Requirements
+        run: pip install -r requirements.txt
 
-    - name: Run Tests
-      # Note we don't require any environment variables to run the tests with ganache, create
-      # empty .env to avoid brownie errors.
-      run: |
-        # Force recompile of contracts.
-        rm client/src/artifacts/contracts/{TestNFT,FractionalizeNFT}.json
-        touch .env
-        brownie networks add Development development_empty_dotenv cmd=ganache-cli host="http://127.0.0.1" port=8545
-        brownie test --gas --coverage --network=development_empty_dotenv
+      - name: Run Tests
+        # Note we don't require any environment variables to run the tests with ganache, create
+        # empty .env to avoid brownie errors.
+        run: |
+          # Force recompile of contracts.
+          rm client/src/artifacts/contracts/{TestNFT,FractionalizeNFT}.json
+          touch .env
+          brownie networks add Development development_empty_dotenv cmd=ganache-cli host="http://127.0.0.1" port=8545
+          brownie test --gas --coverage --network=development_empty_dotenv
 
-    - name: Publish Unit Test Results (using test-reporter)
-      # https://github.com/marketplace/actions/test-reporter#supported-formats
-      uses: dorny/test-reporter@v1
-      if: success() || failure()     # run this step even if previous step failed
-      with:
-        name: Smart Contract Unit Test Results  # Name of the check run which will be created
-        path: reports/*.xml                     # Path to test results
-        reporter: java-junit                    # Format of test results
-        # fail-on-error: false                  # Set action to pass even if test report contains a failed test
+      - name: Publish Unit Test Results (using test-reporter)
+        # https://github.com/marketplace/actions/test-reporter#supported-formats
+        uses: dorny/test-reporter@v1
+        if: success() || failure() # run this step even if previous step failed
+        with:
+          name: Smart Contract Unit Test Results # Name of the check run which will be created
+          path: reports/*.xml # Path to test results
+          reporter: java-junit # Format of test results
+          # fail-on-error: false                  # Set action to pass even if test report contains a failed test

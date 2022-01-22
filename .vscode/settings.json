@@ -1,0 +1,10 @@
+{
+  "editor.formatOnSave": true,
+  "javascript.format.enable": true,
+  "prettier.eslintIntegration": true,
+  "python.formatting.provider": "black"
+}
+
+
+
+

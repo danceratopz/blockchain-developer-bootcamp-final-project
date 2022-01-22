@@ -8,11 +8,14 @@ import Menu from './Menu';
 import { useAppContext } from '../AppContext';
 import MetamaskConnectButton from './MetamaskConnectButton';
 import Text from './Text';
+import { colors } from '../theme';
 
 const StyledContainer = styled(Container)`
-  background-color: tomato;
+  background-color: ${colors.componentBackground};
   text-align: center;
   justify-content: center;
+  position: absolute;
+  z-index: 1;
 `;
 
 const GlobalError = () => {
@@ -29,9 +32,10 @@ const GlobalError = () => {
   if (!contentError) {
     return null;
   }
+
   return (
     <StyledContainer fluid>
-      <Text>{contentError}</Text>
+      <Text t4>{contentError}</Text>
     </StyledContainer>
   );
 };
@@ -39,7 +43,7 @@ const GlobalError = () => {
 const Header = () => {
   const [navToggled, setNavToggled] = useState(false);
   const [windowDimension, setWindowDimension] = useState(null);
- 
+
   useEffect(() => {
     setWindowDimension(window.innerWidth);
   }, []);
@@ -48,28 +52,30 @@ const Header = () => {
     function handleResize() {
       setWindowDimension(window.innerWidth);
     }
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [])
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const isMobile = windowDimension < 720;
 
   const handleNavToggle = () => {
     setNavToggled(!navToggled);
-  }
+  };
 
   return (
     <>
       <GlobalError />
-      <Navbar d-flex className="justify-content-between">
-      <div>
-        { isMobile ?
-          <>
-            <Toggle handleNavToggle={handleNavToggle} />
-            {navToggled ? <Menu handleNavToggle={handleNavToggle} /> : null}
-          </>
-          : <Navigation/>}
-          </div>
+      <Navbar className="d-flex justify-content-between">
+        <div>
+          {isMobile ? (
+            <>
+              <Toggle handleNavToggle={handleNavToggle} />
+              {navToggled ? <Menu handleNavToggle={handleNavToggle} /> : null}
+            </>
+          ) : (
+            <Navigation />
+          )}
+        </div>
         <MetamaskConnectButton />
       </Navbar>
     </>
