@@ -333,17 +333,6 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
 
   return (
     <>
-      {(actionTxnStatus === TxnState.ERROR ||
-        actionTxnStatus === TxnState.FAIL ||
-        approvalTxnStatus === TxnState.ERROR ||
-        approvalTxnStatus === TxnState.FAIL) && (
-        <Container className="mt-5 d-flex flex-column justify-content-center align-items-center">
-          <Text style={{ marginTop: '20px', marginBottom: '20px' }} color={colors.red}>
-            {mmError || 'Unknown error encountered! Please reload.'}
-          </Text>
-        </Container>
-      )}
-
       <FractFieldset>
         <div>
           <StyledItem>
@@ -474,6 +463,18 @@ const ListingItem = ({ fractionalizeNftAddress, item, action }) => {
               {action === 'payout' && actionTxnStatus === TxnState.PENDING && <PendingButton />}
               {action === 'payout' && actionTxnStatus === TxnState.SUCCESS && <SuccessButton txnHash={actionTxnHash} />}
             </StyledItemTextContainer>
+
+            {(actionTxnStatus === TxnState.ERROR ||
+              actionTxnStatus === TxnState.FAIL ||
+              approvalTxnStatus === TxnState.ERROR ||
+              approvalTxnStatus === TxnState.FAIL) && (
+              <Container className="mt-5 d-flex flex-column justify-content-center align-items-center">
+                <Text style={{ marginBottom: '20px' }} color={colors.red}>
+                  {mmError || 'Unknown error encountered! Please reload.'}
+                </Text>
+              </Container>
+            )}
+
           </StyledItem>
         </div>
       </FractFieldset>
