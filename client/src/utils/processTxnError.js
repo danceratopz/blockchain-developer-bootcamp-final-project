@@ -5,17 +5,23 @@ export async function processTxnError(e) {
   console.log(e);
   let txnStatus;
   let message;
-  if (e.code && typeof e.code === 'number') {
+  if (Object.prototype.hasOwnProperty.call(e, 'error') && Object.prototype.hasOwnProperty.call(e.error, 'message')) {
+    // On Ropsten Metamask returns an 'error' field in the exception.
     txnStatus = TransactionState.FAIL;
-    if (Object.prototype.hasOwnProperty.call(e, 'data') && Object.prototype.hasOwnProperty.call(e.data, 'message')) {
-      message = `Error - ${e.message}: ${e.data.message}`;
-    } else {
-      message = `Error - ${e.message}`;
-    }
+    message = `Error: ${e.error.message}`;
+  } else if (
+    Object.prototype.hasOwnProperty.call(e, 'data') &&
+    Object.prototype.hasOwnProperty.call(e.data, 'message')
+  ) {
+    // On localhost the error from Metamask is directly available in the exception and in e.data.
+    txnStatus = TransactionState.FAIL;
+    message = `Error - ${e.message}: ${e.data.message}`;
   } else if (Object.prototype.hasOwnProperty.call(e, 'message')) {
-    txnStatus = TransactionState.FAIL;
-    message = `Error: ${e.message}`;
+    // The case on Ropsten and Localhost if user rejects the transaction.
+    txnStatus = TransactionState.ERROR;
+    message = `Error - ${e.message}`;
   } else {
+    // An Unexpected error;
     txnStatus = TransactionState.ERROR;
     message = null;
   }
