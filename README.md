@@ -73,7 +73,7 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-#### Compile, Deploy and Test
+#### Compile, Deploy and Unit Test
 
 The contracts are compiled and tested upon push in Github CI, the
 results can be seen [in Github Actions
@@ -89,6 +89,19 @@ Or, with gas profiling and coverage enabled (slower):
 brownie test --gas --coverage
 ```
 
+#### Deploying for Manual Testing
+
+The `scripts/deploy.py` script can be used to deploy the contracts locally and populate the FractionalizeNFT contract with some NFTs
+ready for manual testing:
+1. Start the console:
+  ```
+  source venv/bin/activate  # If virtual environment not already activated
+  brownie console
+  ```
+2. From within the console, run:
+  ```python
+  nft_contract, frac_contract = run("deploy", "main_dev")
+  ```
 #### Configuring Local Accounts (Optional)
 
 A mnemonic may be added to `.env` in the form
@@ -98,6 +111,9 @@ MNEMONIC=YOUR MNEMONIC ... PHRASE HERE
 This mnemonic value will be used in the brownie config and applied when starting ganache-cli.
 
 ### Running the Frontend Locally
+
+Note: See "Deploying for Manual Testing" for how to deploy the contract and populate it with fractionalized NFTs ready
+for use with the frontend.
 
 1. Run:
    ```
