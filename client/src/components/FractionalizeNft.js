@@ -120,15 +120,14 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
     <Container className="mt-5 d-flex flex-column justify-content-center align-items-center">
       <FractFieldset>
         <legend style={{ float: 'left' }}>Fractionalize an NFT</legend>
-        <Text style={{ display: 'inline-block' }}>
+        <Text t4 block>
           Fractionalize an ERC721 NFT into an ERC20 token - the fractionalizing account receives the total supply.
         </Text>
         <FractFieldset>
           <legend style={{ float: 'left' }}>Approve</legend>
-          <Text style={{ display: 'inline-block' }}>
+          <Text t4 block>
             Approve the FractionalizeNFT contract to take ownership of the NFT.
           </Text>
-          <br />
           <FractInput
             style={
               nftContractAddress.length !== 42
@@ -199,7 +198,7 @@ const FractionalizeNft = ({ fractionalizeNftAddress }) => {
         </FractFieldset>
         <FractFieldset>
           <legend style={{ float: 'left' }}>Fractionalize</legend>
-          <Text style={{ display: 'inline-block' }}>
+          <Text t4 block>
             Specify the parameters of the ERC20 token that will represent partial ownership of the NFT.
             <br />
             The buyout price specifies the price at which the NFT may be bought from the contract by a third party from

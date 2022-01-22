@@ -17,7 +17,7 @@ const Redeem = () => {
       {active && (
         <FractFieldset>
           <Legend>Redeem a Fractionalized NFT</Legend>
-          <Text display="block">
+          <Text t4 block>
             An address that holds the entire supply of a fractionalized NFTs ERC20 Token can redeem the NFT in exchange
             for the tokens in order to (re-)gain ownership of the NFT.
           </Text>

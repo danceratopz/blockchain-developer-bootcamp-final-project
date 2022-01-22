@@ -17,7 +17,7 @@ const Payout = () => {
       {active && (
         <FractFieldset>
           <Legend>Claim a Payout</Legend>
-          <Text display="block">
+          <Text t4 block>
             Following a buyout of a fractionalized NFT, an account that holds corresponding ERC20 tokens can claim their
             payout from the sale proceedings.
           </Text>

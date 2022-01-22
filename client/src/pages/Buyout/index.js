@@ -17,7 +17,7 @@ const Buyout = () => {
       {active && (
         <FractFieldset>
           <Legend>Buy a Fractionalized NFT</Legend>
-          <Text display="block">
+          <Text t4 block>
             Buy a fractionalized NFT from the contract and become its exclusive owner.
             <br />
             Sale proceedings are distributed proportionally to the holders of the ERC20 token.
