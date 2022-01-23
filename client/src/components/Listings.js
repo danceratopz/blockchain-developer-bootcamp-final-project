@@ -72,31 +72,50 @@ const FilteredListing = ({ fractionalizeNftAddress, listings, action }) => {
   const { active, account, library } = useWeb3React();
   const [filteredByHolder, setFilteredByHolder] = useState([]);
 
-  const holdsEnoughErc20TokensForAction = useCallback(async (account, action, library, erc20Address) => {
-    const abi = [
-      'function balanceOf(address owner) view returns (uint256)',
-      'function totalSupply() view returns (uint256)',
-    ];
+  const getErc20Balances = async (account, listings) => {
+    const abi = ['function balanceOf(address owner) view returns (uint256)'];
     const signerOrProvider = library;
-    const erc20 = new Contract(erc20Address, abi, signerOrProvider);
-    const balance = await erc20.balanceOf(account);
-
-    if (action === 'redeem') {
-      // TODO: This could be sped-up in the case of originalOwner redemptions (by checking if account is originalOwner
-      // and state is Fractionalized). The contract could even maintain a list. This does not cover all cases though.
-      const totalSupply = await erc20.totalSupply();
-      // console.log("totalSupply ", utils.formatUnits(totalSupply), "balance ", utils.formatUnits(balance));
-      return utils.formatUnits(balance) === utils.formatUnits(totalSupply);
+    const promises = new Array(listings.length);
+    for (let i = 0; i < listings.length; i += 1) {
+      const erc20 = new Contract(listings[i].erc20Address, abi, signerOrProvider);
+      promises[i] = erc20.balanceOf(account);
     }
-    if (action === 'payout') {
-      return utils.formatUnits(balance) > 0;
-    }
-    // eslint-disable-next-line no-console
-    console.log("Error: unexpected action: '", action, "'");
-    return `error in holdsEnoughErc20TokensForAction(): recieved unexpected action ${action}`;
-  }, []);
+    const balances = await Promise.all(promises);
+    return balances.map((x) => utils.formatUnits(x));
+  };
 
-  const filterListings = useCallback(async (action, listings) => {
+  const getErc20TotalSupplies = async (listings) => {
+    const abi = ['function totalSupply() view returns (uint256)'];
+    const signerOrProvider = library;
+    const promises = new Array(listings.length);
+    for (let i = 0; i < listings.length; i += 1) {
+      const erc20 = new Contract(listings[i].erc20Address, abi, signerOrProvider);
+      promises[i] = erc20.totalSupply();
+    }
+    const totalSupplies = await Promise.all(promises);
+    return totalSupplies.map((x) => utils.formatUnits(x));
+  };
+
+  const listingsCanBeRedeemedByAccount = async (account, listings) => {
+    const balances = await getErc20Balances(account, listings);
+    const supplies = await getErc20TotalSupplies(listings);
+    const canBeRedeemed = new Array(listings.length);
+    for (let i = 0; i < listings.length; i += 1) {
+      canBeRedeemed[i] = balances[i] === supplies[i];
+    }
+    return canBeRedeemed;
+  };
+
+  const listingsCanBeClaimedByAccount = async (account, listings) => {
+    const balances = await getErc20Balances(account, listings);
+    const canBeClaimed = new Array(listings.length);
+    for (let i = 0; i < listings.length; i += 1) {
+      canBeClaimed[i] = balances[i] > 0;
+    }
+    return canBeClaimed;
+  };
+
+  const filterListings = async (action, listings) => {
     let requiredState;
     if (action === 'buyout' || action === 'redeem') {
       requiredState = 0; // fractionalized
@@ -107,33 +126,20 @@ const FilteredListing = ({ fractionalizeNftAddress, listings, action }) => {
       console.log("Error: unexpected action: '", action, "'");
     }
     let filtered = listings.filter((l) => l.state === requiredState);
+
     // Anyone can buyout an NFT, but only holders of the fractionalized NFT's ERC20 can either redeem (account holds
     // total supply) or claim (account's balance > 0). So here we additionally filter the listings using the account's
     // corresponding ERC20 balances.
-    // if (action === "buyout") {
-    //  filtered = listings.filter((l) => l.originalOwner != account);
-    if (action === 'redeem' || action === 'payout') {
-      const accountHoldsEnoughErc20TokensForAction = new Array(listings.length);
-      for (let i = 0; i < listings.length; i += 1) {
-        // TODO: make async - but check getFracNfts() in Listings :)
-        // eslint-disable-next-line no-await-in-loop
-        accountHoldsEnoughErc20TokensForAction[i] = await holdsEnoughErc20TokensForAction(
-          account,
-          action,
-          library,
-          listings[i].erc20Address,
-        );
-      }
-      filtered = filtered.filter((l) => accountHoldsEnoughErc20TokensForAction[l.fracNFTId]);
-      setFilteredByHolder(filtered);
-    } else if (action === 'buyout') {
-      setFilteredByHolder(filtered);
-    } else {
-      // eslint-disable-next-line no-console
-      console.log("Error: unexpected action: '", action, "'");
+    if (action === 'redeem') {
+      const canBeRedeemed = await listingsCanBeRedeemedByAccount(account, listings);
+      filtered = filtered.filter((l) => canBeRedeemed[l.fracNFTId]);
+    } else if (action === 'payout') {
+      const canBeClaimed = await listingsCanBeClaimedByAccount(account, listings);
+      filtered = filtered.filter((l) => canBeClaimed[l.fracNFTId]);
     }
+    setFilteredByHolder(filtered);
     setStatus(listingState.READY);
-  }, []);
+  };
 
   useEffect(() => {
     if (active) {
