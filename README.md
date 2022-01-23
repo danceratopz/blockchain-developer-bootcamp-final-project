@@ -151,12 +151,12 @@ Solidity:
 * Chore: Implement as an upgradable contract.
 
 Frontend:
-* Feature: Render Listings on the Market, Redeem and Payout pages asynchronously; the Redeem and Payout are particularly slow.
-* Fix: Improve/optimise image loading.
 * Refactor: Remove inline styling (to CSS).
 * Feature: Allow a user to open a detailed view of a fractionalized NFT to display its full and account-specific information
   (e.g., percentage of ERC20 tokens held).
 * Feature: Add a pager for the Listings on the Market, Redeem and Payout.
+* Feature: Render Listings on the Market, Redeem and Payout pages asynchronously.
+* Fix: Improve/optimise image loading.
 * Feature: Make use of emitted events from the smart contract.
 * Feature/Clean-up: Remove the Redeem page. It can be incorporated in the Market, or the potential "Detail" view as a "Redeem" or "Cancel" button.
 * Chore: Add unit tests.
